@@ -20,6 +20,20 @@ function text-pipeline {
     --filter pandoc-crossref
 }
 
+function text-pipeline-html {
+   prepare-crossref \
+   | pandoc \
+      --from markdown \
+      --to html \
+      --section-divs \
+      --number-sections \
+      --csl='paper-components/agu.csl' \
+      --metadata=bibliography:references.bib \
+      --filter pandoc-comments \
+      --filter pandoc-crossref \
+      --filter pandoc-citeproc
+}
+
 function run-latex {
   latexmk -f -xelatex -quiet -output-directory=$2 $1
 }
