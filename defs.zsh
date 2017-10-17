@@ -4,8 +4,8 @@ function prepare-crossref {
   # so that [@fig:stuff] prints as [Figure 1].
   # Also escapes pipes for subfigures with non-printing characters,
   # enabling the @fig:stuff|b signature.
-  sed -r "s/\[((@(fig|eq|sec|tbl):\w+;? ?)*)\]/\\\[\1\\\]/g" \
-  | sed "s/\(@fig:\(\w\+\)\)|/\1‌/g"
+  sed -r "s/\[((@(fig|eq|sec|tbl):[A-Za-z0-9_\|]+;? ?)*)\]/\\\[\1\\\]/g" \
+  | sed -r "s/(@(fig|tbl):\w+)\|/\1‌/g"
 }
 
 function text-pipeline {
@@ -28,7 +28,7 @@ function text-pipeline-html {
       --section-divs \
       --number-sections \
       --csl='paper-components/agu.csl' \
-      --metadata=bibliography:references.bib \
+      --metadata=bibliography:references \
       --filter pandoc-comments \
       --filter pandoc-crossref \
       --filter pandoc-citeproc
