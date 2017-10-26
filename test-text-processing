@@ -1,0 +1,11 @@
+#!/usr/bin/env zsh
+
+text="topography in 3D model views [@fig:capping-surface-relationships|b]. The poorer
+results of this registration are propagated through the topographic model and
+are responsible for large error ellipses on bedding poles for CTX images
+[@fig:regional-orientations]."
+
+source defs.zsh
+
+echo $text | prepare-crossref
+
