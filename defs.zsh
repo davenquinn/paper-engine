@@ -4,8 +4,9 @@ function prepare-crossref {
   # so that [@fig:stuff] prints as [Figure 1].
   # Also escapes pipes for subfigures with non-printing characters,
   # enabling the @fig:stuff|b signature.
-  sed -r "s/\[((@(fig|eq|sec|tbl):[A-Za-z0-9_\|]+;? ?)*)\]/\\\[\1\\\]/g" \
-  | sed -r "s/(@(fig|tbl):\w+)\|/\1‌/g"
+  inmatch="\S+"
+  sed -r "s/\[((@(fig|eq|sec|tbl):$inmatch;? ?)*)\]/\\\[\1\\\]/g" \
+  | sed -r "s/(@(fig|tbl):$inmatch)\|/\1‌/g"
 }
 
 function text-pipeline {
