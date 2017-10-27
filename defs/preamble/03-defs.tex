@@ -1,0 +1,16 @@
+% SI units setup
+% detect fonts, etc
+\sisetup{detect-all,%
+  input-ignore={,},%
+  input-decimal-markers={.},%
+  math-micro=\text{µ},
+  text-micro=µ
+  }
+\DeclareSIUnit\year{yr}
+\DeclareSIUnit\annum{a}
+\DeclareSIUnit\ton{ton}
+
+\newcommand{\celsius}{$^{\circ}$C}
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}

@@ -1,0 +1,55 @@
+\usepackage[paper=letterpaper, margin=1in, nohead, pdftex]{geometry}
+\usepackage{fontspec}
+\usepackage{textcomp}
+\usepackage{ifthen}
+\usepackage[small,compact]{titlesec}
+\usepackage{titling}
+\usepackage{graphicx}			% Nice graphics, optional
+\usepackage{siunitx}
+\usepackage[version=3]{mhchem}
+\usepackage{fancyhdr}
+\usepackage{amsmath,xfrac,nicefrac}
+\usepackage{wrapfig}
+\usepackage{ifthen}
+\usepackage{float}
+\usepackage[norule,bottom]{footmisc}
+\usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{array,booktabs,tabularx}
+\usepackage{setspace}
+\usepackage{natbib}
+\usepackage{textcomp}
+\usepackage{tablefootnote}
+\usepackage{lineno}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage[affil-it]{authblk}
+\usepackage[flushleft]{threeparttable}
+\usepackage[justification=justified,singlelinecheck=false,skip=0pt]{caption}
+\usepackage{appendix}
+
+
+
+\setlist[itemize]{leftmargin=*}
+\setlist{nolistsep}
+
+\setlength{\bibsep}{2pt}
+\def\bibfont{\footnotesize}
+
+%\usepackage[super]{natbib}
+%\usepackage{natbib}
+
+%%% Figure list stuff
+\usepackage{adjustbox}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\definecolor{light-gray}{gray}{0.6}
+
+\newcommand\invisiblesection[1]{%
+  \refstepcounter{section}%
+  \addcontentsline{toc}{section}{\protect\numberline{\thesection}#1}%
+  \sectionmark{#1}}
+
+

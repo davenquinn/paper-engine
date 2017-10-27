@@ -36,5 +36,6 @@ function text-pipeline-html {
 }
 
 function run-latex {
-  latexmk -f -xelatex -quiet -output-directory=$2 $1
+  echo "Running LaTeX"
+  latexmk -f -xelatex -output-directory=$2 $1
 }
