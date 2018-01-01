@@ -29,7 +29,7 @@ function text-pipeline-html {
       --section-divs \
       --number-sections \
       --csl='paper-components/agu.csl' \
-      --metadata=bibliography:references \
+      --metadata=bibliography:references.bib \
       --filter pandoc-comments \
       --filter pandoc-crossref \
       --filter pandoc-citeproc
