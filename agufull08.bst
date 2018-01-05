@@ -49,8 +49,8 @@
 %% ***  notes added with first word lowercase (bug in 2.1 fixed)
 %% ***  and journal `number' never output
 %% ***  abbreviation for grl corrected)
-%% *** 
-%% 
+%% ***
+%%
 %% Copyright 1994-2008 Patrick W Daly
  % ===============================================================
  % IMPORTANT NOTICE:
@@ -804,12 +804,13 @@ FUNCTION {format.note}
   if$
 }
 
-% Don't change title case
 FUNCTION {format.title}
-{ title empty$
-    { "" }
-    { title }
-  if$
+{ 
+% title empty$
+%    { "" }
+%    { title "t" change.case$ }
+%  if$
+title
 }
 FUNCTION {format.full.names}
 {'s :=
@@ -1826,4 +1827,3 @@ EXECUTE {end.bib}
 %% End of customized bst file
 %%
 %% End of file `agufull08.bst'.
-
