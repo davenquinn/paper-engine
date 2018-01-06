@@ -14,7 +14,11 @@
 \posttitle{\par\end{flushleft}\vskip 0.5em}
 
 \preauthor{\begin{flushleft}\Gotham\normalsize}
-\postauthor{\par\end{flushleft}\vspace{-60pt}}
+\postauthor{\par\end{flushleft}}
+
+\predate{\vspace{-10pt}\begin{flushleft}\Gotham\normalsize}
+\postdate{\par\end{flushleft}\vspace{-10pt}}
+
 
 \begin{document}
 
@@ -37,7 +41,12 @@
 
 \thispagestyle{empty}
 \clearpage
+
 \pagenumbering{arabic}
+
+\tableofcontents
+
+\pagebreak
 
 \begin{spacing}{1.2}
 \begin{linenumbers}
@@ -55,11 +64,9 @@
 
 \setcounter{secnumdepth}{-1}
 
+\section{Figures and Tables}
+
 \input{build/figure-list.tex}
-
-\pagebreak
-
-\tableofcontents
 
 \end{document}
 
