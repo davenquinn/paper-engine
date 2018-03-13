@@ -24,7 +24,7 @@ function text-pipeline {
 function text-pipeline-html {
    prepare-crossref \
    | pandoc \
-      --from markdown \
+      --from markdown+pipe_tables \
       --to html \
       --section-divs \
       --number-sections \
@@ -52,5 +52,5 @@ function text-pipeline-docx {
 
 function run-latex {
   echo "Running LaTeX"
-  latexmk -f -xelatex -output-directory=$2 $1
+  latexmk -output-directory=$2 $1
 }
