@@ -1,0 +1,28 @@
+\begin{<< env  >>}
+  \centering
+  <# if sideways #>
+  \begin{adjustbox}{angle=90}
+  <# endif #>
+  <# if two_column #>
+  \begin{adjustbox}{width=\textwidth}
+  <# endif #>
+  \begin{threeparttable}
+    \caption{<<caption >>}
+    \label{tbl:<< id >>}
+    <<content >>
+    <# if notes -#>
+    \begin{tablenotes}
+      <# for k,note in notes.items() -#>
+      \item[<<k>>] <<note>>
+      <#- endfor #>
+    \end{tablenotes}
+    <#- endif #>
+  \end{threeparttable}
+  <# if two_column #>
+  \end{adjustbox}
+  <# endif #>
+  <# if sideways #>
+  \end{adjustbox}
+  <# endif #>
+\end{<< env  >>}
+

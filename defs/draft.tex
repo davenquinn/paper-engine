@@ -20,6 +20,10 @@
 \postdate{\par\end{flushleft}\vspace{-10pt}}
 
 
+\renewcommand{\contentsname}{\Gotham{\bfseries{Contents}}}
+\renewcommand{\listfigurename}{}
+\renewcommand{\listtablename}{}
+
 \begin{document}
 
 \input{build/title-block.tex}
@@ -33,11 +37,11 @@
 
 \input{build/abstract.tex}
 
-%\vspace{20pt}
-%\subsubsection*{Key Points}
-%{\small
-%\input{build/key-points.tex}
-%}
+\vspace{20pt}
+\subsubsection*{Key Points}
+{\small
+\input{build/key-points.tex}
+}
 
 \thispagestyle{empty}
 \clearpage
@@ -45,6 +49,8 @@
 \pagenumbering{arabic}
 
 \tableofcontents
+\listoftables
+\listoffigures
 
 \pagebreak
 
@@ -56,17 +62,7 @@
 
 \bibliographystyle{paper-components/agufull08.bst}
 
-{\small
-\bibliography{references}
-}
-
-\pagebreak
-
-\setcounter{secnumdepth}{-1}
-
-\section{Figures and Tables}
-
-\input{build/figure-list.tex}
+{\small\bibliography{text/references}}
 
 \end{document}
 
