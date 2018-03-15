@@ -50,7 +50,19 @@ function text-pipeline-docx {
       $@
 }
 
+function scale-images {
+  # Usage: scale-images [input file] [output file] [screen*|ebook|printer|prepress]
+  # gs -sDEVICE=pdfwrite -dMaxSubsetPct=100 \
+  #    -dPDFSETTINGS=/prepress -dAutoFilterColorImages=false \
+  #    -dColorImageFilter=/FlateEncode -sOutputFile=$2 \
+  #    -dNOPAUSE -dBATCH $1
+ gs -sDEVICE=pdfwrite \
+   -dNOPAUSE -dQUIET -dBATCH -dPDFSETTINGS=/${3:-"screen"} \
+   -dCompatibilityLevel=1.4 -sOutputFile="$2" "$1" 
+}
+
 function run-latex {
   echo "Running LaTeX"
-  latexmk -output-directory=$2 $1
+  latexmk -f -interaction=nonstopmode -xelatex \
+    --jobname=${2:t:r} -output-directory="${2:h}" $1
 }

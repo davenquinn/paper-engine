@@ -1,0 +1,22 @@
+<#- set mpwidth = image_width or width -#>
+
+<#- macro include(c) -#>
+  \begin{minipage}[t]{<< mpwidth >>}
+  \includegraphics[min width=\textwidth,height=0.75\textwidth,keepaspectratio]{<< c >>}
+  \end{minipage}\hspace{5pt}
+<#- endmacro -#>
+
+\begin{figure}
+  <#- for c in files  #>
+    << include(c) ->>
+  <# endfor  -#>\hfill
+  \hspace{5pt}
+  \begin{minipage}[b]{<< width >>}
+    <# if caption -#>
+    \captionof{figure}[\textit{<<title>>}]{<< caption >>}
+    <#- else -#>
+    \captionlistentry[figure]{\textit{<< title >>}}
+    <#- endif #>\label{fig:<< id >>}
+  \end{minipage}
+\end{figure}
+
