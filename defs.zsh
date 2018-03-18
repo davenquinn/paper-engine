@@ -32,7 +32,22 @@ function text-pipeline-html {
       --bibliography=text/references.bib \
       --filter pandoc-comments \
       --filter pandoc-crossref \
-      --filter pandoc-citeproc
+      --filter pandoc-citeproc \
+      $@
+}
+
+function text-pipeline-docx {
+   prepare-crossref \
+   | pandoc \
+      --from markdown \
+      --to docx \
+      --number-sections \
+      --csl='paper-components/agu.csl' \
+      --bibliography=text/references.bib \
+      --filter pandoc-comments \
+      --filter pandoc-crossref \
+      --filter pandoc-citeproc \
+      $@
 }
 
 function run-latex {

@@ -1,0 +1,12 @@
+\begin{<< env >>}
+  \begin{minipage}[t]{<< width >>}
+    \includegraphics[<< size >>]{<< file >>}
+  \end{minipage}\hfill
+  \begin{minipage}[b]{<< width >>}
+    <# if caption -#>
+    \captionof{figure}[\textit{<<title>>}]{<< caption >>}
+    <#- else -#>
+    \captionlistentry[figure]{\textit{<< title >>}}
+    <#- endif #>\label{fig:<< id >>}
+  \end{minipage}
+\end{<< env >>}
