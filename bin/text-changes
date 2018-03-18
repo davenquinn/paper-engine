@@ -1,16 +1,37 @@
 #!/usr/bin/env zsh
 
+repo=$(git rev-parse --show-toplevel)
+base=$(realpath --relative-to=$repo .)
+
+function rev-text {
+  paths=($base/abstract.md \
+    $(git ls-tree -r --full-name --name-only $1 chapters) \
+    $base/figure-captions.md)
+
+  for fn in $paths; do
+    git show $1:$fn
+  done
+}
+
+count=0
+
+# Handle arguments
 POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
 key="$1"
 
+
 case $key in
     -h|--help)
-    echo "Usage: text-changes <rev1> <rev2>"
+    echo "Usage: text-changes [--count/-c] <rev1> <rev2>"
     echo "If rev1 is not specified, it defaults to master"
     echo "If rev2 is not specified, it defaults to HEAD"
     exit 0
+    ;;
+    -c|--count)
+    count=1
+    shift
     ;;
     *)    # unknown option
     POSITIONAL+=("$1") # save it in an array for later
@@ -24,8 +45,7 @@ r1=${1:-master}
 r2=${2:-HEAD}
 
 base=$(git rev-parse --show-toplevel)
-
-cd "$base"
+dir=$(realpath --relative-to $base .)
 
 revs=( $r1 $r2 )
 for rev in $revs; do
@@ -40,23 +60,23 @@ function rev-text {
   # If we don't have a revision, use current text
   [ -z "$1" ] && cat $paths && exit 0
 
-  paths=(abstract.md \
+  paths=($dir/abstract.md \
     $(git ls-tree -r --full-name --name-only $1 chapters) \
-    figure-captions.md)
+    $dir/figure-captions.md)
 
   for fn in $paths; do
     git show $1:$fn
   done
 }
 
-if [[ "$1" == "--count" ]]; then
-  echo "             Lines   Words   Chars"
-  echo "Master:  $(wc <(rev-text master))"
-  echo "Current: $(wc <(rev-text HEAD))"
+if [[ $count ]]; then
+  echo "             Lines  Words Chars"
+  echo "Master:   $(wc <(rev-text $r1))"
+  echo "Current:  $(wc <(rev-text $r2))"
   exit 0
 fi
 
 git text-diff --no-index --color-moved=zebra \
-  =(rev-text master) \
-  =(rev-text HEAD)
+  =(rev-text $r1) \
+  =(rev-text $r2)
 
