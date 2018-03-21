@@ -2,8 +2,9 @@
   \begin{minipage}[t]{<< width >>}
     \includegraphics[<< size >>]{<< file >>}
   \end{minipage}\hfill
-  \hspace{5pt}
-  \begin{minipage}[b]{<< width >>}
+  \setlength{\dimen0}{<<width>>}
+  \addtolength{\dimen0}{-2em}
+  \noindent\hspace{1em}\begin{minipage}[b]{\dimen0}
     <# if caption -#>
     \captionof{figure}[\textit{<<title>>}]{<< caption >>}
     <#- else -#>
