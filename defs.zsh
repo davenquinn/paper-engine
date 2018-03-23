@@ -21,6 +21,14 @@ function text-pipeline {
     --filter pandoc-crossref
 }
 
+function text-pipeline-agu {
+ text-pipeline \
+ | sed -r "s/º/°/g" \
+ | sed -r "s/µ/\\mu/g"
+
+}
+
+
 function text-pipeline-html {
    prepare-crossref \
    | pandoc \
