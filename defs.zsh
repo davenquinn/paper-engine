@@ -1,3 +1,11 @@
+function aggregate-text {
+  echo ""
+  for fn in $@; do
+    cat $fn
+    echo "\n\n"
+  done
+}
+
 function prepare-crossref {
   # Prepares Pandoc markdown for crossref filter by opportunistically
   # wrapping references in escaped brackets to mimic citation style
@@ -21,11 +29,16 @@ function text-pipeline {
     --filter pandoc-crossref
 }
 
-function text-pipeline-agu {
- text-pipeline \
- | sed -r "s/º/°/g" \
- | sed -r "s/µ/\\mu/g"
+function mark-inline-figures {
+  sed -r 's/<!--\[\[\[(.+)\]\]\]-->/\\inlinefigure\{\1\}/g'
+}
 
+function text-pipeline-agu {
+ mark-inline-figures \
+ | text-pipeline \
+ | sed "s/{µm}/{\\\micro\\\meter}/g" \
+ | sed "s/[º°]/\\\textdegree{}/g" \
+ | sed "s/‌//g" \
 }
 
 
