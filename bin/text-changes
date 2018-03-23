@@ -69,7 +69,7 @@ function rev-text {
   done
 }
 
-if [[ $count ]]; then
+if ( $count ); then
   echo "             Lines  Words Chars"
   echo "Master:   $(wc <(rev-text $r1))"
   echo "Current:  $(wc <(rev-text $r2))"
