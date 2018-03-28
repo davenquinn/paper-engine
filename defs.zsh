@@ -20,6 +20,7 @@ function prepare-crossref {
 function text-pipeline {
  prepare-crossref \
  | wrap-si-units \
+ | sed "s/º/°/g" \
  | pandoc \
     --from markdown \
     --to latex \
