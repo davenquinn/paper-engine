@@ -2,15 +2,36 @@
 #
 # Usage: `create-paper <directory> <name>`
 #
+# Needs environment variables `FIGURE_SEARCH_DIRECTORIES` defined
+# to collect figures and `BIBTEX_LIBRARY` to collect references.
+#
+# This currently installs python modules on every run, which
+# increases predictabiliy at the expense of overwriting global
+# state (this is *very* non-ideal). We should figure out if
+# PYTHONPATH works here.
+#
+# Expects a specific structure of paper directory:
+#
+# text/
+#   includes.yaml     Defines figures and tables
+#   abstract.md
+#   figure-captions.md
+#   key-points.md
+#   title-block.tex
+#   references.bib    *This will be rewritten if BIBTEX_LIBRARY is defined*
+#   chapters/         Contains body text, which will be read in order
+# paper-components/   (the path to the repository containing this script...can probably be improved)
+# build/              (this will be created)
+# collected-figures/  (this will be created)
+# output/             (also will be created)
+#
 
-cd "$PROJECT_REPOSITORY/Papers/Syrtis Major"
+cd "$1"
+name="$2"
 
-# Defines text-pipeline and prepare-crossref
+echo "Creating paper '$name' in directory $1"
 
 build='build'
-
-name="Syrtis-Major"
-
 defs="paper-components/defs"
 body="$build/body.tex"
 bibfile="text/references.bib"
@@ -31,22 +52,11 @@ mkdir -p $build $collect_dir output
 
 rm -f $body $captions $abstract
 
-# Collect figures
-search_dirs=( \
-  $PROJECT_REPOSITORY/graphics/output \
-  $PROJECT_REPOSITORY/analysis \
-  $PROJECT_REPOSITORY/graphics \
-  ./text \
-  ./figures)
-
-echo ""
-
-
 # Collect figures into centralized directory
 figurator collect \
   $figureDefs \
   $collect_dir \
-  ${search_dirs}
+  ${FIGURE_SEARCH_DIRECTORIES}
 
 ## Figure captions
 cat text/figure-captions.md \
@@ -78,6 +88,9 @@ cp $defs/draft.tex $texfile
 
 # Copy preamble
 cat "$defs/preamble"/*.tex > "$build/preamble.tex"
+# This needs to be abstracted because it
+# is only for the `Orientation Statistics` paper.
+cat text/math-defs.tex >> $preamble
 
 cat text/key-points.md \
 | text-pipeline \
@@ -88,10 +101,9 @@ run-latex $texfile $build_dest #2>/dev/null
 
 echo "Filtering bibliography"
 
-LIBRARY="/Users/Daven/Resources/Papers/library.bib"
 # Filter bibliography
 bib-filter --clean \
-  --aux $auxfile $LIBRARY $bibfile
+  --aux $auxfile $BIBTEX_LIBRARY $bibfile
 # rebuild citations
 bibtex $auxfile
 
