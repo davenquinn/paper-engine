@@ -1,0 +1,107 @@
+#!/usr/bin/env zsh
+#
+# Usage: `create-paper <directory> <name>`
+#
+
+cd "$PROJECT_REPOSITORY/Papers/Syrtis Major"
+
+# Defines text-pipeline and prepare-crossref
+
+build='build'
+
+name="Syrtis-Major"
+
+defs="paper-components/defs"
+body="$build/body.tex"
+bibfile="text/references.bib"
+texfile="$build/draft.tex"
+figureDefs="text/includes.yaml"
+captions="$build/figure-captions.tex"
+abstract="$build/abstract.tex"
+build_dest="$build/$name.pdf"
+auxfile="${build_dest:r}.aux"
+outfile="output/$name.pdf"
+collect_dir="collected-figures"
+
+source paper-components/defs.zsh
+
+pip install -e paper-components/modules/*
+
+mkdir -p $build $collect_dir output
+
+rm -f $body $captions $abstract
+
+# Collect figures
+search_dirs=( \
+  $PROJECT_REPOSITORY/graphics/output \
+  $PROJECT_REPOSITORY/analysis \
+  $PROJECT_REPOSITORY/graphics \
+  ./text \
+  ./figures)
+
+echo ""
+
+
+# Collect figures into centralized directory
+figurator collect \
+  $figureDefs \
+  $collect_dir \
+  ${search_dirs}
+
+## Figure captions
+cat text/figure-captions.md \
+| text-pipeline \
+> $captions
+
+# Build abstract
+cat text/abstract.md \
+| text-pipeline \
+> $abstract
+
+# Process body text
+aggregate-text text/chapters/*.md  \
+| sed -r 's/^\\section\{(Introduction)\}/\\invisiblesection\{\1\}/g' \
+| mark-inline-figures \
+| text-pipeline \
+| figurator inline \
+  text/includes.yaml \
+  --template-dir paper-components/includes \
+  --captions $captions \
+  --collect-dir $collect_dir \
+> $body
+
+## Title block
+cp text/title-block.tex build/title-block.tex
+
+
+cp $defs/draft.tex $texfile
+
+# Copy preamble
+cat "$defs/preamble"/*.tex > "$build/preamble.tex"
+
+cat text/key-points.md \
+| text-pipeline \
+> build/key-points.tex
+
+echo "Running latex"
+run-latex $texfile $build_dest #2>/dev/null
+
+echo "Filtering bibliography"
+
+LIBRARY="/Users/Daven/Resources/Papers/library.bib"
+# Filter bibliography
+bib-filter --clean \
+  --aux $auxfile $LIBRARY $bibfile
+# rebuild citations
+bibtex $auxfile
+
+echo "Running latex"
+run-latex $texfile $build_dest
+cp $build_dest $outfile
+
+tag --set paper-draft $outfile
+
+scale-images $outfile "${outfile:r}-sm.pdf" "printer" > /dev/null
+
+
+
