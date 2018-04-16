@@ -42,6 +42,7 @@ auxfile="${build_dest:r}.aux"
 outfile="output/$name.pdf"
 collect_dir="collected-figures"
 preamble="$build/preamble.tex"
+appendices="$build/appendices.tex"
 
 source paper-components/defs.zsh
 
@@ -98,6 +99,29 @@ cat text/math-defs.tex >> "$preamble"
 cat text/key-points.md \
 | text-pipeline \
 > build/key-points.tex
+
+a=(text/appendices/*.md)
+if [[ ${#a} ]]; then
+  echo "Processing appendices"
+  aggregate-text ${a}  \
+  | sed -r 's/^\\section\{(Introduction)\}/\\invisiblesection\{\1\}/g' \
+  | mark-inline-figures \
+  | text-pipeline \
+  | figurator inline \
+    text/includes.yaml \
+    --template-dir paper-components/includes \
+    --captions $captions \
+    --collect-dir $collect_dir \
+  > $appendices
+
+  # Insert the appendix at the end of the standard template
+  split=2
+  head -n -$split $defs/draft.tex > $texfile
+  cat $defs/appendix-shim.tex >> $texfile
+  tail -n $split $defs/draft.tex >> $texfile
+
+fi
+
 
 echo "Running latex"
 run-latex $texfile $build_dest #2>/dev/null
