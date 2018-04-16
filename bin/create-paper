@@ -1,6 +1,9 @@
 #!/usr/bin/env zsh
 #
-# Usage: `create-paper <directory> <name>`
+# Usage: `source create-paper`
+#
+# Must be run in a paper working directory.
+# A variable `name` is required to be defined.
 #
 # Needs environment variables `FIGURE_SEARCH_DIRECTORIES` defined
 # to collect figures and `BIBTEX_LIBRARY` to collect references.
@@ -26,11 +29,6 @@
 # output/             (also will be created)
 #
 
-cd "$1"
-name="$2"
-
-echo "Creating paper '$name' in directory $1"
-
 build='build'
 defs="paper-components/defs"
 body="$build/body.tex"
@@ -43,10 +41,15 @@ build_dest="$build/$name.pdf"
 auxfile="${build_dest:r}.aux"
 outfile="output/$name.pdf"
 collect_dir="collected-figures"
+preamble="$build/preamble.tex"
 
 source paper-components/defs.zsh
 
-pip install -e paper-components/modules/*
+# Make sure we have the latest python modules
+(cd paper-components; git submodule update --init)
+pip install -e paper-components/modules/* > /dev/null
+
+echo "Creating paper '$name' in directory $(pwd)"
 
 mkdir -p $build $collect_dir output
 
@@ -87,10 +90,10 @@ cp text/title-block.tex build/title-block.tex
 cp $defs/draft.tex $texfile
 
 # Copy preamble
-cat "$defs/preamble"/*.tex > "$build/preamble.tex"
+cat "$defs/preamble"/*.tex > "$preamble"
 # This needs to be abstracted because it
 # is only for the `Orientation Statistics` paper.
-cat text/math-defs.tex >> $preamble
+cat text/math-defs.tex >> "$preamble"
 
 cat text/key-points.md \
 | text-pipeline \
@@ -113,7 +116,5 @@ cp $build_dest $outfile
 
 tag --set paper-draft $outfile
 
-scale-images $outfile "${outfile:r}-sm.pdf" "printer" > /dev/null
-
-
+scale-images $outfile "${outfile:r}-sm.pdf" "printer" 2> /dev/null
 
