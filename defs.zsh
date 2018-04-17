@@ -1,3 +1,11 @@
+function aggregate-text {
+  echo ""
+  for fn in $@; do
+    cat $fn
+    echo "\n\n"
+  done
+}
+
 function prepare-crossref {
   # Prepares Pandoc markdown for crossref filter by opportunistically
   # wrapping references in escaped brackets to mimic citation style
@@ -12,6 +20,7 @@ function prepare-crossref {
 function text-pipeline {
  prepare-crossref \
  | wrap-si-units \
+ | sed "s/º/°/g" \
  | pandoc \
     --from markdown \
     --to latex \
@@ -20,6 +29,19 @@ function text-pipeline {
     --filter pandoc-comments \
     --filter pandoc-crossref
 }
+
+function mark-inline-figures {
+  sed -r 's/<!--\[\[\[(.+)\]\]\]-->/\\inlinefigure\{\1\}/g'
+}
+
+function text-pipeline-agu {
+ mark-inline-figures \
+ | text-pipeline \
+ | sed "s/{µm}/{\\\micro\\\meter}/g" \
+ | sed "s/[º°]/\\\textdegree{}/g" \
+ | sed "s/‌//g" \
+}
+
 
 function text-pipeline-html {
    prepare-crossref \
@@ -52,13 +74,17 @@ function text-pipeline-docx {
 
 function scale-images {
   # Usage: scale-images [input file] [output file] [screen*|ebook|printer|prepress]
-  # gs -sDEVICE=pdfwrite -dMaxSubsetPct=100 \
-  #    -dPDFSETTINGS=/prepress -dAutoFilterColorImages=false \
-  #    -dColorImageFilter=/FlateEncode -sOutputFile=$2 \
-  #    -dNOPAUSE -dBATCH $1
- gs -sDEVICE=pdfwrite \
+  # Makes sure to embed all fonts so we don't get weird character subsetting effects
+  gs -sDEVICE=pdfwrite \
    -dNOPAUSE -dQUIET -dBATCH -dPDFSETTINGS=/${3:-"screen"} \
-   -dCompatibilityLevel=1.4 -sOutputFile="$2" "$1" 
+   -dSAFER \
+   -dCompressFonts=false \
+   -dSubsetFonts=false \
+   -dEmbedAllFonts=true \
+   -dRENDERTTNOTDEF=true \
+   -dCompatibilityLevel=1.4 -sOutputFile="$2" "$1"  #\
+   #-c ".setpdfwrite <</NeverEmbed [ ]>> setdistillerparams" \
+   #"$1"
 }
 
 function run-latex {

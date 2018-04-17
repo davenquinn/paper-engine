@@ -1,0 +1,82 @@
+#!/usr/bin/env zsh
+
+repo=$(git rev-parse --show-toplevel)
+base=$(realpath --relative-to=$repo .)
+
+function rev-text {
+  paths=($base/abstract.md \
+    $(git ls-tree -r --full-name --name-only $1 chapters) \
+    $base/figure-captions.md)
+
+  for fn in $paths; do
+    git show $1:$fn
+  done
+}
+
+count=false
+
+# Handle arguments
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+
+case $key in
+    -h|--help)
+    echo "Usage: text-changes [--count/-c] <rev1> <rev2>"
+    echo "If rev1 is not specified, it defaults to master"
+    echo "If rev2 is not specified, it defaults to HEAD"
+    exit 0
+    ;;
+    -c|--count)
+    count=true
+    shift
+    ;;
+    *)    # unknown option
+    POSITIONAL+=("$1") # save it in an array for later
+    shift # past argument
+    ;;
+esac
+done
+set -- "${POSITIONAL[@]}" # restore positional parameters
+
+r1=${1:-master}
+r2=${2:-HEAD}
+
+base=$(git rev-parse --show-toplevel)
+dir=$(realpath --relative-to $base .)
+
+revs=( $r1 $r2 )
+for rev in $revs; do
+  if ! git cat-file -e $rev^{commit} > /dev/null 2>&1; then
+    echo "$rev is an invaid revision"
+    exit 1
+  fi
+done
+
+
+function rev-text {
+  # If we don't have a revision, use current text
+  [ -z "$1" ] && cat $paths && exit 0
+
+  paths=($dir/abstract.md \
+    $(git ls-tree -r --full-name --name-only $1 chapters) \
+    $dir/figure-captions.md)
+
+  for fn in $paths; do
+    git show $1:$fn
+  done
+}
+
+if ( $count ); then
+  echo "             Lines  Words Chars"
+  echo "Master:   $(wc <(rev-text $r1))"
+  echo "Current:  $(wc <(rev-text $r2))"
+  exit 0
+fi
+
+git text-diff --no-index --color-moved=zebra \
+  =(rev-text $r1) \
+  =(rev-text $r2)
+

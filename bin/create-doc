@@ -1,0 +1,27 @@
+#!/usr/bin/env zsh
+
+output=$1
+bibfile="text/references.bib"
+
+source paper-components/defs.zsh
+
+function text-pipeline {
+ prepare-crossref \
+ | pandoc -t docx \
+       --standalone \
+       --metadata=draft:true \
+       -M numberSections=true \
+       --filter pandoc-comments \
+       --filter pandoc-crossref \
+       --bibliography=$bibfile \
+       --csl="paper-components/agu.csl" \
+       --number-sections \
+       -o $1
+}
+
+# Process body text
+cat text/chapters/*.md \
+  text/figure-captions.md \
+  text/references-shim.md \
+| text-pipeline $output
+
