@@ -1,11 +1,7 @@
-\afterpage{%
+{%
     %\clearpage% Flush earlier floats (otherwise order might not be correct)
     \thispagestyle{empty}% empty page style (?)
     \begin{landscape}% Landscape page
-        \centering % Center table
-      <# if two_column or textwidth #>
-      \begin{adjustbox}{width=\textwidth}
-      <# endif #>
       \begin{threeparttable}
         \captionof{table}{<<caption >>}
         \label{tbl:<< id >>}
@@ -18,9 +14,6 @@
         \end{tablenotes}
         <#- endif #>
       \end{threeparttable}
-      <# if two_column or textwidth #>
-      \end{adjustbox}
-      <# endif #>
     \end{landscape}
     \clearpage% Flush page
 }
