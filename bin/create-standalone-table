@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 dir=$(readlink -f $0)
-dir=${dir:h}
+dir=${dir:h:h}
 
 TDIR=$(mktemp -d)
 texfile="${TDIR}/file.tex"
@@ -10,16 +10,23 @@ echo "Made temp dir $TDIR"
 (
   echo '\documentclass[letterpaper,12pt]{article}'
   cat paper-components/defs/preamble/*.tex
+  echo '\\usepackage{xcite}'
+  echo '\\externalcitedocument{build/draft}'
   echo "\\\begin{document}"
-  echo "\\\begin{adjustbox}{width=\\\textwidth,center}"
-  cat $1
-  echo "\\\end{adjustbox}"
+  echo "\\\inlinefigure{$1}" | figurator inline \
+      text/includes.yaml \
+      --template-dir paper-components/includes \
+      --captions text/figure-captions.md \
+      --collect-dir collected-figures
   echo "\\\end{document}"
 ) > $texfile
 
+#cat $texfile
+#exit 0
+
+cat $texfile
 # Make figure
 (
-cd $dir
 xelatex -interaction=nonstopmode -output-directory $TDIR $texfile
 )
 
