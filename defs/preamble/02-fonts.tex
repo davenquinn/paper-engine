@@ -54,12 +54,15 @@
    ItalicFont={Chaparral Pro Italic}
   ]{Chaparral Pro}
 
+%\setmathfont{Latin Modern Math}
 \defaultfontfeatures{Ligatures=TeX}
 \setsansfont{Gotham Book}
 \setmainfont{Chaparral Pro}
-\usepackage{unicode-math}
 
+\usepackage[math-style=TeX, bold-style=upright]{unicode-math}
+\setmathfont{Latin Modern Math}
+%\setmathfont{lmodern}
 % Font substitutions for math
-%\usepackage[Latin,Greek]{ucharclasses}
-%\newfontfamily\substitutefont{CMU Serif}
-%\setTransitionsForGreek{\substitutefont}{}
+\usepackage[Latin,Greek]{ucharclasses}
+\newfontfamily\substitutefont{CMU Serif}
+\setTransitionsForGreek{\substitutefont}{}

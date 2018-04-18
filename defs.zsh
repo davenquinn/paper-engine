@@ -92,3 +92,8 @@ function run-latex {
   latexmk -f -interaction=nonstopmode -xelatex \
     --jobname=${2:t:r} -output-directory="${2:h}" $1
 }
+
+#function run-latex {
+  #xelatex -interaction=nonstopmode \
+    #--jobname=${2:t:r} -output-directory="${2:h}" $1
+#}
