@@ -87,6 +87,11 @@ function scale-images {
    #"$1"
 }
 
+function run-latex-draft {
+  xelatex -interaction=nonstopmode -no-pdf \
+    --jobname=${2:t:r} -output-directory="${2:h}" $1
+}
+
 function run-latex {
   echo "Running LaTeX"
   latexmk -f -interaction=nonstopmode -xelatex \
