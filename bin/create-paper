@@ -94,13 +94,15 @@ cp $defs/draft.tex $texfile
 cat "$defs/preamble"/*.tex > "$preamble"
 # This needs to be abstracted because it
 # is only for the `Orientation Statistics` paper.
-cat text/math-defs.tex >> "$preamble"
+if [[ text/math-defs.tex ]]; then
+  cat text/math-defs.tex >> "$preamble"
+fi
 
 cat text/key-points.md \
 | text-pipeline \
 > build/key-points.tex
 
-a=(text/appendices/*.md)
+a=(text/appendices/*.md(N))
 if [[ ${#a} ]]; then
   echo "Processing appendices"
   aggregate-text ${a}  \
