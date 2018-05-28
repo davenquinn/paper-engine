@@ -1,0 +1,19 @@
+<# macro figid() -#>
+Figure \ref{fig:<< id >>}
+<#- endmacro #>
+<# macro figref() -#>
+\color{light-gray}\HaskligLight{fig:<< id|escape >>}
+<#- endmacro #>
+
+\begin{samepage}
+  %\subsection[<< figid() >><#- if title #>: \textit{<< title >>}<#- endif #>~~\small{<< figref() >>}]%
+  %{<< figid() >><#- if title #>: \GothamLight\small{<< title >>} \hfill << figref() >><#- endif #>}
+\noindent{\includegraphics[<< size >>]{<< file >>}}
+<# if caption -#>
+\captionof{figure}[<<title>>]{<< caption >>}
+<#- else -#>
+\captionlistentry[figure]{<< title >>}
+<#- endif #>\label{fig:<< id >>}
+\end{samepage}
+\pagebreak
+

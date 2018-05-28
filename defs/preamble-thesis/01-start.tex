@@ -1,4 +1,4 @@
-\usepackage[paper=letterpaper, margin=1in, nohead, pdftex]{geometry}
+\usepackage[paper=letterpaper, margin=1.25in, nohead, pdftex]{geometry}
 \usepackage{fontspec}
 \usepackage{textcomp}
 \usepackage{ifthen}
@@ -48,6 +48,7 @@
 \usepackage{adjustbox}
 \usepackage{xcolor}
 \usepackage{tcolorbox}
+\definecolor{light-gray}{gray}{0.6}
 
 \newcommand\invisiblesection[1]{%
   \refstepcounter{section}%
@@ -55,15 +56,10 @@
   \sectionmark{#1}}
 
 % List figure IDs
-\definecolor{light-gray}{gray}{0.5}
-\definecolor{lighter-gray}{gray}{0.6}
+\definecolor{light-gray}{gray}{0.6}
+\definecolor{lighter-gray}{gray}{0.8}
 \newtcolorbox{figinfo}{colback=red!3!white,colframe=red!50!white}
 
 \newtcbox{\code}{nobeforeafter,colframe=light-gray,colback=light-gray!10!white,boxrule=0.5pt,arc=4pt,
 boxsep=0pt,left=3pt,right=3pt,top=3pt,bottom=3pt,tcbox raise base}
-
-% Define plate environment
-
-\newfloat{plate}{htpb}{plt} % second argument should be {htbp} in your actual document
-\floatname{plate}{Plate}
 
