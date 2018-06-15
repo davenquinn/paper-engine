@@ -1,7 +1,8 @@
 {%
     %\clearpage% Flush earlier floats (otherwise order might not be correct)
-    \thispagestyle{empty}% empty page style (?)
+    %\thispagestyle{empty}% empty page style (?)
     \begin{landscape}% Landscape page
+      \vspace{-1in}
       \begin{threeparttable}
         \captionof{table}{<<caption >>}
         \label{tbl:<< id >>}
@@ -15,5 +16,5 @@
         <#- endif #>
       \end{threeparttable}
     \end{landscape}
-    \clearpage% Flush page
+    %\clearpage% Flush page
 }

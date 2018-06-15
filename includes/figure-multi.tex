@@ -13,9 +13,9 @@
   \hspace{5pt}
   \begin{minipage}[b]{<< width >>}
     <# if caption -#>
-    \captionof{figure}[\textit{<<title>>}]{<< caption >>}
+    \captionof{figure}[<<title>>]{<< caption >>}
     <#- else -#>
-    \captionlistentry[figure]{\textit{<< title >>}}
+    \captionlistentry[figure]{<< title >>}
     <#- endif #>\label{fig:<< id >>}
   \end{minipage}
 \end{figure}

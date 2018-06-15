@@ -1,14 +1,15 @@
 \begin{<< env >>}
   \begin{minipage}[t]{<< width >>}
     \includegraphics[<< size >>]{<< file >>}
-  \end{minipage}\hfill
-  \setlength{\dimen0}{<<width>>}
-  \addtolength{\dimen0}{-1em}
-  \noindent\hspace{0.5em}\begin{minipage}[b]{\dimen0}
+  \end{minipage}
+  \setlength{\dimen0}{\textwidth}
+  \addtolength{\dimen0}{-0.5in}
+
+  \noindent\hspace{0.25in}\begin{minipage}[htb]{\dimen0}
     <# if caption -#>
-    \captionof{figure}[\textit{<<title>>}]{<< caption >>}
+    \captionof{figure}[<<title>>]{<< caption >>}
     <#- else -#>
-    \captionlistentry[figure]{\textit{<< title >>}}
+    \captionlistentry[figure]{<< title >>}
     <#- endif #>\label{fig:<< id >>}
   \end{minipage}
 \end{<< env >>}
