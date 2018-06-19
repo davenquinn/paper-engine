@@ -17,6 +17,10 @@ function prepare-crossref {
   | sed -r "s/(@(fig|tbl):$inmatch)\|/\1‌/g"
 }
 
+function implicit-introduction {
+   sed -r 's/^\\section\{(Introduction)\}/\\invisiblesection\{\1\}/g'
+}
+
 function text-pipeline {
  prepare-crossref \
  | wrap-si-units \
