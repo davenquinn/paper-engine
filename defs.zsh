@@ -97,7 +97,6 @@ function run-latex-draft {
 }
 
 function run-latex {
-  echo "Running LaTeX"
   latexmk -f -interaction=nonstopmode -xelatex \
     --jobname=${2:t:r} -output-directory="${2:h}" $1
 }
