@@ -1,11 +1,17 @@
 \begin{<< env >>}
+  \setlength{\dimen0}{\textwidth-<<width>>}
+  \setlength{\dimen1}{1em}
+  \addtolength{\dimen0}{-\dimen1}
+
+  \ifthenelse{\lengthtest{\dimen0 < 1.5in}}
+    {
+      \setlength{\dimen0}{\textwidth}
+      \setlength{\dimen1}{0em}
+    } {}
+
   \begin{minipage}[t]{<< width >>}
     \includegraphics[<< size >>]{<< file >>}
-  \end{minipage}
-  \setlength{\dimen0}{\textwidth}
-  \addtolength{\dimen0}{-0.5in}
-
-  \noindent\hspace{0.25in}\begin{minipage}[htb]{\dimen0}
+  \end{minipage}\hspace{\dimen1}\begin{minipage}[b]{\dimen0}
     <# if caption -#>
     \captionof{figure}[<<title>>]{<< caption >>}
     <#- else -#>
