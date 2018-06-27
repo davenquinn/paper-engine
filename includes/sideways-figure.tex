@@ -1,20 +1,18 @@
 {%
     %\clearpage% Flush earlier floats (otherwise order might not be correct)
-    \thispagestyle{empty}% empty page style (?)
-    \begin{landscape}% Landscape page
-      \begin{figure}
-        \hspace{-10pt}\begin{minipage}[t]{7.8in}
-          \includegraphics[width=7.8in]{<< file >>}
-        \end{minipage}\hfill
-        \hspace{5pt}
-        \begin{minipage}[b]{1.2in}
-          <# if caption -#>
-          \captionof{figure}[\textit{<<title>>}]{<< caption >>}
-          <#- else -#>
-          \captionlistentry[figure]{\textit{<< title >>}}
-          <#- endif #>\label{fig:<< id >>}
-        \end{minipage}
-      \end{figure}
-    \end{landscape}
-    \clearpage% Flush page
+    \begin{sidewaysfigure}% Landscape page
+      \thispagestyle{empty}
+      \hspace{-10pt}\begin{minipage}[t]{7.5in}
+        \includegraphics[width=7.5in]{<< file >>}
+      \end{minipage}\hfill
+      \hspace{5pt}
+      \begin{minipage}[b]{1.5in}
+        <# if caption -#>
+        \captionof{figure}[<<title>>]{<< caption >>}
+        <#- else -#>
+        \captionlistentry[figure]{<< title >>}
+        <#- endif #>\label{fig:<< id >>}
+      \end{minipage}
+    \end{sidewaysfigure}
+    %\clearpage% Flush page
 }

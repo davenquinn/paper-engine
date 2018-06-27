@@ -1,7 +1,8 @@
-{%
+{
     %\clearpage% Flush earlier floats (otherwise order might not be correct)
     \thispagestyle{empty}% empty page style (?)
-    \begin{landscape}% Landscape page
+    %\newgeometry{margin=1in}
+    \begin{sidewaystable}
       \begin{threeparttable}
         \captionof{table}{<<caption >>}
         \label{tbl:<< id >>}
@@ -14,6 +15,7 @@
         \end{tablenotes}
         <#- endif #>
       \end{threeparttable}
-    \end{landscape}
-    \clearpage% Flush page
+    \end{sidewaystable}
+    %\restoregeometry
+    %\clearpage% Flush page
 }

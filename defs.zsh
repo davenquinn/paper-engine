@@ -17,6 +17,10 @@ function prepare-crossref {
   | sed -r "s/(@(fig|tbl):$inmatch)\|/\1‌/g"
 }
 
+function implicit-introduction {
+   sed -r 's/^\\section\{(Introduction)\}/\\invisiblesection\{\1\}/g'
+}
+
 function text-pipeline {
  prepare-crossref \
  | wrap-si-units \
@@ -87,8 +91,12 @@ function scale-images {
    #"$1"
 }
 
+function run-latex-draft {
+  xelatex -interaction=nonstopmode -no-pdf \
+    --jobname=${2:t:r} -output-directory="${2:h}" $1
+}
+
 function run-latex {
-  echo "Running LaTeX"
   latexmk -f -interaction=nonstopmode -xelatex \
     --jobname=${2:t:r} -output-directory="${2:h}" $1
 }
