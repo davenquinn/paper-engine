@@ -60,10 +60,13 @@
 \setmainfont{Chaparral Pro}
 
 \usepackage[math-style=TeX, bold-style=upright]{unicode-math}
-\setmathfont{Latin Modern Math}
+% Set "Latin Modern Math" for cases when LaTeX fonts aren't linked
+% to system Fonts directory
+%\setmathfont{lmodern}
 %\setmathfont{lmodern}
 % Font substitutions for math
 \usepackage[Latin,Greek]{ucharclasses}
-\newfontfamily\substitutefont{CMU Serif}
+% "CMU Serif"
+%\newfontfamily\substitutefont{cmr}
 \setTransitionsForGreek{\substitutefont}{}
 

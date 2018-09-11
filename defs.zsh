@@ -21,6 +21,21 @@ function implicit-introduction {
    sed -r 's/^\\section\{(Introduction)\}/\\invisiblesection\{\1\}/g'
 }
 
+function rev-text {
+  cd "$PAPER_DIR/text"
+  dir="."
+  # If we don't have a revision, use current text
+  paths=($dir/abstract.md \
+    $(git ls-tree -r --full-name --name-only $1 chapters) \
+    $dir/figure-captions.md)
+
+  [ -z "$1" ] && cat $paths && exit 0
+
+  for fn in $paths; do
+    git show $1:$fn
+  done
+}
+
 function text-pipeline {
  prepare-crossref \
  | wrap-si-units \

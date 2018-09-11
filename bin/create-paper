@@ -8,12 +8,10 @@
 # Needs environment variables `FIGURE_SEARCH_DIRECTORIES` defined
 # to collect figures and `BIBTEX_LIBRARY` to collect references.
 #
-# This currently installs python modules on every run, which
-# increases predictabiliy at the expense of overwriting global
-# state (this is *very* non-ideal). We should figure out if
-# PYTHONPATH works here.
+# Uses PYTHONPATH variable to ensure that up-to-date python
+# modules are used.
 #
-# Expects a specific structure of paper directory:
+# Expects the following structure of paper directory:
 #
 # text/
 #   includes.yaml     Defines figures and tables
@@ -47,8 +45,14 @@ appendices="$build/appendices.tex"
 source paper-components/defs.zsh
 
 # Make sure we have the latest python modules
-(cd paper-components; git submodule update --init)
+#(cd paper-components; git submodule update --init)
 pip install -e paper-components/modules/* > /dev/null
+
+# Check for required executables
+vv=(pandoc pandoc-crossref figurator bib-filter)
+for c in $vv; do
+  command -v $c >/dev/null 2>&1 || { echo >&2 "$c required but not installed"; exit 1 }
+done
 
 echo "Creating paper '$name' in directory $(pwd)"
 
@@ -94,7 +98,7 @@ cp $defs/draft.tex $texfile
 cat "$defs/preamble"/*.tex > "$preamble"
 # This needs to be abstracted because it
 # is only for the `Orientation Statistics` paper.
-if [[ text/math-defs.tex ]]; then
+if [[ -f text/math-defs.tex ]]; then
   cat text/math-defs.tex >> "$preamble"
 fi
 

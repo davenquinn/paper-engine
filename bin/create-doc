@@ -20,7 +20,9 @@ function text-pipeline {
 }
 
 # Process body text
-cat text/chapters/*.md \
+cat \
+  text/abstract.md \
+  text/chapters/*.md \
   text/figure-captions.md \
   text/references-shim.md \
 | text-pipeline $output
