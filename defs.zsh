@@ -21,21 +21,6 @@ function implicit-introduction {
    sed -r 's/^\\section\{(Introduction)\}/\\invisiblesection\{\1\}/g'
 }
 
-function rev-text {
-  cd "$PAPER_DIR/text"
-  dir="."
-  # If we don't have a revision, use current text
-  paths=($dir/abstract.md \
-    $(git ls-tree -r --full-name --name-only $1 chapters) \
-    $dir/figure-captions.md)
-
-  [ -z "$1" ] && cat $paths && exit 0
-
-  for fn in $paths; do
-    git show $1:$fn
-  done
-}
-
 function text-pipeline {
  prepare-crossref \
  | wrap-si-units \
@@ -77,14 +62,17 @@ function text-pipeline-html {
       $@
 }
 
+pc=$PAPER_DIR/paper-components
+
 function text-pipeline-docx {
    prepare-crossref \
    | pandoc \
       --from markdown \
-      --to docx \
-      --number-sections \
-      --csl='paper-components/agu.csl' \
-      --bibliography=text/references.bib \
+      --to docx+styles \
+      --reference-doc="$pc/templates/reference.docx" \
+      --bibliography="$PAPER_DIR/text/references.bib" \
+      --csl="$pc/agu.csl" \
+      --filter "$pc/bin/figure-ref-filter" \
       --filter pandoc-comments \
       --filter pandoc-crossref \
       --filter pandoc-citeproc \

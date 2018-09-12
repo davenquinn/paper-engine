@@ -1,0 +1,28 @@
+#!/usr/bin/env zsh
+
+pushd "$PAPER_DIR/text"
+dir="."
+# If we don't have a revision, use current text
+if [ -z "$1" ]; then
+  paths=($dir/abstract.md \
+    $(git ls-tree -r --full-name --name-only HEAD chapters) \
+    $dir/figure-captions.md)
+else
+  paths=($dir/abstract.md \
+    $(git ls-tree -r --full-name --name-only $1 chapters) \
+    $dir/figure-captions.md)
+fi
+
+echo '# Abstract'
+echo "\n"
+if [ -z "$1" ]; then
+  cat $paths
+else
+  for fn in $paths; do
+    git --no-pager show $1:$fn
+  done
+fi
+echo '# References.'
+echo "\n"
+popd
+
