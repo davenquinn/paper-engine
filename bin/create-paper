@@ -106,8 +106,9 @@ cat text/key-points.md \
 | text-pipeline \
 > build/key-points.tex
 
-a=(text/appendices/*.md(N))
-if [[ ${#a} ]]; then
+app_=text/appendices
+a=($app_/*.md(N))
+if [[ -d $app_ && ${#a} ]]; then
   echo "Processing appendices"
   aggregate-text ${a}  \
   | sed -r 's/^\\section\{(Introduction)\}/\\invisiblesection\{\1\}/g' \
