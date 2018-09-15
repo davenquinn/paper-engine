@@ -23,6 +23,7 @@ function implicit-introduction {
 
 function text-pipeline {
  prepare-crossref \
+ | wrap-si-units \
  | sed "s/º/°/g" \
  | pandoc \
     --from markdown \
