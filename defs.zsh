@@ -61,14 +61,17 @@ function text-pipeline-html {
       $@
 }
 
+pc=$PAPER_DIR/paper-components
+
 function text-pipeline-docx {
    prepare-crossref \
    | pandoc \
       --from markdown \
-      --to docx \
-      --number-sections \
-      --csl='paper-components/agu.csl' \
-      --bibliography=text/references.bib \
+      --to docx+styles \
+      --reference-doc="$pc/templates/reference.docx" \
+      --bibliography="$PAPER_DIR/text/references.bib" \
+      --csl="$pc/agu.csl" \
+      --filter "$pc/bin/figure-ref-filter" \
       --filter pandoc-comments \
       --filter pandoc-crossref \
       --filter pandoc-citeproc \

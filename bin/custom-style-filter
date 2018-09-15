@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+
+import panflute as pf
+from sys import stderr
+
+
+def action(elem, doc):
+    if hasattr(elem,'classes'):
+        if len(elem.classes) >= 1:
+            elem.attributes['custom-style'] = elem.classes[0]
+
+if __name__ == '__main__':
+    pf.run_filter(action)
