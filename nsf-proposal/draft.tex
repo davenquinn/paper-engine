@@ -1,10 +1,16 @@
 \documentclass[letterpaper,12pt]{article}
 \input{build/preamble.tex}
 
+
 \titleformat{\section}{\Times\large\bfseries}{\thesection}{1em}{}
 \titleformat{\subsection}{\Times\normalsize\bfseries}{\thesubsection}{3pt}{}
 \titleformat{\subsubsection}[runin]{\Times\small\bfseries}{\thesubsubsection}{3pt}{}[~~~~]
-%\renewcommand{\maketitlehooka}{\Gotham\Large\bfseries}
+
+\newenvironment{summary}{%
+\titleformat{\section}{\Times\large\bfseries}{\thesection}{1em}{}%
+\titleformat{\subsection}{\Times\normalsize\bfseries}{\thesubsection}{3pt}{}%
+\titleformat{\subsubsection}[runin]{\Times\small\bfseries}{\thesubsubsection}{3pt}{}[~~~~]%
+}{}
 
 \renewcommand{\Authfont}{\Gotham\large}
 \renewcommand{\Affilfont}{\Gotham\footnotesize}
@@ -18,12 +24,19 @@
 
 \predate{\vspace{-10pt}\begin{flushleft}\Gotham\normalsize}
 \postdate{\par\end{flushleft}\vspace{-10pt}}
+\setcounter{secnumdepth}{-1}
 
 \begin{document}
 
 \input{build/title-block.tex}
 
+{
+\titleformat{\section}[runin]{\bfseries}{\thesection}{3pt}{}{~~~~}
+\titleformat{\subsection}[runin]{\small\bfseries}{\thesubsubsection}{3pt}{}[~~~~]%
+
 \input{build/project-summary.tex}
+
+}
 
 \clearpage
 
