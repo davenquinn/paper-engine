@@ -1,0 +1,50 @@
+\documentclass[letterpaper,12pt]{article}
+\input{build/preamble.tex}
+
+\titleformat{\section}{\Times\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\Times\normalsize\bfseries}{\thesubsection}{3pt}{}
+\titleformat{\subsubsection}[runin]{\Times\small\bfseries}{\thesubsubsection}{3pt}{}[~~~~]
+%\renewcommand{\maketitlehooka}{\Gotham\Large\bfseries}
+
+\renewcommand{\Authfont}{\Gotham\large}
+\renewcommand{\Affilfont}{\Gotham\footnotesize}
+
+\setlength{\droptitle}{-40pt}
+\pretitle{\begin{flushleft}\Gotham\bfseries\Large}
+\posttitle{\par\end{flushleft}\vskip 0.5em}
+
+\preauthor{\begin{flushleft}\Gotham\normalsize}
+\postauthor{\par\end{flushleft}}
+
+\predate{\vspace{-10pt}\begin{flushleft}\Gotham\normalsize}
+\postdate{\par\end{flushleft}\vspace{-10pt}}
+
+\begin{document}
+
+\input{build/title-block.tex}
+
+\input{build/project-summary.tex}
+
+\clearpage
+
+\tableofcontents
+\listoftables
+\listoffigures
+
+\clearpage
+\pagenumbering{arabic}
+\renewcommand{\thepage} {D--\arabic{page}}
+
+\noindent{\Large \bf PROJECT DESCRIPTION}
+
+\input{build/body.tex}
+
+\pagebreak
+\pagenumbering{arabic}
+\renewcommand{\thepage} {E--\arabic{page}}
+
+\bibliographystyle{paper-components/agu-template/agufull08.bst}
+\bibliography{text/references}
+
+\end{document}
+
