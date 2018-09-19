@@ -8,7 +8,6 @@
 \usepackage{multicol}
 \usepackage{calc}
 \usepackage[backend=biber,style=authoryear,dashed=false, sorting=none, maxbibnames=99]{biblatex}
-
 \usepackage{lastpage}
 \newcommand\dummy[1]{#1}
 %\newcommand{\pageoflastpage}{Page {\thepage} of \pageref*{LastPage}}
@@ -28,8 +27,12 @@
 
 % Use fancy for non-title pages
 \usepackage{fancyhdr}
-\fancyhead{}
+
+\fancyhead[L]{$part$}
+\fancyhead[R]{$running_head$}
+
 \fancyfoot{}
+
 \cfoot{\pageoflastpage}
 \pagestyle{fancy}
 
