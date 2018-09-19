@@ -26,13 +26,28 @@
 \postdate{\par\end{flushleft}\vspace{-10pt}}
 \setcounter{secnumdepth}{-1}
 
+%\usepackage{fancyhdr}
+
+%\pagestyle{fancy}
+%\fancyhf{}
+%\fancyhead[L]{Project Description}
+%\fancyhead[R]{Quinn -- NSF EAR PF}
+%\cfoot{\thepage}
+
 \begin{document}
 
-\input{build/title-block.tex}
+\begin{center}
+\noindent{{\textbf{Project Summary}, for the proposal: \\
+  Detrital zircon as a volumetric tracer for eroded sediment
+  }}
+
+Daven P. Quinn
+\end{center}
+\vspace{-1em}
 
 {
-\titleformat{\section}[runin]{\bfseries}{\thesection}{3pt}{}{~~~~}
-\titleformat{\subsection}[runin]{\small\bfseries}{\thesubsubsection}{3pt}{}[~~~~]%
+\titleformat{\section}[runin]{\bfseries}{\thesection}{2pt}{}{~~~~}
+\titleformat{\subsection}[runin]{\small\bfseries}{\thesubsubsection}{2pt}{}[~~~~]%
 
 \input{build/project-summary.tex}
 
@@ -48,7 +63,11 @@
 \pagenumbering{arabic}
 \renewcommand{\thepage} {D--\arabic{page}}
 
-\noindent{\large \bf PROJECT DESCRIPTION}
+\begin{center}
+\noindent{{\textbf{Project Description}, for the proposal: \\
+  Detrital zircon as a volumetric tracer for eroded sediment
+  }}
+\end{center}
 
 \input{build/body.tex}
 
