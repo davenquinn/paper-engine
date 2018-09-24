@@ -13,15 +13,14 @@ else
     $dir/figure-captions.md)
 fi
 
-echo '# Key Points {-}'
+echo "# Key Points {-}\n\n"
 if [ -z "$1" ]; then
   cat key-points.md
 else
   git --no-pager show $1:key-points.md
 fi
 echo ""
-echo '# Abstract {-}'
-echo "\n"
+echo "# Abstract {-}\n\n"
 if [ -z "$1" ]; then
   cat $paths
 else
@@ -29,7 +28,6 @@ else
     git --no-pager show $1:$fn
   done
 fi
-echo '# References {-}'
-echo "\n"
+echo "# References {-}\n\n"
 popd
 
