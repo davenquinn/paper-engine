@@ -82,17 +82,18 @@ function text-pipeline-docx {
 function scale-images {
   # Usage: scale-images [input file] [output file] [screen*|ebook|printer|prepress]
   # Makes sure to embed all fonts so we don't get weird character subsetting effects
-  gs -sDEVICE=pdfwrite \
+  /usr/local/bin/gs -sDEVICE=pdfwrite \
    -dNOPAUSE -dQUIET -dBATCH -dPDFSETTINGS=/${3:-"screen"} \
    -dSAFER \
-   -dCompressFonts=false \
-   -dSubsetFonts=false \
+   -dCompressFonts=true \
+   -dSubsetFonts=true \
    -dEmbedAllFonts=true \
    -dRENDERTTNOTDEF=true \
-   -dCompatibilityLevel=1.4 -sOutputFile="$2" "$1"  #\
-   #-c ".setpdfwrite <</NeverEmbed [ ]>> setdistillerparams" \
-   #"$1"
-}
+    -dColorImageDownsampleType=/Bicubic -dColorImageResolution=150 \
+    -dGrayImageDownsampleType=/Bicubic -dGrayImageResolution=150 \
+    -dMonoImageDownsampleType=/Bicubic -dMonoImageResolution=150 \
+   -dCompatibilityLevel=1.4 -sOutputFile="$2" "$1"
+ }
 
 function run-latex-draft {
   xelatex -interaction=nonstopmode -no-pdf \

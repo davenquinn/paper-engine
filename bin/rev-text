@@ -21,13 +21,15 @@ else
 fi
 echo ""
 echo "# Abstract {-}\n\n"
-if [ -z "$1" ]; then
-  cat $paths
-else
-  for fn in $paths; do
+
+for fn in $paths; do
+  if [ -z "$1" ]; then
+    cat $fn
+  else
     git --no-pager show $1:$fn
-  done
-fi
+  fi
+  echo "\n\n"
+done
+
 echo "# References {-}\n\n"
 popd
-

@@ -14,7 +14,7 @@ def action(elem, doc):
                 in_figure_section = True
             else:
                 in_figure_section = False
-            if text in ['figure captions', 'abstract', 'references']:
+            if text in ['figure captions', 'abstract', 'references', 'key points']:
                 new_el = Div(elem)
                 new_el.attributes['custom-style'] = 'UnnumberedSection'
                 return new_el
