@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
-
-cd $PAPER_DIR
+# Uses new signature in which 'PAPER_DIR' environment variable must be defined
+cd "$PAPER_DIR"
 
 source paper-components/defs.zsh
 
