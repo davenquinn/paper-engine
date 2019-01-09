@@ -26,6 +26,8 @@
 # collected-figures/  (this will be created)
 # output/             (also will be created)
 #
+cd "$PAPER_DIR"
+source paper-defs.zsh
 
 build='build'
 defs="paper-components/defs"
@@ -148,4 +150,3 @@ cp $build_dest $outfile
 tag --set paper-draft $outfile
 
 scale-images $outfile "${outfile:r}-sm.pdf" "printer" 2> /dev/null
-
