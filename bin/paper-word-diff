@@ -14,4 +14,4 @@ paper rev-text $rev2 \
 | text-pipeline-docx -o $PAPER_DIR/build/$rev2.docx
 
 cd $PAPER_DIR/build
-compare-documents --author "$author" $rev1.docx $rev2.docx
+compare-documents $rev1.docx $rev2.docx

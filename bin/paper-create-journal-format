@@ -128,8 +128,6 @@ if [[ ${#a} ]]; then
 
   # Insert the appendix at the end of the standard template
   cat $defs/appendix-shim.tex >> $texfile
-
-
 fi
 cat $defs/figure-list-shim.tex >> $texfile
 tail -n $split $defs/draft.tex >> $texfile

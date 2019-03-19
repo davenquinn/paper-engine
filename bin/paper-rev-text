@@ -16,7 +16,7 @@ echo "# $@ {-}\n\n"
 }
 
 function text() {
-  if [ $now ]; then
+  if [ $now = 1 ]; then
     cat $1
   else
     git --no-pager show $rev:$1
