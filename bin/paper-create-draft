@@ -102,10 +102,13 @@ cp $defs/draft.tex $texfile
 
 # Copy preamble
 cat "$defs/preamble"/*.tex > "$preamble"
-# This needs to be abstracted because it
-# is only for the `Orientation Statistics` paper.
-if [[ -f text/math-defs.tex ]]; then
-  cat text/math-defs.tex >> "$preamble"
+# PROCESS EXTRA PREAMBLE
+if [[ $preamble_includes && ${#preamble_includes} ]]; then
+  for f in ${preamble_includes[@]}; do
+    if [[ -f $f ]]; then
+      cat "$f" >> "$preamble"
+    fi
+  done
 fi
 
 cat text/key-points.md \
