@@ -134,12 +134,7 @@ fi
 cat $defs/figure-list-shim.tex >> $texfile
 tail -n $split $defs/draft.tex >> $texfile
 
-[ ! -e $auxfile ] && run-latex $texfile $build_dest
-echo "Filtering bibliography"
 paper localize-refs
-# rebuild citations
-bibtex $auxfile
-
 echo "Running latex"
 run-latex $texfile $build_dest
 cp $build_dest $outfile

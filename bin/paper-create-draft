@@ -138,7 +138,6 @@ fi
 
 
 paper localize-refs
-
 echo "Running latex"
 run-latex $texfile $build_dest
 cp $build_dest $outfile
