@@ -4,7 +4,10 @@
 \titleformat{\section}{\Gotham\large\bfseries}{\thesection}{1em}{}
 \titleformat{\subsection}{\Gotham\normalsize\bfseries}{\thesubsection}{3pt}{}
 \titleformat{\subsubsection}[runin]{\Gotham\small\bfseries}{\thesubsubsection}{3pt}{}[~~~~]
-%\renewcommand{\maketitlehooka}{\Gotham\Large\bfseries}
+
+% Name for "Appendices Header
+\let\appendixpagenameorig\appendixpagename
+\renewcommand{\appendixpagename}{\Gotham\Large\appendixpagenameorig}
 
 \renewcommand{\Authfont}{\Gotham\large}
 \renewcommand{\Affilfont}{\Gotham\footnotesize}

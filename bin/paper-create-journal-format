@@ -8,10 +8,12 @@
 # Needs environment variables `FIGURE_SEARCH_DIRECTORIES` defined
 # to collect figures and `BIBTEX_LIBRARY` to collect references.
 #
-# Uses PYTHONPATH variable to ensure that up-to-date python
-# modules are used.
+# This currently installs python modules on every run, which
+# increases predictabiliy at the expense of overwriting global
+# state (this is *very* non-ideal). We should figure out if
+# PYTHONPATH works here.
 #
-# Expects the following structure of paper directory:
+# Expects a specific structure of paper directory:
 #
 # text/
 #   includes.yaml     Defines figures and tables
@@ -26,14 +28,16 @@
 # collected-figures/  (this will be created)
 # output/             (also will be created)
 #
-cd "$PAPER_DIR"
-source paper-defs.zsh
+
+source "$PAPER_DIR/paper-defs.zsh"
+
+name="$name-journal-format"
 
 build='build'
 defs="paper-components/defs"
 body="$build/body.tex"
 bibfile="text/references.bib"
-texfile="$build/draft.tex"
+texfile="$build/draft-journal.tex"
 figureDefs="text/includes.yaml"
 captions="$build/figure-captions.tex"
 abstract="$build/abstract.tex"
@@ -49,12 +53,6 @@ source paper-components/defs.zsh
 # Make sure we have the latest python modules
 #(cd paper-components; git submodule update --init)
 pip install -e paper-components/modules/* > /dev/null
-
-# Check for required executables
-vv=(pandoc pandoc-crossref figurator bib-filter)
-for c in $vv; do
-  command -v $c >/dev/null 2>&1 || { echo >&2 "$c required but not installed"; exit 1 }
-done
 
 echo "Creating paper '$name' in directory $(pwd)"
 
@@ -81,14 +79,18 @@ cat text/abstract.md \
 # Process body text
 aggregate-text text/chapters/*.md  \
 | sed -r 's/^\\section\{(Introduction)\}/\\invisiblesection\{\1\}/g' \
-| mark-inline-figures \
 | text-pipeline \
-| figurator inline \
-  text/includes.yaml \
-  --template-dir paper-components/includes \
-  --captions $captions \
-  --collect-dir $collect_dir \
 > $body
+
+templates="paper-components/includes/journal"
+## Text stuff
+figure_list="$build/figure-list.tex"
+figurator list \
+  text/includes.yaml \
+  --captions $captions \
+  --template-dir $templates \
+  --collect-dir $collect_dir \
+> $figure_list
 
 ## Title block
 cp text/title-block.tex build/title-block.tex
@@ -100,7 +102,7 @@ cp $defs/draft.tex $texfile
 cat "$defs/preamble"/*.tex > "$preamble"
 # This needs to be abstracted because it
 # is only for the `Orientation Statistics` paper.
-if [[ -f text/math-defs.tex ]]; then
+if [[ text/math-defs.tex ]]; then
   cat text/math-defs.tex >> "$preamble"
 fi
 
@@ -108,13 +110,14 @@ cat text/key-points.md \
 | text-pipeline \
 > build/key-points.tex
 
-app_=text/appendices
-a=($app_/*.md(N))
-if [[ -d $app_ && ${#a} ]]; then
+split=2
+head -n -$split $defs/draft.tex > $texfile
+
+a=(text/appendices/*.md(N))
+if [[ ${#a} ]]; then
   echo "Processing appendices"
   aggregate-text ${a}  \
   | sed -r 's/^\\section\{(Introduction)\}/\\invisiblesection\{\1\}/g' \
-  | mark-inline-figures \
   | text-pipeline \
   | figurator inline \
     text/includes.yaml \
@@ -124,13 +127,12 @@ if [[ -d $app_ && ${#a} ]]; then
   > $appendices
 
   # Insert the appendix at the end of the standard template
-  split=2
-  head -n -$split $defs/draft.tex > $texfile
   cat $defs/appendix-shim.tex >> $texfile
-  tail -n $split $defs/draft.tex >> $texfile
+
 
 fi
-
+cat $defs/figure-list-shim.tex >> $texfile
+tail -n $split $defs/draft.tex >> $texfile
 
 echo "Running latex"
 run-latex $texfile $build_dest #2>/dev/null
@@ -149,4 +151,3 @@ cp $build_dest $outfile
 
 tag --set paper-draft $outfile
 
-scale-images $outfile "${outfile:r}-sm.pdf" "printer" 2> /dev/null
