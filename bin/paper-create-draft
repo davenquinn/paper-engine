@@ -137,16 +137,7 @@ if [[ -d $app_ && ${#a} ]]; then
 fi
 
 
-echo "Running latex"
-run-latex $texfile $build_dest 2>/dev/null
-
-echo "Filtering bibliography"
-
-# Filter bibliography
-bib-filter --clean \
-  --aux $auxfile $BIBTEX_LIBRARY $bibfile
-# rebuild citations
-bibtex $auxfile
+paper localize-refs
 
 echo "Running latex"
 run-latex $texfile $build_dest

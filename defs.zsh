@@ -101,7 +101,7 @@ function run-latex-draft {
 }
 
 function run-latex {
-  latexmk -f -interaction=nonstopmode -xelatex \
+  latexmk -f -bibtex -interaction=nonstopmode -xelatex \
     --jobname=${2:t:r} -output-directory="${2:h}" $1
 }
 
