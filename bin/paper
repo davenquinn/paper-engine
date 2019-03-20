@@ -1,7 +1,20 @@
 #!/usr/bin/env zsh
 
+dn="$(pwd)"
+while [ ! -e "$dn/paper-defs.zsh" ]; do
+  if [ "$dn" = "/" ]; then
+    echo -e "$(tput setaf 1)$(tput bold)paper-defs.zsh$(tput sgr0)$(tput dim) not found in $(pwd) or any parent directory.$(tput sgr0)"
+    exit 1
+  fi
+  dn="${dn:h}"
+  echo "$dn"
+done
+echo -e "$(tput bold)Paper directory$(tput sgr0): $(tput dim)$dn$(tput sgr0)"
+
+export PAPER_DIR=$dn
+
 cd "$PAPER_DIR"
-dir="$PAPER_DIR/paper-components/bin"
+dir="${0:A:h}"
 
 if [ $1 = '--help' ]; then
   ls "$dir" | grep paper-
