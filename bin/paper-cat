@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+# Like normal 'cat' but adds space between
+# each file so we don't have to track newlines
+for fn in $@; do
+  cat $fn
+  echo "\n\n"
+done

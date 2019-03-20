@@ -1,9 +1,5 @@
 function aggregate-text {
-  echo ""
-  for fn in $@; do
-    cat $fn
-    echo "\n\n"
-  done
+  paper cat $@
 }
 
 function prepare-crossref {

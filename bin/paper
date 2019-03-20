@@ -1,23 +1,26 @@
 #!/usr/bin/env zsh
 
 dn="$(pwd)"
-while [ ! -e "$dn/paper-defs.zsh" ]; do
-  if [ "$dn" = "/" ]; then
-    echo -e "$(tput setaf 1)$(tput bold)paper-defs.zsh$(tput sgr0)$(tput dim) not found in $(pwd) or any parent directory.$(tput sgr0)"
-    exit 1
-  fi
-  dn="${dn:h}"
-  echo "$dn"
-done
-echo -e "$(tput bold)Paper directory$(tput sgr0): $(tput dim)$dn$(tput sgr0)"
+if [ -z "$PAPER_DIR" ]; then
+  # Find directory
+  while [ ! -e "$dn/paper-defs.zsh" ]; do
+    if [ "$dn" = "/" ]; then
+      echo -e "$(tput bold)paper-defs.zsh$(tput sgr0) not found in $(pwd) or any parent directory."
+      exit 1
+    fi
+    dn="${dn:h}"
+    echo "$dn"
+  done
+  echo -e "$(tput bold)Paper directory$(tput sgr0): $dn"
 
-export PAPER_DIR=$dn
+  export PAPER_DIR=$dn
+fi
 
-cd "$PAPER_DIR"
-dir="${0:A:h}"
+export PAPER_COMPONENTS="${0:A:h:h}"
+bin="$PAPER_COMPONENTS/bin"
 
 if [ $1 = '--help' ]; then
-  ls "$dir" | grep paper-
+  ls "$bin" | grep paper-
   exit 0
 fi
 
@@ -25,7 +28,7 @@ cmd="paper-$1"
 shift
 
 found_command=0
-for f in $(ls "$dir" | grep paper-); do
+for f in $(ls "$bin" | grep paper-); do
   [ $f != $cmd ] && continue
   found_command=1
   break
@@ -33,5 +36,5 @@ done
 
 [ ! $found_command ] && echo "Command $cmd not found"
 
-"$dir/$cmd" $@
+"$bin/$cmd" $@
 

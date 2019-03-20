@@ -1,0 +1,133 @@
+#!/usr/bin/env zsh
+
+cd "$PAPER_DIR"
+
+source paper-defs.zsh
+source "$PAPER_COMPONENTS/defs.zsh"
+
+# collect includes
+# Do paper-components/create
+
+build_dir='build'
+
+agubuild="$build_dir/agu-format"
+
+body="$agubuild/draft_body.tex"
+outname="$name-AGUFormat"
+auxfile="$agubuild/$outname.aux"
+texfile="$agubuild/$outname.tex"
+build_dest="$agubuild/$outname.pdf"
+captions="$agubuild/figure-captions.tex"
+
+mkdir -p $agubuild
+
+echo "Converting markdown to latex"
+
+cat text/figure-captions.md \
+| text-pipeline-agu \
+> $captions
+
+# Process abstract
+cat text/abstract.md \
+| text-pipeline-agu \
+> "$agubuild/abstract.tex"
+
+cat text/key-points.md \
+| text-pipeline-agu \
+| sed -r 's/itemize/keypoints/g' \
+| sed -r 's/^\\tightlist//g' \
+> $agubuild/key-points.tex
+
+st="$PAPER_COMPONENTS/agu-template"
+cp $st/agufull08.bst \
+   $st/agujournal.cls $agubuild
+
+# Begin assembling text
+
+cat "$st/preamble.tex" > $texfile
+
+# PROCESS EXTRA PREAMBLE
+if [[ $preamble_includes && ${#preamble_includes} ]]; then
+  for f in ${preamble_includes[@]}; do
+    if [[ -f $f ]]; then
+      echo "Adding extra preamble file $f"
+      cat "$f" >> "$texfile"
+    fi
+  done
+fi
+
+echo '\\journalname{Earth and Space Science}' >> "$texfile"
+echo '\\begin{document}' >> "$texfile"
+
+cat \
+  text/title-block-agu.tex \
+  $agubuild/key-points.tex \
+>> $texfile
+
+echo '\\begin{abstract}' >> $texfile
+cat $agubuild/abstract.tex >> $texfile
+echo '\\end{abstract}\n' >> $texfile
+
+template="$PAPER_COMPONENTS/modules/figurator/figurator/templates/generic"
+# Process body text
+# Correct for pandoc-crossref annoyingness
+# Don't pick up acknowledgements
+find text/chapters -iname '*.md' -not -iname '*acknow*.md' -print0 \
+| sort -z \
+| xargs -r0 paper cat \
+| text-pipeline-agu \
+| figurator inline \
+  text/includes.yaml \
+  --template-dir $template \
+  --captions $captions \
+  --collect-dir collected-figures \
+>> $texfile
+
+## Process appendices
+app_=text/appendices
+a=($app_/*.md(N))
+if [[ -d $app_ && ${#a} ]]; then
+  echo '\n\\appendix\n' >> $texfile
+
+  echo "Processing appendices"
+  paper cat ${a}  \
+  | mark-inline-figures \
+  | text-pipeline \
+  | figurator inline \
+    text/includes.yaml \
+    --template-dir paper-components/includes \
+    --captions $captions \
+    --collect-dir collected-figures \
+  >> $texfile
+
+fi
+
+find text/chapters -iname '*acknow*.md' -print0 \
+| sort -z \
+| xargs -r0 paper cat \
+| text-pipeline-agu \
+| sed -r 's/^\\section\{Acknowledgements\}/\\acknowledgments{}/g' \
+>> $texfile
+
+if [[ ! -e build/$name-draft.bbl ]]; then
+  paper create-draft
+fi
+cat build/$name-draft.bbl >> $texfile
+
+echo '\\end{document}\n' >> $texfile
+
+# Unicode math doesn't work
+sed -i 's/\\symrm/\\mathrm/g' $texfile
+sed -i 's/\\symbf/\\mathbf/g' $texfile
+
+echo "Running latex"
+outfile="output/$name.pdf"
+run-latex "$texfile" "$build_dest"
+cp "$build_dest" "output/${build_dest:t}"
+
+tag --set paper-draft $outfile
+
+# Rewrite figure paths for their system in tex file
+sed -i 's/{collected-figures\//{/g' $texfile
+
+
