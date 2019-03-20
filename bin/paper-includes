@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+
+import yaml
+from click import echo, style
+from os import path, environ
+
+fn = path.join(environ.get("PAPER_DIR"),"text", "includes.yaml")
+
+def print_file(f):
+    tree = yaml.load(f)
+    for t in tree:
+        t['type'] = t.get('type','figure')
+
+    for i, t in enumerate(t for t in tree if t['type'] == 'figure'):
+        print(style(f"Figure {i+1:2.0f}", fg='cyan'), style('fig:', dim=True)+t['id'])
+
+    for i, t in enumerate(t for t in tree if t['type'] == 'table'):
+        print(style(f" Table {i+1:2.0f}", fg='cyan'), style('tbl:', dim=True)+t['id'])
+
+
+with open(fn, 'r') as f:
+    try:
+        print_file(f)
+    except yaml.YAMLError as exc:
+        print(exc)
