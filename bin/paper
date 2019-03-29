@@ -9,18 +9,18 @@ if [ -z "$PAPER_DIR" ]; then
       exit 1
     fi
     dn="${dn:h}"
-    echo "$dn"
   done
-  echo -e "$(tput bold)Paper directory$(tput sgr0): $dn"
+  echo -e "$(tput bold)Found paper directory$(tput sgr0): $dn"
 
-  export PAPER_DIR=$dn
+  export PAPER_DIR="$dn"
 fi
 
 export PAPER_COMPONENTS="${0:A:h:h}"
 bin="$PAPER_COMPONENTS/bin"
 
-if [ $1 = '--help' ]; then
-  ls "$bin" | grep paper-
+if [ -z $1 ] || [ $1 = '--help' ]; then
+  echo "Commands:"
+  ls "$bin" | grep paper- | sed 's/paper-/  paper /g'
   exit 0
 fi
 
