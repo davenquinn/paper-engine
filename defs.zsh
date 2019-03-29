@@ -62,6 +62,7 @@ pc=$PAPER_DIR/paper-components
 
 function text-pipeline-docx {
    prepare-crossref \
+   | sed "s/º/°/g" \
    | pandoc \
       --from markdown \
       --to docx+styles \
