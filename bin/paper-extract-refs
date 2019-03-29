@@ -2,7 +2,7 @@
 import re
 import sys
 
-cite_re = re.compile(r'@\w+')
+cite_re = re.compile(r'@[\w-]+')
 keys = set(['@fig','@sec','@eq','@tbl'])
 for line in sys.stdin:
     citekeys = re.findall(cite_re, line)
