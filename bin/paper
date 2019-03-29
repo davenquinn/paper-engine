@@ -1,0 +1,24 @@
+#!/usr/bin/env zsh
+
+cd "$PAPER_DIR"
+dir="$PAPER_DIR/paper-components/bin"
+
+if [ $1 = '--help' ]; then
+  ls "$dir" | grep paper-
+  exit 0
+fi
+
+cmd="paper-$1"
+shift
+
+found_command=0
+for f in $(ls "$dir" | grep paper-); do
+  [ $f != $cmd ] && continue
+  found_command=1
+  break
+done
+
+[ ! $found_command ] && echo "Command $cmd not found"
+
+"$dir/$cmd" $@
+
