@@ -1,0 +1,35 @@
+#!/usr/bin/env zsh
+
+# Could specify --all to build all revisions
+cd "$PAPER_DIR"
+
+echo "Available revisions:"
+for f in text/revision*; do
+  echo "  \033[1m${f:t}\033[0m"
+done
+
+for dir in text/revision*; do
+  name=${dir:t}
+  revision_dir="$dir"
+  [ "$name" = "$1" ] && break
+done
+[ -z $1 ] && echo "No revision specified, so falling back to latest"
+
+echo -e "Creating \033[1m$name\033[0m"
+
+pc="paper-components"
+
+infile="$revision_dir/review-responses.md"
+
+template="$pc/templates/review-responses-template.html"
+
+pandoc -s -t html "$infile" \
+  -M title=$name \
+  --template="$template" \
+> output/$name-responses.html
+
+pandoc \
+ --filter="$pc/bin/custom-style-filter" -t docx+styles \
+ --reference-doc="$pc/templates/review-responses-template.docx" \
+ -o "output/$name-responses.docx" \
+ "$infile"

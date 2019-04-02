@@ -29,11 +29,15 @@
 # output/             (also will be created)
 #
 
+source "$PAPER_DIR/paper-defs.zsh"
+
+name="$name-journal-format"
+
 build='build'
 defs="paper-components/defs"
 body="$build/body.tex"
 bibfile="text/references.bib"
-texfile="$build/draft.tex"
+texfile="$build/draft-journal.tex"
 figureDefs="text/includes.yaml"
 captions="$build/figure-captions.tex"
 abstract="$build/abstract.tex"
@@ -75,14 +79,18 @@ cat text/abstract.md \
 # Process body text
 aggregate-text text/chapters/*.md  \
 | sed -r 's/^\\section\{(Introduction)\}/\\invisiblesection\{\1\}/g' \
-| mark-inline-figures \
 | text-pipeline \
-| figurator inline \
-  text/includes.yaml \
-  --template-dir paper-components/includes \
-  --captions $captions \
-  --collect-dir $collect_dir \
 > $body
+
+templates="paper-components/includes/journal"
+## Text stuff
+figure_list="$build/figure-list.tex"
+figurator list \
+  text/includes.yaml \
+  --captions $captions \
+  --template-dir $templates \
+  --collect-dir $collect_dir \
+> $figure_list
 
 ## Title block
 cp text/title-block.tex build/title-block.tex
@@ -92,22 +100,27 @@ cp $defs/draft.tex $texfile
 
 # Copy preamble
 cat "$defs/preamble"/*.tex > "$preamble"
-# This needs to be abstracted because it
-# is only for the `Orientation Statistics` paper.
-if [[ text/math-defs.tex ]]; then
-  cat text/math-defs.tex >> "$preamble"
+# PROCESS EXTRA PREAMBLE
+if [[ $preamble_includes && ${#preamble_includes} ]]; then
+  for f in ${preamble_includes[@]}; do
+    if [[ -f $f ]]; then
+      cat "$f" >> "$preamble"
+    fi
+  done
 fi
 
 cat text/key-points.md \
 | text-pipeline \
 > build/key-points.tex
 
+split=2
+head -n -$split $defs/draft.tex > $texfile
+
 a=(text/appendices/*.md(N))
 if [[ ${#a} ]]; then
   echo "Processing appendices"
   aggregate-text ${a}  \
   | sed -r 's/^\\section\{(Introduction)\}/\\invisiblesection\{\1\}/g' \
-  | mark-inline-figures \
   | text-pipeline \
   | figurator inline \
     text/includes.yaml \
@@ -117,30 +130,15 @@ if [[ ${#a} ]]; then
   > $appendices
 
   # Insert the appendix at the end of the standard template
-  split=2
-  head -n -$split $defs/draft.tex > $texfile
   cat $defs/appendix-shim.tex >> $texfile
-  tail -n $split $defs/draft.tex >> $texfile
-
 fi
+cat $defs/figure-list-shim.tex >> $texfile
+tail -n $split $defs/draft.tex >> $texfile
 
-
-echo "Running latex"
-run-latex $texfile $build_dest #2>/dev/null
-
-echo "Filtering bibliography"
-
-# Filter bibliography
-bib-filter --clean \
-  --aux $auxfile $BIBTEX_LIBRARY $bibfile
-# rebuild citations
-bibtex $auxfile
-
+paper localize-refs
 echo "Running latex"
 run-latex $texfile $build_dest
 cp $build_dest $outfile
 
 tag --set paper-draft $outfile
-
-scale-images $outfile "${outfile:r}-sm.pdf" "printer" 2> /dev/null
 

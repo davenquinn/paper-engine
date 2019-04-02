@@ -1,9 +1,5 @@
 function aggregate-text {
-  echo ""
-  for fn in $@; do
-    cat $fn
-    echo "\n\n"
-  done
+  paper cat $@
 }
 
 function prepare-crossref {
@@ -62,14 +58,18 @@ function text-pipeline-html {
       $@
 }
 
+pc=$PAPER_DIR/paper-components
+
 function text-pipeline-docx {
    prepare-crossref \
+   | sed "s/º/°/g" \
    | pandoc \
       --from markdown \
-      --to docx \
-      --number-sections \
-      --csl='paper-components/agu.csl' \
-      --bibliography=text/references.bib \
+      --to docx+styles \
+      --reference-doc="$pc/templates/reference.docx" \
+      --bibliography="$PAPER_DIR/text/references.bib" \
+      --csl="$pc/agu.csl" \
+      --filter "$pc/bin/figure-ref-filter" \
       --filter pandoc-comments \
       --filter pandoc-crossref \
       --filter pandoc-citeproc \
@@ -79,17 +79,18 @@ function text-pipeline-docx {
 function scale-images {
   # Usage: scale-images [input file] [output file] [screen*|ebook|printer|prepress]
   # Makes sure to embed all fonts so we don't get weird character subsetting effects
-  gs -sDEVICE=pdfwrite \
+  /usr/local/bin/gs -sDEVICE=pdfwrite \
    -dNOPAUSE -dQUIET -dBATCH -dPDFSETTINGS=/${3:-"screen"} \
    -dSAFER \
-   -dCompressFonts=false \
-   -dSubsetFonts=false \
+   -dCompressFonts=true \
+   -dSubsetFonts=true \
    -dEmbedAllFonts=true \
    -dRENDERTTNOTDEF=true \
-   -dCompatibilityLevel=1.4 -sOutputFile="$2" "$1"  #\
-   #-c ".setpdfwrite <</NeverEmbed [ ]>> setdistillerparams" \
-   #"$1"
-}
+    -dColorImageDownsampleType=/Bicubic -dColorImageResolution=150 \
+    -dGrayImageDownsampleType=/Bicubic -dGrayImageResolution=150 \
+    -dMonoImageDownsampleType=/Bicubic -dMonoImageResolution=150 \
+   -dCompatibilityLevel=1.4 -sOutputFile="$2" "$1"
+ }
 
 function run-latex-draft {
   xelatex -interaction=nonstopmode -no-pdf \
@@ -97,7 +98,7 @@ function run-latex-draft {
 }
 
 function run-latex {
-  latexmk -f -interaction=nonstopmode -xelatex \
+  latexmk -f -bibtex -interaction=nonstopmode -xelatex \
     --jobname=${2:t:r} -output-directory="${2:h}" $1
 }
 
