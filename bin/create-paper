@@ -49,6 +49,7 @@ source paper-components/defs.zsh
 pip install -e paper-components/modules/* > /dev/null
 
 # Check for required executables
+echo "Checking for required executables..."
 vv=(pandoc pandoc-crossref figurator bib-filter)
 for c in $vv; do
   command -v $c >/dev/null 2>&1 || { echo >&2 "$c required but not installed"; exit 1 }
@@ -76,6 +77,7 @@ cat text/abstract.md \
 | text-pipeline \
 > $abstract
 
+echo "Processing body text"
 # Process body text
 aggregate-text text/chapters/*.md  \
 | sed -r 's/^\\section\{(Introduction)\}/\\invisiblesection\{\1\}/g' \
@@ -148,4 +150,3 @@ cp $build_dest $outfile
 tag --set paper-draft $outfile
 
 scale-images $outfile "${outfile:r}-sm.pdf" "printer" 2> /dev/null
-
