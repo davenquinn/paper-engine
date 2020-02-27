@@ -98,7 +98,7 @@ function run-latex-draft {
 }
 
 function run-latex {
-  latexmk -f -bibtex -interaction=nonstopmode -xelatex \
+  latexmk -f -bibtex -quiet -interaction=nonstopmode -xelatex \
     --jobname=${2:t:r} -output-directory="${2:h}" $1
 }
 

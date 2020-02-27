@@ -1,0 +1,79 @@
+#!/usr/bin/env zsh
+
+source "$PAPER_DIR/paper-defs.zsh"
+source "$PAPER_COMPONENTS/defs.zsh"
+
+paper check-deps
+
+# Text file locations
+figureDefs="text/includes.yaml"
+bibfile="text/references.bib"
+
+# Build file locations
+build="build"
+body="$build/body.tex"
+texfile="$build/draft.tex"
+preamble="$build/preamble.tex"
+build_dest="$build/$outname.pdf"
+auxfile="${build_dest:r}.aux"
+defs="$PAPER_COMPONENTS/nsf-proposal"
+captions="$build/figure-captions.tex"
+
+
+# Output locations
+collectDir="collected-figures"
+outdir="output"
+
+mkdir -p $build $collectDir
+
+# Collect figures into centralized directory
+figurator collect \
+  $figureDefs \
+  $collectDir \
+  ${FIGURE_SEARCH_DIRECTORIES}
+
+# Build project summary
+cat text/.md \
+| text-pipeline \
+> "$build/project-summary.tex"
+
+cat text/figure-captions.md \
+| text-pipeline \
+> $captions
+
+figureArgs=( inline $figureDefs  \
+              --template-dir $defs/includes \
+              --captions $captions )
+
+[ -d $collectDir ] && figureArgs+=(--collect-dir $collectDir)
+
+paper get-text \
+| mark-inline-figures \
+| text-pipeline \
+| figurator "${figureArgs[@]}" \
+> $body
+
+# Set up template
+cp "$defs/draft.tex" $texfile
+cp  text/title-block.tex build
+cat "$defs/preamble"/*.tex > "$preamble"
+
+paper localize-refs
+
+bibtex $auxfile
+
+dest="$outdir/${build_dest:t}"
+run-latex $texfile $build_dest
+mkdir -p "$outdir"
+mv "$build_dest" "$dest"
+
+gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=1 \
+  -dLastPage=1 -sOutputFile="$outdir/project-summary.pdf" "$dest"
+gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=2 \
+  -dLastPage=10 -sOutputFile="$outdir/project-description.pdf" "$dest"
+gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=11 \
+  -dLastPage=13 -sOutputFile="$outdir/bibliography.pdf" "$dest"
+
+tag --set paper-draft $outfile
+
+

@@ -17,6 +17,7 @@ fi
 
 export PAPER_COMPONENTS="${0:A:h:h}"
 bin="$PAPER_COMPONENTS/bin"
+export PATH="$bin:$PATH"
 
 if [ -z $1 ] || [ $1 = '--help' ]; then
   echo "Commands:"
