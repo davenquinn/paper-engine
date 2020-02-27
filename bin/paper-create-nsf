@@ -14,7 +14,7 @@ build="build"
 body="$build/body.tex"
 texfile="$build/draft.tex"
 preamble="$build/preamble.tex"
-build_dest="$build/$outname.pdf"
+build_dest="$build/$name.pdf"
 auxfile="${build_dest:r}.aux"
 defs="$PAPER_COMPONENTS/nsf-proposal"
 captions="$build/figure-captions.tex"
@@ -33,7 +33,7 @@ figurator collect \
   ${FIGURE_SEARCH_DIRECTORIES}
 
 # Build project summary
-cat text/.md \
+cat text/project-summary.md \
 | text-pipeline \
 > "$build/project-summary.tex"
 
@@ -67,12 +67,12 @@ run-latex $texfile $build_dest
 mkdir -p "$outdir"
 mv "$build_dest" "$dest"
 
-gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=1 \
-  -dLastPage=1 -sOutputFile="$outdir/project-summary.pdf" "$dest"
-gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=2 \
-  -dLastPage=10 -sOutputFile="$outdir/project-description.pdf" "$dest"
-gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=11 \
-  -dLastPage=13 -sOutputFile="$outdir/bibliography.pdf" "$dest"
+#gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=1 \
+  #-dLastPage=1 -sOutputFile="$outdir/project-summary.pdf" "$dest"
+#gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=2 \
+  #-dLastPage=10 -sOutputFile="$outdir/project-description.pdf" "$dest"
+#gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=11 \
+  #-dLastPage=13 -sOutputFile="$outdir/bibliography.pdf" "$dest"
 
 tag --set paper-draft $outfile
 
