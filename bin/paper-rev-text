@@ -1,0 +1,50 @@
+#!/usr/bin/env zsh
+
+pushd "$PAPER_DIR/text"
+dir="."
+# If we don't have a revision, use current text
+if [ -z "$1" ]; then
+  now=1
+  rev=HEAD
+else
+  now=0
+  rev=$1
+fi
+
+function head() {
+echo "# $@ {-}\n\n"
+}
+
+function text() {
+  if [ $now = 1 ]; then
+    cat $1
+  else
+    git --no-pager show $rev:$1
+  fi
+  echo "\n\n"
+}
+
+head "Key Points"
+text $dir/key-points.md
+head "Abstract"
+text $dir/abstract.md
+
+# Body text
+paths=($(git ls-tree -r --full-name --name-only $rev chapters))
+for fn in $paths; do
+  text $fn
+done
+
+# Appendices
+paths=($(git ls-tree -r --full-name --name-only $rev appendices))
+if [[ ${#a} ]]; then
+  head "Appendices"
+  for fn in $paths; do
+    # Convert to submodules
+    text $fn
+  done
+fi
+
+text $dir/figure-captions.md
+head "References"
+popd

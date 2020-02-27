@@ -32,9 +32,10 @@
 %% For final version.
 % \documentclass{agujournal}
 
-% Now, type in the journal name: \journalname{<Journal Name>}
+% Extra config
 \usepackage{siunitx}
 \usepackage[version=4]{mhchem}
+\usepackage{hyperref}
 \usepackage{amsmath,xfrac,nicefrac}
 \usepackage{paralist}
 \usepackage{enumitem}
@@ -44,6 +45,21 @@
 \usepackage{array,booktabs,tabularx}
 \usepackage{tablefootnote}
 \usepackage[flushleft]{threeparttable}
+\usepackage[]{caption}
+
+
+%\usepackage[math-style=TeX, bold-style=upright]{unicode-math}
+
+% Set "Latin Modern Math" for cases when LaTeX fonts aren't linked
+% to system Fonts directory
+%\setmathfont{lmodern}
+%\setmathfont{lmodern}
+% Font substitutions for math
+\usepackage[Latin,Greek]{ucharclasses}
+% "CMU Serif"
+%\newfontfamily\substitutefont{cmr}
+\setTransitionsForGreek{\substitutefont}{}
+
 %
 % JGR-Atmospheres
 % JGR-Biogeosciences
@@ -66,36 +82,4 @@
 % Earth and Space Science
 %
 %
-
-\journalname{Geochemistry, Geophysics, Geosystems}
-
-
-\begin{document}
-
-%% ------------------------------------------------------------------------ %%
-%  Title
-% 
-% (A title should be specific, informative, and brief. Use
-% abbreviations only if they are defined in the abstract. Titles that
-% start with general keywords then specific terms are optimized in
-% searches)
-%
-%% ------------------------------------------------------------------------ %%
-
-\title{Late-Cretaceous construction of the mantle lithosphere beneath
-the central California coast revealed by Crystal Knob xenoliths}
-
-\authors{D. P. Quinn\affil{1}, J. Saleeby\affil{1},
-         M. Ducea\affil{2,3}, P. Luffi\affil{4}, P. Asimow\affil{5}}
-
-\affiliation{1}{Division of Geological and Planetary Sciences,
-  California Institute of Technology, Pasadena, California, USA}
-\affiliation{2}{Department of Geosciences, University of Arizona, Tuscon, Arizona, USA}
-\affiliation{3}{Faculty of Geology and Geophysics, University of Bucharest, 010041, Bucharest, Romania}
-\affiliation{4}{Institute of Geodynamics, Romanian Academy, 19-21
-         Jean-Luis Calderon St., Bucharest, Romania}
-
-\correspondingauthor{D. P. Quinn}{davenquinn@caltech.edu}
-
-
 

@@ -1,0 +1,17 @@
+#!/usr/bin/env zsh
+
+cd $PAPER_DIR
+source $PAPER_DIR/paper-components/defs.zsh
+
+rev1=$1
+rev2=$2
+
+$PAPER_DIR/paper-components/bin/rev-text $rev1 \
+| text-pipeline-docx -o $PAPER_DIR/build/$rev1.docx
+
+$PAPER_DIR/paper-components/bin/rev-text $rev2 \
+| text-pipeline-docx -o $PAPER_DIR/build/$rev2.docx
+
+cd $PAPER_DIR/build
+compare-documents --author "Daven Quinn" $rev1.docx $rev2.docx
+

@@ -1,7 +1,0 @@
-#!/usr/bin/env zsh
-
-cd $PAPER_DIR
-
-source paper-components/defs.zsh
-
-paper-components/bin/rev-text | text-pipeline-docx -o "build/draft.docx"

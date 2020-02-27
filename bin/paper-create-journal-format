@@ -1,0 +1,144 @@
+#!/usr/bin/env zsh
+#
+# Usage: `source create-paper`
+#
+# Must be run in a paper working directory.
+# A variable `name` is required to be defined.
+#
+# Needs environment variables `FIGURE_SEARCH_DIRECTORIES` defined
+# to collect figures and `BIBTEX_LIBRARY` to collect references.
+#
+# This currently installs python modules on every run, which
+# increases predictabiliy at the expense of overwriting global
+# state (this is *very* non-ideal). We should figure out if
+# PYTHONPATH works here.
+#
+# Expects a specific structure of paper directory:
+#
+# text/
+#   includes.yaml     Defines figures and tables
+#   abstract.md
+#   figure-captions.md
+#   key-points.md
+#   title-block.tex
+#   references.bib    *This will be rewritten if BIBTEX_LIBRARY is defined*
+#   chapters/         Contains body text, which will be read in order
+# paper-components/   (the path to the repository containing this script...can probably be improved)
+# build/              (this will be created)
+# collected-figures/  (this will be created)
+# output/             (also will be created)
+#
+
+source "$PAPER_DIR/paper-defs.zsh"
+
+name="$name-journal-format"
+
+build='build'
+defs="paper-components/defs"
+body="$build/body.tex"
+bibfile="text/references.bib"
+texfile="$build/draft-journal.tex"
+figureDefs="text/includes.yaml"
+captions="$build/figure-captions.tex"
+abstract="$build/abstract.tex"
+build_dest="$build/$name.pdf"
+auxfile="${build_dest:r}.aux"
+outfile="output/$name.pdf"
+collect_dir="collected-figures"
+preamble="$build/preamble.tex"
+appendices="$build/appendices.tex"
+
+source paper-components/defs.zsh
+
+# Make sure we have the latest python modules
+#(cd paper-components; git submodule update --init)
+pip install -e paper-components/modules/* > /dev/null
+
+echo "Creating paper '$name' in directory $(pwd)"
+
+mkdir -p $build $collect_dir output
+
+rm -f $body $captions $abstract
+
+# Collect figures into centralized directory
+figurator collect \
+  $figureDefs \
+  $collect_dir \
+  ${FIGURE_SEARCH_DIRECTORIES}
+
+## Figure captions
+cat text/figure-captions.md \
+| text-pipeline \
+> $captions
+
+# Build abstract
+cat text/abstract.md \
+| text-pipeline \
+> $abstract
+
+# Process body text
+aggregate-text text/chapters/*.md  \
+| sed -r 's/^\\section\{(Introduction)\}/\\invisiblesection\{\1\}/g' \
+| text-pipeline \
+> $body
+
+templates="paper-components/includes/journal"
+## Text stuff
+figure_list="$build/figure-list.tex"
+figurator list \
+  text/includes.yaml \
+  --captions $captions \
+  --template-dir $templates \
+  --collect-dir $collect_dir \
+> $figure_list
+
+## Title block
+cp text/title-block.tex build/title-block.tex
+
+
+cp $defs/draft.tex $texfile
+
+# Copy preamble
+cat "$defs/preamble"/*.tex > "$preamble"
+# PROCESS EXTRA PREAMBLE
+if [[ $preamble_includes && ${#preamble_includes} ]]; then
+  for f in ${preamble_includes[@]}; do
+    if [[ -f $f ]]; then
+      cat "$f" >> "$preamble"
+    fi
+  done
+fi
+
+cat text/key-points.md \
+| text-pipeline \
+> build/key-points.tex
+
+split=2
+head -n -$split $defs/draft.tex > $texfile
+
+a=(text/appendices/*.md(N))
+if [[ ${#a} ]]; then
+  echo "Processing appendices"
+  aggregate-text ${a}  \
+  | sed -r 's/^\\section\{(Introduction)\}/\\invisiblesection\{\1\}/g' \
+  | text-pipeline \
+  | figurator inline \
+    text/includes.yaml \
+    --template-dir paper-components/includes \
+    --captions $captions \
+    --collect-dir $collect_dir \
+  > $appendices
+
+  # Insert the appendix at the end of the standard template
+  cat $defs/appendix-shim.tex >> $texfile
+fi
+cat $defs/figure-list-shim.tex >> $texfile
+tail -n $split $defs/draft.tex >> $texfile
+
+paper localize-refs
+echo "Running latex"
+run-latex $texfile $build_dest
+cp $build_dest $outfile
+
+tag --set paper-draft $outfile
+

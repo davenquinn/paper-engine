@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 
+cd "$PAPER_DIR/text"
 repo=$(git rev-parse --show-toplevel)
 base=$(realpath --relative-to=$repo .)
 

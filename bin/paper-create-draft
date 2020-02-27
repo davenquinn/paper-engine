@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 #
-# Usage: `source create-paper`
+# Usage: `paper create-draft`
 #
 # Must be run in a paper working directory.
 # A variable `name` is required to be defined.
@@ -26,6 +26,11 @@
 # collected-figures/  (this will be created)
 # output/             (also will be created)
 #
+cd "$PAPER_DIR"
+# Could do a recursive upwards search for where this is defined...
+source "$PAPER_DIR/paper-defs.zsh"
+
+name="$name-draft"
 
 build='build'
 defs="paper-components/defs"
@@ -51,7 +56,8 @@ pip install -e paper-components/modules/* > /dev/null
 # Check for required executables
 vv=(pandoc pandoc-crossref figurator bib-filter)
 for c in $vv; do
-  command -v $c >/dev/null 2>&1 || { echo >&2 "$c required but not installed"; exit 1 }
+  command -v $c >/dev/null 2>&1 \
+  || { echo >&2 "$c required but not installed"; exit 1 }
 done
 
 echo "Creating paper '$name' in directory $(pwd)"
@@ -96,16 +102,20 @@ cp $defs/draft.tex $texfile
 
 # Copy preamble
 cat "$defs/preamble"/*.tex > "$preamble"
-# This needs to be abstracted because it
-# is only for the `Orientation Statistics` paper.
-if [[ -f text/math-defs.tex ]]; then
-  cat text/math-defs.tex >> "$preamble"
+# PROCESS EXTRA PREAMBLE
+if [[ $preamble_includes && ${#preamble_includes} ]]; then
+  for f in ${preamble_includes[@]}; do
+    if [[ -f $f ]]; then
+      cat "$f" >> "$preamble"
+    fi
+  done
 fi
 
 cat text/key-points.md \
 | text-pipeline \
 > build/key-points.tex
 
+## Process appendices
 app_=text/appendices
 a=($app_/*.md(N))
 if [[ -d $app_ && ${#a} ]]; then
@@ -130,17 +140,7 @@ if [[ -d $app_ && ${#a} ]]; then
 fi
 
 
-echo "Running latex"
-run-latex $texfile $build_dest #2>/dev/null
-
-echo "Filtering bibliography"
-
-# Filter bibliography
-bib-filter --clean \
-  --aux $auxfile $BIBTEX_LIBRARY $bibfile
-# rebuild citations
-bibtex $auxfile
-
+paper localize-refs
 echo "Running latex"
 run-latex $texfile $build_dest
 cp $build_dest $outfile
@@ -148,4 +148,3 @@ cp $build_dest $outfile
 tag --set paper-draft $outfile
 
 scale-images $outfile "${outfile:r}-sm.pdf" "printer" 2> /dev/null
-
