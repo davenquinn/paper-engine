@@ -4,16 +4,13 @@
 
 \titleformat{\section}{\Times\large\bfseries}{\thesection}{1em}{}
 \titleformat{\subsection}{\Times\normalsize\bfseries}{\thesubsection}{3pt}{}
-\titleformat{\subsubsection}[runin]{\Times\small\bfseries}{\thesubsubsection}{3pt}{}[~~~~]
+\titleformat{\subsubsection}[runin]{\Times\small\bfseries\textit}{\thesubsubsection}{3pt}{}[~~~~]
 
 \newenvironment{summary}{%
 \titleformat{\section}{\Times\large\bfseries}{\thesection}{1em}{}%
 \titleformat{\subsection}{\Times\normalsize\bfseries}{\thesubsection}{3pt}{}%
-\titleformat{\subsubsection}[runin]{\Times\small\bfseries}{\thesubsubsection}{3pt}{}[~~~~]%
+\titleformat{\subsubsection}[runin]{\Times\small\bfseries\textit}{\thesubsubsection}{3pt}{}[~~~~]%
 }{}
-
-\renewcommand{\Authfont}{\Gotham\large}
-\renewcommand{\Affilfont}{\Gotham\footnotesize}
 
 \setlength{\droptitle}{-40pt}
 \pretitle{\begin{flushleft}\Gotham\bfseries\Large}
@@ -22,9 +19,7 @@
 \preauthor{\begin{flushleft}\Gotham\normalsize}
 \postauthor{\par\end{flushleft}}
 
-\predate{\vspace{-10pt}\begin{flushleft}\Gotham\normalsize}
-\postdate{\par\end{flushleft}\vspace{-10pt}}
-\setcounter{secnumdepth}{-1}
+\setcounter{secnumdepth}{3}
 
 %\usepackage{fancyhdr}
 
