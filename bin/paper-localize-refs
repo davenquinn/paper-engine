@@ -8,7 +8,7 @@ bibfile="$PAPER_DIR/text/references.bib"
 
 echo "Filtering bibliography"
 refs="$build/references.txt"
-paper get-text \
+paper get-text --captions \
 | paper extract-refs \
 > $refs
 bib-filter --clean \
