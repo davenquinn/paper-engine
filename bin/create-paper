@@ -42,6 +42,8 @@ collect_dir="collected-figures"
 preamble="$build/preamble.tex"
 appendices="$build/appendices.tex"
 
+# Temporary fix to make sure we are using GNU sed
+export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
 source paper-components/defs.zsh
 
 # Make sure we have the latest python modules
@@ -50,7 +52,7 @@ pip install -e paper-components/modules/* > /dev/null
 
 # Check for required executables
 echo "Checking for required executables..."
-vv=(pandoc pandoc-crossref figurator bib-filter)
+vv=(pandoc pandoc-crossref figurator bib-filter tag)
 for c in $vv; do
   command -v $c >/dev/null 2>&1 || { echo >&2 "$c required but not installed"; exit 1 }
 done
@@ -113,7 +115,7 @@ a=($app_/*.md(N))
 if [[ -d $app_ && ${#a} ]]; then
   echo "Processing appendices"
   aggregate-text ${a}  \
-  | sed -r 's/^\\section\{(Introduction)\}/\\invisiblesection\{\1\}/g' \
+  | sed 's/^\\section\{(Introduction)\}/\\invisiblesection\{\1\}/g' \
   | mark-inline-figures \
   | text-pipeline \
   | figurator inline \
