@@ -47,6 +47,8 @@ collect_dir="collected-figures"
 preamble="$build/preamble.tex"
 appendices="$build/appendices.tex"
 
+# Temporary fix to make sure we are using GNU sed
+export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
 source paper-components/defs.zsh
 
 paper check-deps
@@ -73,6 +75,7 @@ cat text/abstract.md \
 | text-pipeline \
 > $abstract
 
+echo "Processing body text"
 # Process body text
 aggregate-text text/chapters/*.md  \
 | sed -r 's/^\\section\{(Introduction)\}/\\invisiblesection\{\1\}/g' \
@@ -112,7 +115,7 @@ a=($app_/*.md(N))
 if [[ -d $app_ && ${#a} ]]; then
   echo "Processing appendices"
   aggregate-text ${a}  \
-  | sed -r 's/^\\section\{(Introduction)\}/\\invisiblesection\{\1\}/g' \
+  | sed 's/^\\section\{(Introduction)\}/\\invisiblesection\{\1\}/g' \
   | mark-inline-figures \
   | text-pipeline \
   | figurator inline \
