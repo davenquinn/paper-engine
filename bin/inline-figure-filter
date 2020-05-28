@@ -1,0 +1,36 @@
+#!/usr/bin/env python
+import panflute as pf
+import re
+from sys import stderr
+from figurator.captions import load_captions
+
+"""
+Pandoc filter that causes everything between
+'<!-- BEGIN COMMENT -->' and '<!-- END COMMENT -->'
+to be ignored.  The comment lines must appear on
+lines by themselves, with blank lines surrounding
+them.
+"""
+
+err = lambda x: print(x, file=stderr)
+
+def prepare(doc):
+    err(doc.metadata)
+    print(doc, file=stderr)
+    pass
+
+def comment(el, doc):
+    is_relevant = type(el) == pf.RawBlock
+    if not is_relevant:
+        return
+    match = re.search("<!--\[\[\[((fig|tbl):[\w-]+)\]\]\]-->", el.text)
+    if not match:
+        return
+
+    print(match.group(1), file=stderr)
+
+
+
+
+if __name__ == "__main__":
+    pf.toJSONFilter(comment, prepare=prepare)

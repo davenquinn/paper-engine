@@ -1,5 +1,7 @@
 #!/usr/bin/env zsh
 
+source "$PAPER_DIR/paper-defs.zsh"
+
 dir=$(readlink -f $0)
 dir=${dir:h:h}
 
@@ -8,16 +10,19 @@ texfile="${TDIR}/file.tex"
 echo "Made temp dir $TDIR"
 
 (
-  echo '\documentclass[letterpaper,12pt]{article}'
+  echo '\documentclass{standalone}'
   cat paper-components/defs/preamble/*.tex
   echo '\\usepackage{xcite}'
-  echo '\\externalcitedocument{build/draft}'
+  #echo '\\usepackage{bibentry}'
+  #echo '\\nobibliography{text/references.bib}'
+  echo "\\\externalcitedocument{build/$name}"
   echo "\\\begin{document}"
-  echo "\\\inlinefigure{$1}" | figurator inline \
-      text/includes.yaml \
-      --template-dir paper-components/includes \
-      --captions text/figure-captions.md \
-      --collect-dir collected-figures
+  echo "\\\inlinefigure{$1}" \
+  | figurator inline \
+    text/includes.yaml \
+    --template-dir paper-components/includes/standalone \
+    --captions text/figure-captions.md \
+    --collect-dir collected-figures
   echo "\\\end{document}"
 ) > $texfile
 

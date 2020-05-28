@@ -48,10 +48,16 @@ function text-pipeline-html {
    | pandoc \
       --from markdown+pipe_tables \
       --to html \
+      --toc \
+      --standalone \
+      --metadata link-citations=true \
+      --metadata linkReferences=true \
       --section-divs \
       --number-sections \
       --csl='paper-components/agu.csl' \
       --bibliography=text/references.bib \
+      --filter "$pc/bin/inline-figure-filter" \
+      --filter "$pc/bin/figure-ref-filter" \
       --filter pandoc-comments \
       --filter pandoc-crossref \
       --filter pandoc-citeproc \
