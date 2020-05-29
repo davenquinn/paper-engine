@@ -1,36 +1,74 @@
 #!/usr/bin/env python
-import panflute as pf
+from panflute import (
+    RawBlock, toJSONFilter, Div, Plain,
+    Image, convert_text, Str, Block, Para,
+    Table, TableRow, TableCell
+)
 import re
 from sys import stderr
 from figurator.captions import load_captions
+from os.path import join
+from os import getcwd
+from yaml import safe_load
+from pathlib import Path
 
 """
-Pandoc filter that causes everything between
-'<!-- BEGIN COMMENT -->' and '<!-- END COMMENT -->'
-to be ignored.  The comment lines must appear on
-lines by themselves, with blank lines surrounding
-them.
+Pandoc filter to substitute includes from a file
+with optional externally-loaded figure captions.
 """
 
 err = lambda x: print(x, file=stderr)
 
+captions = None
+
+shim_table = """
+a   b   c
+--- --- ---
+1   2   3
+4   5   6
+"""
+
+
 def prepare(doc):
-    err(doc.metadata)
-    print(doc, file=stderr)
-    pass
+    includes_spec = doc.get_metadata("includes-spec")
+    global captions
+    if includes_spec is not None:
+        with open(includes_spec) as f:
+            captions = {c['id']: c.get('caption',"") for c in safe_load(f)}
+
+    capt_file = doc.get_metadata("figure-captions")
+    if capt_file is not None:
+        cdict = {k[2:]: v for k,v in load_captions(capt_file).items()}
+        captions.update(**cdict)
 
 def comment(el, doc):
-    is_relevant = type(el) == pf.RawBlock
+    includes_dir = doc.get_metadata('includes-dir')
+
+    is_relevant = type(el) == RawBlock
     if not is_relevant:
         return
-    match = re.search("<!--\[\[\[((fig|tbl):[\w-]+)\]\]\]-->", el.text)
+    match = re.search("<!--\[\[\[((fig|tbl):([\w-]+))\]\]\]-->", el.text)
     if not match:
         return
+    id = match.group(1)
+    el_type = match.group(2)
+    fig_id = match.group(3)
 
-    print(match.group(1), file=stderr)
+    try:
+        fp = next(Path(includes_dir).glob(fig_id+".*"))
+    except StopIteration as err:
+        fp = "paper-components/templates/empty.png"
+    caption = captions.get(fig_id, "")
 
+    url = "file://"+join(getcwd(), str(fp))
 
-
+    if el_type == 'fig':
+        return convert_text("!["+caption+"]("+url+"){#fig:"+fig_id+"}")
+    if el_type == 'tbl':
+        tbl = convert_text(shim_table+"\n\n"+": "+caption+" {#tbl:"+fig_id+"}\n")
+        return Table(
+            TableRow(TableCell(Para(Image(Str(fig_id), url=url)))),
+            caption=tbl[0].caption)
 
 if __name__ == "__main__":
-    pf.toJSONFilter(comment, prepare=prepare)
+    toJSONFilter(comment, prepare=prepare)

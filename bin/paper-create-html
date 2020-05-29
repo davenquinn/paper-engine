@@ -7,7 +7,7 @@ cd "$PAPER_DIR"
 source paper-components/defs.zsh
 source "$PAPER_DIR/paper-defs.zsh"
 
-paper rev-text 2>/dev/null \
+paper get-text --abstract 2>/dev/null \
 | prepare-crossref \
 | pandoc \
    --from markdown+pipe_tables \
@@ -16,6 +16,10 @@ paper rev-text 2>/dev/null \
    --standalone \
    --metadata link-citations=true \
    --metadata linkReferences=true \
+   --metadata figure-captions=text/figure-captions.md \
+   --metadata includes-spec=text/includes.yaml \
+   --metadata includes-dir=output/converted-includes \
+   --metadata-file text/meta.yaml \
    --section-divs \
    --number-sections \
    --csl='paper-components/agu.csl' \

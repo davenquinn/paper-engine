@@ -29,11 +29,11 @@ echo "Made temp dir $TDIR"
 #cat $texfile
 #exit 0
 
-cat $texfile
+#cat $texfile
 # Make figure
 (
 xelatex -interaction=nonstopmode -output-directory $TDIR $texfile
-)
+) > /dev/null
 
 outfile=${texfile:r}.pdf
 if [[ -f $outfile ]]; then

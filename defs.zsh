@@ -52,6 +52,7 @@ function text-pipeline-html {
       --standalone \
       --metadata link-citations=true \
       --metadata linkReferences=true \
+      --metadata-file meta.yaml \
       --section-divs \
       --number-sections \
       --csl='paper-components/agu.csl' \

@@ -1,0 +1,14 @@
+#!/usr/bin/env zsh
+
+cd "$PAPER_DIR"
+# Could do a recursive upwards search for where this is defined...
+source "$PAPER_DIR/paper-defs.zsh"
+
+figureDefs="text/includes.yaml"
+collect_dir="collected-figures"
+
+# Collect figures into centralized directory
+figurator collect \
+  $figureDefs \
+  $collect_dir \
+  ${FIGURE_SEARCH_DIRECTORIES}
