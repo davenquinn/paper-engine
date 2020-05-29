@@ -7,7 +7,10 @@ cd "$PAPER_DIR"
 source paper-components/defs.zsh
 source "$PAPER_DIR/paper-defs.zsh"
 
-paper get-text --abstract 2>/dev/null \
+(
+  paper get-text --abstract 2>/dev/null
+  echo "\n# References\n\n"
+) \
 | prepare-crossref \
 | pandoc \
    --from markdown+pipe_tables \
