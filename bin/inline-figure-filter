@@ -60,7 +60,7 @@ def comment(el, doc):
         fp = "paper-components/templates/empty.png"
     caption = captions.get(fig_id, "")
 
-    url = "file://"+join(getcwd(), str(fp))
+    url = str(fp)
 
     if el_type == 'fig':
         return convert_text("!["+caption+"]("+url+"){#fig:"+fig_id+"}")

@@ -4,6 +4,7 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   -a|--abstract) abstract=1;;
   -A|--appendices) appendices=1;;
   -c|--captions) captions=1;;
+  --absolute) absolute=1;;
   --dry-run) dry_run=1;;
   *) echo "Unknown parameter passed: $1"; exit 1;;
 esac; shift; done
@@ -14,12 +15,15 @@ files=()
 files+=(text/chapters/*.md)
 [ $appendices ] && files+=(text/appendices/*.md(N))
 [ $captions ] && files+=(text/figure-captions.md)
+
+prefix=""
+[ $absolute ] && prefix="$(pwd)/"
+
 for fn in ${files[@]}; do
 if [ $dry_run ]; then
-    echo $fn
+    echo "$prefix$fn"
 else
     cat $fn
     echo "\n\n"
 fi
 done
-

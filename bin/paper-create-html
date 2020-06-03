@@ -21,7 +21,7 @@ source "$PAPER_DIR/paper-defs.zsh"
    --metadata linkReferences=true \
    --metadata figure-captions=text/figure-captions.md \
    --metadata includes-spec=text/includes.yaml \
-   --metadata includes-dir=output/converted-includes \
+   --metadata includes-dir=converted-includes \
    --metadata-file text/meta.yaml \
    --section-divs \
    --number-sections \
