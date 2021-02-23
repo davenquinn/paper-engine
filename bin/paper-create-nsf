@@ -26,6 +26,9 @@ outdir="output"
 
 mkdir -p $build $collectDir
 
+# Remove previously linked figures (NOTE: we should really
+# do this in the figurator module)
+rm -f "$collectDir/"*
 # Collect figures into centralized directory
 figurator collect \
   $figureDefs \
