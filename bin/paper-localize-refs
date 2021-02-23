@@ -11,6 +11,12 @@ refs="$build/references.txt"
 paper get-text --captions \
 | paper extract-refs \
 > $refs
+
+if [ -z $BIBTEX_LIBRARY ]; then
+  echo "Environment variable BIBTEX_LIBRARY not found, so filtering cannot proceed."
+  exit 0
+fi
+
 bib-filter --clean \
   --keys $refs $BIBTEX_LIBRARY $bibfile
 
