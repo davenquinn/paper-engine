@@ -1,0 +1,19 @@
+\begin{<< env  >>}
+  \centering
+  <# if two_column #>
+  \begin{adjustbox}{width=\textwidth}
+  <# endif #>
+  \begin{threeparttable}
+    <<content >>
+    <# if notes -#>
+    \begin{tablenotes}
+      <# for k,note in notes.items() -#>
+      \item[<<k>>] <<note>>
+      <#- endfor #>
+    \end{tablenotes}
+    <#- endif #>
+  \end{threeparttable}
+  <# if two_column #>
+  \end{adjustbox}
+  <# endif #>
+\end{<< env  >>}
