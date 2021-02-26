@@ -3,8 +3,6 @@
 source "$PAPER_DIR/paper-defs.zsh"
 source "$PAPER_COMPONENTS/defs.zsh"
 
-paper check-deps
-
 # Text file locations
 figureDefs="text/includes.yaml"
 bibfile="text/references.bib"
@@ -24,16 +22,20 @@ captions="$build/figure-captions.tex"
 collectDir="collected-figures"
 outdir="output"
 
-# Remove previously linked figures (NOTE: we should really
-# do this in the figurator module)
-rm -rf "$collectDir"
-mkdir -p $build $collectDir
+if [ "$1" = "--init" ]; then
+  # Check dependencies
+  paper check-deps
 
-# Collect figures into centralized directory
-figurator collect \
-  $figureDefs \
-  $collectDir \
-  ${FIGURE_SEARCH_DIRECTORIES}
+  # Remove previously linked figures (NOTE: we should really
+  # do this in the figurator module)
+  mkdir -p $build $collectDir
+
+  # Collect figures into centralized directory
+  figurator collect \
+    $figureDefs \
+    $collectDir \
+    ${FIGURE_SEARCH_DIRECTORIES}
+fi
 
 # Build project summary
 cat text/project-summary.md \
@@ -56,9 +58,15 @@ paper get-text \
 | figurator "${figureArgs[@]}" \
 > $body
 
-# Set up template
-cp "$defs/draft.tex" $texfile
-cp  text/title-block.tex build
+
+rm -f "$texfile"
+echo "" \
+| pandoc \
+  --template $defs/draft.tex \
+  --metadata-file text/meta.yaml \
+  --from latex --to latex \
+> "$texfile"
+
 cat "$defs/preamble"/*.tex > "$preamble"
 
 paper localize-refs
