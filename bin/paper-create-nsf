@@ -24,11 +24,11 @@ captions="$build/figure-captions.tex"
 collectDir="collected-figures"
 outdir="output"
 
-mkdir -p $build $collectDir
-
 # Remove previously linked figures (NOTE: we should really
 # do this in the figurator module)
-rm -f "$collectDir/"*
+rm -rf "$collectDir"
+mkdir -p $build $collectDir
+
 # Collect figures into centralized directory
 figurator collect \
   $figureDefs \
