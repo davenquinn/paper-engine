@@ -1,0 +1,47 @@
+html, body
+  --background: white
+  --background-1: #aaa
+  --background-2: #ccc
+  --background-3: #eee
+  --foreground-dim: #444
+  --foreground-color: black
+  --accent: dodgerblue
+  --accent-light: lighten(dodgerblue, 80%)
+
+@media (prefers-color-scheme: dark)
+  html, body
+    $dark-base=#121416
+    $dark-fg=#aab7be
+    --background-color: $dark-base
+    --background-1: lighten($dark-base, 10%)
+    --background-2: lighten($dark-base, 20%)
+    --background-3: lighten($dark-base, 30%)
+    --foreground-dim: darken($dark-fg, 40%)
+    --foreground-color: $dark-fg
+    --accent: darken(dodgerblue, 40%)
+    --accent-light: darken(dodgerblue, 40%)
+
+body
+  margin 0
+  padding 0
+
+.document
+  height 100vh
+  width 100vw
+  display flex
+  flex-direction row
+
+#nav-container
+  width 30%
+  max-width 300px
+  height 100vh
+  overflow-y scroll
+
+#document-container
+  flex-grow 1
+  height 100vh
+  overflow-y scroll
+  scroll-behavior: smooth;
+  padding 1em 2em
+
+@require "./paper.styl"
