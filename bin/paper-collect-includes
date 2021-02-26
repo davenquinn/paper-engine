@@ -5,7 +5,7 @@ cd "$PAPER_DIR"
 source "$PAPER_DIR/paper-defs.zsh"
 
 figureDefs="text/includes.yaml"
-collect_dir="collected-figures"
+collect_dir=${collect_dir:-"collected-figures"}
 
 # Collect figures into centralized directory
 figurator collect \
