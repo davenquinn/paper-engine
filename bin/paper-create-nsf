@@ -70,6 +70,7 @@ echo "" \
 cat "$defs/preamble"/*.tex > "$preamble"
 
 paper localize-refs
+cat text/references/*.bib > build/references.bib
 
 bibtex $auxfile
 

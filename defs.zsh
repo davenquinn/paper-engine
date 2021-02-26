@@ -74,7 +74,7 @@ function text-pipeline-docx {
       --from markdown \
       --to docx+styles \
       --reference-doc="$pc/templates/reference.docx" \
-      --bibliography="$PAPER_DIR/text/references.bib" \
+      --bibliography="$PAPER_DIR/build/references.bib" \
       --csl="$pc/agu.csl" \
       --filter "$pc/bin/figure-ref-filter" \
       --filter pandoc-comments \

@@ -5,5 +5,5 @@ cd "$PAPER_DIR"
 source paper-components/defs.zsh
 source "$PAPER_DIR/paper-defs.zsh"
 
-paper-components/bin/rev-text | text-pipeline-docx -o "$PAPER_DIR/output/$name.docx"
+paper rev-text | text-pipeline-docx -o "$PAPER_DIR/output/$name.docx"
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 
+
 pushd "$PAPER_DIR/text"
 dir="."
 # If we don't have a revision, use current text
@@ -24,26 +25,12 @@ function text() {
   echo "\n\n"
 }
 
-head "Key Points"
-text $dir/key-points.md
-head "Abstract"
-text $dir/abstract.md
+head "Project Summary"
+text $dir/project-summary.md
 
-# Body text
-paths=($(git ls-tree -r --full-name --name-only $rev chapters))
-for fn in $paths; do
-  text $fn
-done
+head "Project Description"
 
-# Appendices
-paths=($(git ls-tree -r --full-name --name-only $rev appendices))
-if [[ ${#a} ]]; then
-  head "Appendices"
-  for fn in $paths; do
-    # Convert to submodules
-    text $fn
-  done
-fi
+text $dir/chapters/main.md
 
 text $dir/figure-captions.md
 head "References"

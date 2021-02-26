@@ -37,6 +37,7 @@
 \vspace{-1em}
 
 {
+\setcounter{secnumdepth}{0}
 \titleformat{\section}[runin]{\bfseries}{\thesection}{2pt}{}{~~~~}
 \titleformat{\subsection}[runin]{\small\bfseries}{\thesubsubsection}{2pt}{}[~~~~]%
 \input{build/project-summary.tex}
@@ -56,6 +57,9 @@
 \noindent{{\textbf{Project Description}: $title$}}
 \end{center}
 
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
 \input{build/body.tex}
 
 \pagebreak
@@ -63,7 +67,7 @@
 \renewcommand{\thepage} {E--\arabic{page}}
 
 \bibliographystyle{paper-components/agu-template/agufull08.bst}
-\bibliography{text/references}
+\bibliography{build/references}
 
 \end{document}
 
