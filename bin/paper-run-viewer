@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+
+cd "${0:h:h}/html-viewer"
+npm install
+npm run dev

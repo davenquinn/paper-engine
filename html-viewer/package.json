@@ -1,0 +1,19 @@
+{
+  "name": "paper-html-viewer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "browser.js",
+  "dependencies": {
+    "jquery": "^3.6.0",
+    "parcel-bundler": "^1.12.0",
+    "typescript": "^3.9.3",
+    "typeset": "^0.2.9"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "mocha",
+    "dev": "parcel index.html"
+  },
+  "author": "",
+  "license": "ISC"
+}
