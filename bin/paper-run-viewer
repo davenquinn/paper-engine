@@ -1,5 +1,16 @@
 #!/usr/bin/env zsh
 
-cd "${0:h:h}/html-viewer"
+build_dir="$PAPER_DIR/viewer"
+
+# Copy files to paper directory
+rsync -a "$PAPER_COMPONENTS/html-viewer/"  "$build_dir/"
+
+cd "$build_dir"
 npm install
-npm run dev
+
+paper collect-includes
+# Convert images into converted-includes
+paper convert-includes collected-figures/* output/tables/*
+#mkdir -p viewer/build
+
+paper watch-text & npm run dev

@@ -2,14 +2,8 @@
 
 cd "$PAPER_DIR"
 
-paper collect-includes
-# Convert images into converted-includes
-paper convert-includes collected-figures/* output/tables/*
-
-
-mkdir -p viewer/build
 #(cd dist && ln -s ../../output/converted-includes converted-includes)
-ln -s "$PAPER_DIR/output" "${0:h}/build/output"
+#ln -s "$PAPER_DIR/output" "${0:h}/build/output"
 
 
 # flock for atomic writes: https://unix.stackexchange.com/questions/274498/performing-atomic-write-operations-in-a-file-in-bash
