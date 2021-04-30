@@ -8,12 +8,21 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   *) echo "Unknown parameter passed: $1"; exit 1;;
 esac; shift; done
 
+# need to make this override-able...
 cd $PAPER_DIR
+source paper-defs.zsh
+
+## Assemble a list of files
 files=()
 [ $abstract ] && files+=(text/abstract.md)
-files+=(text/chapters/*.md)
+
+# Use variables by default if set
+files+=${main_text:-(text/chapters/*.md)}
+
+
 [ $appendices ] && files+=(text/appendices/*.md(N))
 [ $captions ] && files+=(text/figure-captions.md)
+
 for fn in ${files[@]}; do
 if [ $dry_run ]; then
     echo $fn
