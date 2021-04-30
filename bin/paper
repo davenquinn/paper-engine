@@ -5,12 +5,12 @@ if [ -z "$PAPER_DIR" ]; then
   # Find directory
   while [ ! -e "$dn/paper-defs.zsh" ]; do
     if [ "$dn" = "/" ]; then
-      echo -e "$(tput bold)paper-defs.zsh$(tput sgr0) not found in $(pwd) or any parent directory."
+      >&2 echo "$(tput bold)paper-defs.zsh$(tput sgr0) not found in $(pwd) or any parent directory."
       exit 1
     fi
     dn="${dn:h}"
   done
-  echo -e "$(tput bold)Found paper directory$(tput sgr0): $dn"
+  >&2 echo "$(tput bold)Found paper directory$(tput sgr0): $dn"
 
   export PAPER_DIR="$dn"
 fi
