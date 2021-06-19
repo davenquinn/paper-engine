@@ -46,5 +46,5 @@ if [[ ${#a} ]]; then
 fi
 
 text $dir/figure-captions.md
-head "References"
+#head "References"
 popd

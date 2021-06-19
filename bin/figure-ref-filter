@@ -2,30 +2,44 @@
 
 from panflute import *
 from sys import stderr
+from pathlib import Path
 
 s = 1
 in_figure_section = False
+
+
 def action(elem, doc):
     global s, in_figure_section
     if isinstance(elem, Header):
         if elem.level == 1:
             text = stringify(elem).lower()
-            if text == 'figure captions':
+            if text == "figure captions":
                 in_figure_section = True
             else:
                 in_figure_section = False
-            if text in ['figure captions', 'abstract', 'references', 'key points']:
+            if text in ["figure captions", "abstract", "references", "key points"]:
                 new_el = Div(elem)
-                new_el.attributes['custom-style'] = 'UnnumberedSection'
+                new_el.attributes["custom-style"] = "UnnumberedSection"
                 return new_el
         if elem.level == 2 and in_figure_section:
             txt = stringify(elem)
             elem.content = [Str("Figure"), Space(), Str(str(s))]
-            elem.attributes['custom-style'] = 'figure-id'
+            elem.attributes["custom-style"] = "figure-id"
             new_el = Div(elem)
-            new_el.attributes['identifier']='fig:'+txt
-            return convert_text("!["+txt+"](paper-components/templates/empty.png){#fig:"+txt+"}")
-            s+=1
+            new_el.attributes["identifier"] = "fig:" + txt
 
-if __name__ == '__main__':
+            # Check to see if we can put the actual figure there
+            includes_dir = doc.get_metadata("includes-dir")
+            fp = "paper-components/templates/empty.png"
+            if includes_dir is not None:
+                try:
+                    fp = next(Path(includes_dir).glob(txt + ".*"))
+                except StopIteration as err:
+                    pass
+
+            return convert_text("![" + txt + "](" + str(fp) + "){#fig:" + txt + "}")
+            s += 1
+
+
+if __name__ == "__main__":
     run_filter(action)

@@ -43,6 +43,7 @@ def prepare(doc):
 
 def comment(el, doc):
     includes_dir = doc.get_metadata('includes-dir')
+    includes_only = doc.get_metadata('includes-only') 
 
     is_relevant = type(el) == RawBlock
     if not is_relevant:
@@ -53,6 +54,9 @@ def comment(el, doc):
     id = match.group(1)
     el_type = match.group(2)
     fig_id = match.group(3)
+
+    if includes_only is not None and (el_type != includes_only):
+        return
 
     try:
         fp = next(Path(includes_dir).glob(fig_id+".*"))
