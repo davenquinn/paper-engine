@@ -12,8 +12,8 @@ paper get-text --captions \
 | paper extract-refs \
 > $refs
 
-if [ -z $BIBTEX_LIBRARY ]; then
-  echo "Environment variable BIBTEX_LIBRARY not found, so filtering cannot proceed."
+if [ ! -f $BIBTEX_LIBRARY ]; then
+  echo "$BIBTEX_LIBRARY not found, so filtering cannot proceed."
   exit 0
 fi
 
