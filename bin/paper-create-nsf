@@ -69,6 +69,9 @@ echo "" \
 
 cat "$defs/preamble"/*.tex > "$preamble"
 
+# References
+cp "$PAPER_COMPONENTS/agu-template/agufull08.bst" "$build/agufull08.bst"
+
 paper localize-refs
 cat text/references/*.bib > build/references.bib
 

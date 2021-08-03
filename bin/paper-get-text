@@ -10,7 +10,6 @@ while [[ "$#" -gt 0 ]]; do case $1 in
 esac; shift; done
 
 # need to make this override-able...
-cd $PAPER_DIR
 source paper-defs.zsh
 
 ## Assemble a list of files
