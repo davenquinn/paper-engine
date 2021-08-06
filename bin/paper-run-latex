@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+
+source "$PAPER_COMPONENTS/defs.zsh"
+
+run-latex "$1" "$2"
