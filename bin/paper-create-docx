@@ -2,8 +2,8 @@
 # Uses new signature in which 'PAPER_DIR' environment variable must be defined
 cd "$PAPER_DIR"
 
-source paper-components/defs.zsh
 source "$PAPER_DIR/paper-defs.zsh"
+source "$PAPER_COMPONENTS/defs.zsh"
 
-paper rev-text | text-pipeline-docx -o "$PAPER_DIR/output/$name.docx"
+paper get-text | text-pipeline-docx -o "$PAPER_DIR/output/$name.docx"
 

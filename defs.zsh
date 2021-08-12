@@ -30,6 +30,19 @@ function text-pipeline {
     --filter pandoc-crossref
 }
 
+function text-pipeline-biblatex {
+ prepare-crossref \
+ | wrap-si-units \
+ | sed "s/º/°/g" \
+ | pandoc \
+    --from markdown \
+    --to latex \
+    --biblatex \
+    --metadata=draft:true \
+    --filter pandoc-comments \
+    --filter pandoc-crossref
+}
+
 function mark-inline-figures {
   sed -r 's/<!--\[\[\[(.+)\]\]\]-->/\\inlinefigure\{\1\}/g'
 }
@@ -65,7 +78,7 @@ function text-pipeline-html {
       $@
 }
 
-pc=$PAPER_DIR/paper-components
+pc="$PAPER_COMPONENTS"
 
 function text-pipeline-docx {
    prepare-crossref \

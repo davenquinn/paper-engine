@@ -1,16 +1,18 @@
 \documentclass[letterpaper, 11pt]{article}
 \input{build/preamble.tex}
 
+\addbibresource{build/references.bib}
+
 
 \titleformat{\section}{\Times\large\bfseries}{\thesection}{1em}{}
 \titleformat{\subsection}{\Times\normalsize\bfseries}{\thesubsection}{3pt}{}
-\titleformat{\subsubsection}[runin]{\Times\small\bfseries}{\thesubsubsection}{3pt}{}[~~~~]
+\titleformat{\subsubsection}[runin]{\Times\small\bfseries}{\thesubsubsection}{3pt}{}
 
-\newenvironment{summary}{%
-\titleformat{\section}{\Times\large\bfseries}{\thesection}{1em}{}%
-\titleformat{\subsection}{\Times\normalsize\bfseries}{\thesubsection}{3pt}{}%
-\titleformat{\subsubsection}[runin]{\Times\small\bfseries\textit}{\thesubsubsection}{3pt}{}[~~~~]%
-}{}
+\newenvironment{summary}{
+\titleformat{\section}{\Times\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\Times\normalsize\bfseries}{\thesubsection}{3pt}{}
+\titleformat{\subsubsection}[runin]{\Times\small\bfseries\textit}{\thesubsubsection}{3pt}{}
+}
 
 \setlength{\droptitle}{-40pt}
 \pretitle{\begin{flushleft}\Gotham\bfseries\Large}
@@ -30,6 +32,7 @@
 %\cfoot{\thepage}
 
 \begin{document}
+\begin{NoHyper}
 
 \begin{center}
 \noindent{{\textbf{Project Summary}: $title$}}
@@ -66,8 +69,8 @@
 \pagenumbering{arabic}
 \renewcommand{\thepage} {E--\arabic{page}}
 
-\bibliographystyle{build/agufull08.bst}
-\bibliography{build/references}
+\printbibliography
 
+\end{NoHyper}
 \end{document}
 

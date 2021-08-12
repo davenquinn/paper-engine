@@ -21,7 +21,8 @@
 \usepackage{multirow}
 \usepackage{array,booktabs,tabularx}
 \usepackage{setspace}
-\usepackage{natbib}
+\usepackage[style=numeric-comp,sorting=none,maxnames=5,giveninits]{biblatex}
+%\usepackage[numbers,sort&compress]{natbib}
 \usepackage{textcomp}
 \usepackage{tablefootnote}
 \usepackage{lineno}
@@ -62,3 +63,18 @@
 
 \newfloat{plate}{htpb}{plt} % second argument should be {htbp} in your actual document
 \floatname{plate}{Plate}
+
+% Don't do quotes for articles
+%\DeclareFieldFormat[article, inbook]{title}{\textit{#1}} 
+\renewcommand*{\newunitpunct}{\addcomma\space}
+\AtEveryBibitem{%
+  \clearlist{language}%
+  \clearlist{publisher}%
+  \clearfield{pagetotal}%
+}
+\renewbibmacro{in:}{}
+
+\DeclareFieldFormat
+  [article,inbook,incollection,inproceedings,patent,thesis,unpublished]
+  {title}{#1}
+\DeclareFieldFormat{pages}{#1}

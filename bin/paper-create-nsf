@@ -30,20 +30,16 @@ if [ "$1" = "--init" ]; then
   # do this in the figurator module)
   mkdir -p $build $collectDir
 
-  # Collect figures into centralized directory
-  figurator collect \
-    $figureDefs \
-    $collectDir \
-    ${FIGURE_SEARCH_DIRECTORIES}
+  paper collect-includes "$figureDefs" "$collectDir"
 fi
 
 # Build project summary
 cat text/project-summary.md \
-| text-pipeline \
+| text-pipeline-biblatex \
 > "$build/project-summary.tex"
 
 cat text/figure-captions.md \
-| text-pipeline \
+| text-pipeline-biblatex \
 > $captions
 
 figureArgs=( inline $figureDefs  \
@@ -54,12 +50,14 @@ figureArgs=( inline $figureDefs  \
 
 paper get-text \
 | mark-inline-figures \
-| text-pipeline \
+| text-pipeline-biblatex \
 | figurator "${figureArgs[@]}" \
 > $body
 
 
 rm -f "$texfile"
+
+# Can override bibstyle with bib-style variable
 echo "" \
 | pandoc \
   --template $defs/draft.tex \
@@ -75,7 +73,9 @@ cp "$PAPER_COMPONENTS/agu-template/agufull08.bst" "$build/agufull08.bst"
 paper localize-refs
 cat text/references/*.bib > build/references.bib
 
-bibtex $auxfile
+bib_aux="${auxfile:r}"
+echo "$bib_aux"
+biber "$bib_aux"
 
 dest="$outdir/${build_dest:t}"
 run-latex $texfile $build_dest
