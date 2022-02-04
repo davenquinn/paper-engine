@@ -115,7 +115,7 @@ a=($app_/*.md(N))
 if [[ -d $app_ && ${#a} ]]; then
   echo "Processing appendices"
   aggregate-text ${a}  \
-  | sed 's/^\\section\{(Introduction)\}/\\invisiblesection\{\1\}/g' \
+  | sed -r 's/^\\section\{(Introduction)\}/\\invisiblesection\{\1\}/g' \
   | mark-inline-figures \
   | text-pipeline \
   | figurator inline \

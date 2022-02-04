@@ -24,6 +24,6 @@ paper rev-text \
   --filter "$pc/bin/inline-figure-filter" \
   --filter pandoc-comments \
   --filter pandoc-crossref \
-  --filter pandoc-citeproc \
+  --citeproc \
   $@ -o "$PAPER_DIR/output/$name.docx"
 
