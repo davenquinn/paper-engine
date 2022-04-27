@@ -16,8 +16,28 @@ source paper-defs.zsh
 files=()
 [ $abstract ] && files+=(text/abstract.md)
 
-# Use variables by default if set
-files+=${main_text:-(text/chapters/*.md)}
+if [ ! -z ${main_text+x} ]; then
+  # If we have a 'main_text' variable, use that as a single file
+  if [ -d $main_text ]; then
+    # If main_text is a directory, then use that
+    files+=($main_text/*.md)
+  else
+    # If main text is a file, add that single file
+    files+=($main_text)
+  fi
+elif [ -d "text/chapters" ]; then
+  # By default we look for main text in the 'chapters' folder
+  files+=(text/chapters/*.md)
+else
+  # If that doesn't exist we just grab all the files in the 'text' folder
+  # that aren't figure captions and abstracts
+  # Use variables by default if set
+  for f in text/*.md; do
+    if [ $f != "text/figure-captions.md" ] && [ $f != "text/abstract.md" ]; then
+      files+=($f)
+    fi
+  done
+fi
 
 
 [ $appendices ] && files+=(text/appendices/*.md(N))
