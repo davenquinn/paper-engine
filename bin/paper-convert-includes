@@ -1,0 +1,32 @@
+#!/usr/bin/env zsh
+
+cd "$PAPER_DIR"
+
+includes="output/converted-includes"
+
+mkdir -p "$includes"
+
+for f in collected-figures/* output/tables/*; do
+  out="$includes/${f:t:r}.png"
+  echo $f
+  ext=${f:t:e}
+  if [ $ext = "png" ]; then
+    cp $f $out
+    echo "...copying"
+  if [ $ext = "jpg" ]; then
+    cp $f $out
+    echo "...copying"
+  elif [ $ext = "pdf" ]; then
+    gs \
+      -sDEVICE=pngalpha \
+      -dFirstPage=1 \
+      -dLastPage=1 \
+      -dNOPAUSE \
+      -dBATCH \
+      -sOutputFile="$out" -r192 "$f" > /dev/null
+    [ $? -eq 0 ] && echo "...success!" || echo "..failure!"
+  else
+    echo ""
+  fi
+
+done

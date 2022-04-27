@@ -1,0 +1,94 @@
+#!/usr/bin/env zsh
+
+source "$PAPER_DIR/paper-defs.zsh"
+source "$PAPER_COMPONENTS/defs.zsh"
+
+# Text file locations
+figureDefs="text/includes.yaml"
+bibfile="text/references.bib"
+
+# Build file locations
+build="build"
+body="$build/body.tex"
+texfile="$build/draft.tex"
+preamble="$build/preamble.tex"
+build_dest="$build/$name.pdf"
+auxfile="${build_dest:r}.aux"
+defs="$PAPER_COMPONENTS/nsf-proposal"
+captions="$build/figure-captions.tex"
+
+
+# Output locations
+collectDir="collected-figures"
+outdir="output"
+
+if [ "$1" = "--init" ]; then
+  # Check dependencies
+  paper check-deps
+
+  # Remove previously linked figures (NOTE: we should really
+  # do this in the figurator module)
+  mkdir -p $build $collectDir
+
+  paper collect-includes "$figureDefs" "$collectDir"
+fi
+
+# Build project summary
+cat text/project-summary.md \
+| text-pipeline-biblatex \
+> "$build/project-summary.tex"
+
+cat text/figure-captions.md \
+| text-pipeline-biblatex \
+> $captions
+
+figureArgs=( inline $figureDefs  \
+              --template-dir $defs/includes \
+              --captions $captions )
+
+[ -d $collectDir ] && figureArgs+=(--collect-dir $collectDir)
+
+paper get-text \
+| mark-inline-figures \
+| text-pipeline-biblatex \
+| figurator "${figureArgs[@]}" \
+> $body
+
+
+rm -f "$texfile"
+
+# Can override bibstyle with bib-style variable
+echo "" \
+| pandoc \
+  --template $defs/draft.tex \
+  --metadata-file text/meta.yaml \
+  --from latex --to latex \
+> "$texfile"
+
+cat "$defs/preamble"/*.tex > "$preamble"
+
+# References
+cp "$PAPER_COMPONENTS/agu-template/agufull08.bst" "$build/agufull08.bst"
+
+paper localize-refs
+cat text/references/*.bib > build/references.bib
+
+bib_aux="${auxfile:r}"
+echo "$bib_aux"
+biber "$bib_aux"
+
+dest="$outdir/${build_dest:t}"
+run-latex $texfile $build_dest
+mkdir -p "$outdir"
+mv "$build_dest" "$dest"
+
+#gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=1 \
+  #-dLastPage=1 -sOutputFile="$outdir/project-summary.pdf" "$dest"
+#gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=2 \
+  #-dLastPage=10 -sOutputFile="$outdir/project-description.pdf" "$dest"
+#gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=11 \
+  #-dLastPage=13 -sOutputFile="$outdir/bibliography.pdf" "$dest"
+
+tag --set paper-draft $outfile
+
+

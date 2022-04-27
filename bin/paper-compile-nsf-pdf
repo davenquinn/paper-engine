@@ -1,0 +1,24 @@
+#!/usr/bin/env zsh
+
+source "$PAPER_DIR/paper-defs.zsh"
+source "$PAPER_COMPONENTS/defs.zsh"
+
+# Build file locations
+build="build"
+texfile="$build/draft.tex"
+build_dest="$build/$name.pdf"
+auxfile="${build_dest:r}.aux"
+
+
+# Output locations
+outdir="output"
+
+bib_aux="${auxfile:r}"
+biber "$bib_aux"
+
+dest="$outdir/${build_dest:t}"
+run-latex $texfile $build_dest
+mkdir -p "$outdir"
+mv "$build_dest" "$dest"
+
+tag --set paper-draft $outfile

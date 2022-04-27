@@ -1,0 +1,21 @@
+#!/usr/bin/env zsh
+
+cd "$PAPER_DIR"
+# Could do a recursive upwards search for where this is defined...
+source "$PAPER_DIR/paper-defs.zsh"
+
+figureDefs="${1:-"text/includes.yaml"}"
+collect_dir="${2:-"${collect_dir:-"collected-figures"}"}"
+
+if [ -z $FIGURE_SEARCH_DIRECTORIES ]; then
+  echo "Not collecting includes because FIGURE_SEARCH_DIRECTORIES is not defined" >&2
+  exit 0
+fi
+
+mkdir -p "$collect_dir"
+
+# Collect figures into centralized directory
+figurator collect \
+  "$figureDefs" \
+  "$collect_dir" \
+  ${FIGURE_SEARCH_DIRECTORIES}
