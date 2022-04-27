@@ -92,7 +92,7 @@ function text-pipeline-docx {
       --filter "$pc/bin/figure-ref-filter" \
       --filter pandoc-comments \
       --filter pandoc-crossref \
-      --filter pandoc-citeproc \
+      --citeproc \
       $@
 }
 
