@@ -1,12 +1,10 @@
 #!/usr/bin/env zsh
 
-paper collect-includes
-# Convert images into converted-includes
-bin/create-images collected-figures/* output/tables/*
+cd "$PAPER_DIR"
 
-mkdir -p viewer/build
 #(cd dist && ln -s ../../output/converted-includes converted-includes)
-(cd viewer/build && ln -s ../../paper-components && ln -s ../../output)
+#ln -s "$PAPER_DIR/output" "${0:h}/build/output"
+
 
 # flock for atomic writes: https://unix.stackexchange.com/questions/274498/performing-atomic-write-operations-in-a-file-in-bash
 paper get-text --dry-run --absolute 2&>/dev/null \

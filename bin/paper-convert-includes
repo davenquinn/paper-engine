@@ -6,14 +6,14 @@ includes="output/converted-includes"
 
 mkdir -p "$includes"
 
-for f in collected-figures/* output/tables/*; do
+for f in collected-figures/* output/tables/* ; do
   out="$includes/${f:t:r}.png"
   echo $f
   ext=${f:t:e}
   if [ $ext = "png" ]; then
     cp $f $out
     echo "...copying"
-  if [ $ext = "jpg" ]; then
+  elif [ $ext = "jpg" ]; then
     cp $f $out
     echo "...copying"
   elif [ $ext = "pdf" ]; then
@@ -28,5 +28,4 @@ for f in collected-figures/* output/tables/*; do
   else
     echo ""
   fi
-
 done

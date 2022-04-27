@@ -12,6 +12,10 @@ else
   rev=$1
 fi
 
+function unnumbered-head() {
+echo "# $@\n\n"
+}
+
 function head() {
 echo "# $@ {-}\n\n"
 }
@@ -25,13 +29,50 @@ function text() {
   echo "\n\n"
 }
 
-head "Project Summary"
-text $dir/project-summary.md
+## These two NSF-grant specific functions need to be removed
+if [ -f $dir/project-summary.md ]; then
+  head "Project summary"
+  text $dir/project-summary.md
+fi
+if [ -f $dir/project-description.md ]; then
+  head "Project Description"
+  text $dir/chapters/project-description.md
+fi
+## File
 
-head "Project Description"
+if [ -f $dir/key-points.md ]; then
+  unnumbered-head "Key Points"
+  text $dir/key-points.md
+fi
+unnumbered-head "Abstract"
+text $dir/abstract.md
 
-text $dir/chapters/main.md
+# Body text
+if [ -d $dir/chapters ]; then
+  paths=($(git ls-tree -r --full-name --name-only $rev chapters))
+  for fn in $paths; do
+    text $fn
+  done
+else
+  paths=($(git ls-tree -r --full-name --name-only $rev .))
+  for fn in $paths; do
+    [ $fn = "figure-captions.md" ] && continue
+    [ $fn = "abstract.md" ] && continue
+    text $fn
+  done  
+fi
+
+
+# Appendices
+paths=($(git ls-tree -r --full-name --name-only $rev appendices))
+if [[ ${#a} ]]; then
+  head "Appendices"
+  for fn in $paths; do
+    # Convert to submodules
+    text $fn
+  done
+fi
 
 text $dir/figure-captions.md
-head "References"
+#head "References"
 popd

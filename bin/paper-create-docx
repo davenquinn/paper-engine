@@ -5,5 +5,26 @@ cd "$PAPER_DIR"
 source "$PAPER_DIR/paper-defs.zsh"
 source "$PAPER_COMPONENTS/defs.zsh"
 
-paper get-text | text-pipeline-docx -o "${1:-"$PAPER_DIR/output/$name.docx"}"
+pc=$PAPER_DIR/paper-components
+
+paper rev-text \
+| prepare-crossref \
+| sed "s/º/°/g" \
+| pandoc \
+  --from markdown \
+  --to docx+styles \
+  --metadata-file=$PAPER_DIR/text/meta.yaml \
+  --metadata includes-spec=$PAPER_DIR/text/includes.yaml \
+  --metadata includes-dir="$PAPER_DIR/output/converted-includes" \
+  --metadata includes-only="tbl" \
+  --reference-doc="$pc/templates/reference.docx" \
+  --bibliography="$PAPER_DIR/text/references.bib" \
+  --csl="$pc/agu.csl" \
+  --filter "$pc/bin/figure-ref-filter" \
+  --filter "$pc/bin/inline-figure-filter" \
+  --filter pandoc-comments \
+  --filter pandoc-crossref \
+  --citeproc \
+  -o "$PAPER_DIR/output/$name.docx" \
+  $@
 
