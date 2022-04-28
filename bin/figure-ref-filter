@@ -7,6 +7,8 @@ from pathlib import Path
 s = 1
 in_figure_section = False
 
+paper_components = Path(__file__).parent.parent
+
 
 def action(elem, doc):
     global s, in_figure_section
@@ -30,7 +32,7 @@ def action(elem, doc):
 
             # Check to see if we can put the actual figure there
             includes_dir = doc.get_metadata("includes-dir")
-            fp = "paper-components/templates/empty.png"
+            fp = paper_components / "templates/empty.png"
             if includes_dir is not None:
                 try:
                     fp = next(Path(includes_dir).glob(txt + ".*"))

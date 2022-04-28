@@ -2,11 +2,12 @@
 
 cd "$PAPER_DIR"
 
-includes="output/converted-includes"
+collect_dir="${1:-"collected-figures"}"
+includes="${2:-"output/converted-includes"}"
 
 mkdir -p "$includes"
 
-for f in collected-figures/* output/tables/* ; do
+for f in $collect_dir/* ; do
   out="$includes/${f:t:r}.png"
   echo $f
   ext=${f:t:e}

@@ -1,9 +1,0 @@
-#!/usr/bin/env zsh
-# Uses new signature in which 'PAPER_DIR' environment variable must be defined
-cd "$PAPER_DIR"
-
-source "$PAPER_DIR/paper-defs.zsh"
-source "$PAPER_COMPONENTS/defs.zsh"
-
-paper get-text | text-pipeline-docx -o "${1:-"$PAPER_DIR/output/$name.docx"}"
-

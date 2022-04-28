@@ -5,7 +5,26 @@ cd "$PAPER_DIR"
 source "$PAPER_DIR/paper-defs.zsh"
 source "$PAPER_COMPONENTS/defs.zsh"
 
-pc=$PAPER_DIR/paper-components
+includes="$PAPER_DIR/build/converted-includes"
+
+pc="$PAPER_COMPONENTS"
+
+if [ $1 = "--full" ]; then
+  shift
+  
+  figure_defs="text/includes.yaml"
+  collect_dir="build/figures"
+  mkdir -p $collect_dir
+  # Collect figures into centralized directory
+  figurator collect \
+    $figure_defs \
+    $collect_dir \
+    ${FIGURE_SEARCH_DIRECTORIES}
+
+  paper convert-includes $collect_dir $includes
+
+  paper localize-refs
+fi
 
 paper rev-text \
 | prepare-crossref \
@@ -15,7 +34,7 @@ paper rev-text \
   --to docx+styles \
   --metadata-file=$PAPER_DIR/text/meta.yaml \
   --metadata includes-spec=$PAPER_DIR/text/includes.yaml \
-  --metadata includes-dir="$PAPER_DIR/output/converted-includes" \
+  --metadata includes-dir=$includes \
   --metadata includes-only="tbl" \
   --reference-doc="$pc/templates/reference.docx" \
   --bibliography="$PAPER_DIR/text/references.bib" \

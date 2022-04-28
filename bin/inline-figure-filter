@@ -29,6 +29,8 @@ with optional externally-loaded figure captions.
 
 err = lambda x: print(x, file=stderr)
 
+paper_components = Path(__file__).parent.parent
+
 captions = None
 
 shim_table = """
@@ -72,7 +74,7 @@ def comment(el, doc):
     try:
         fp = next(Path(includes_dir).glob(fig_id + ".*"))
     except StopIteration as err:
-        fp = "paper-components/templates/empty.png"
+        fp = paper_components / "templates/empty.png"
     caption = captions.get(fig_id, "")
 
     url = str(fp)

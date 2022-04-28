@@ -44,8 +44,10 @@ if [ -f $dir/key-points.md ]; then
   unnumbered-head "Key Points"
   text $dir/key-points.md
 fi
-unnumbered-head "Abstract"
-text $dir/abstract.md
+if [ -f $dir/abstract.md ]; then
+  unnumbered-head "Abstract"
+  text $dir/abstract.md
+fi
 
 # Body text
 if [ -d $dir/chapters ]; then
@@ -56,8 +58,14 @@ if [ -d $dir/chapters ]; then
 else
   paths=($(git ls-tree -r --full-name --name-only $rev .))
   for fn in $paths; do
-    [ $fn = "figure-captions.md" ] && continue
-    [ $fn = "abstract.md" ] && continue
+    fn=${fn:t} 
+    [ "${fn:e}" != "md" ] && continue
+    [ "$fn" = "README.md" ] && continue
+    [ "$fn" = "key-points.md" ] && continue
+    [ "$fn" = "project-summary.md" ] && continue
+    [ "$fn" = "project-description.md" ] && continue
+    [ "$fn" = "figure-captions.md" ] && continue
+    [ "$fn" = "abstract.md" ] && continue
     text $fn
   done  
 fi
@@ -73,6 +81,8 @@ if [[ ${#a} ]]; then
   done
 fi
 
-text $dir/figure-captions.md
+if [ -f $dir/figure-captions.md ]; then
+  text $dir/figure-captions.md
+fi
 #head "References"
 popd
