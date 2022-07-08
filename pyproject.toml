@@ -1,0 +1,18 @@
+[tool.poetry]
+authors = ["Daven Quinn <dev@davenquinn.com>"]
+description = ""
+name = "paper-components"
+version = "0.1.0"
+
+[tool.poetry.dependencies]
+numpy = "^1.23.0"
+pandas = "^1.4.3"
+panflute = "^2.1.5"
+pypandoc = "^1.8.1"
+python = "^3.9"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0"]

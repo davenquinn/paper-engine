@@ -2,7 +2,9 @@
 
 # Make sure we have the latest python modules
 #(cd paper-components; git submodule update --init)
-pip3 install -e $PAPER_COMPONENTS/modules/* > /dev/null
+for f in $PAPER_COMPONENTS/modules/* ; do
+  pip3 install -e $f
+done
 
 # Check for required executables
 vv=(pandoc pandoc-crossref figurator bib-filter)

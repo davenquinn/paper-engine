@@ -15,14 +15,24 @@ if [ -z "$PAPER_DIR" ]; then
   export PAPER_DIR="$dn"
 fi
 
-export PAPER_COMPONENTS="${0:A:h:h}"
-bin="$PAPER_COMPONENTS/bin"
-export PATH="$bin:$PATH"
+if [ -z "$PAPER_COMPONENTS" ]; then
+  export PAPER_COMPONENTS="${0:A:h:h}"
+  bin="$PAPER_COMPONENTS/bin"
+  export PATH="$bin:$PATH"
 
-local_bin="$PAPER_DIR/bin"
-if [ -d $local_bin ]; then
-  export PATH="$local_bin:$PATH"
+  venv_path=$(cd "$PAPER_COMPONENTS" && poetry env info --path)
+  export PATH="$venv_path/bin:$PATH"
+
+
+  local_bin="$PAPER_DIR/bin"
+  if [ -d $local_bin ]; then
+    export PATH="$local_bin:$PATH"
+  fi
 fi
+
+bin="$PAPER_COMPONENTS/bin"
+
+# Begin commands
 
 if [ -z $1 ] || [ $1 = '--help' ]; then
   if [ -d $local_bin ]; then
