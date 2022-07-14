@@ -89,6 +89,9 @@ paper get-text  \
   --collect-dir $collect_dir \
 > $body
 
+# No idea what this does but it seems to cut down on ls errors
+echo "" >&2
+
 ## Title block
 rm -f build/title-block.tex 
 paper build-latex-title-block > build/title-block.tex
@@ -107,9 +110,13 @@ if [[ $preamble_includes && ${#preamble_includes} ]]; then
   done
 fi
 
-cat text/key-points.md \
-| text-pipeline \
-> build/key-points.tex
+keyPoints=text/key-points.md
+if [ -f $keyPoints ]; then
+  echo "\subsubsection*{Key Points}" >> build/key-points.tex
+  cat $keyPoints \
+  | text-pipeline \
+  >> build/key-points.tex
+fi
 
 ## Process appendices
 app_=text/appendices
@@ -135,12 +142,25 @@ if [[ -d $app_ && ${#a} ]]; then
 
 fi
 
+cp "$PAPER_COMPONENTS/agu-template/agufull08.bst" "$build/agufull08.bst"
 
 paper compile-refs
 echo "Running latex"
 run-latex $texfile $build_dest
+
+latex_exit_status=$?
+
 cp $build_dest $outfile
+
 
 tag --set paper-draft $outfile
 
 scale-images $outfile "${outfile:r}-sm.pdf" "printer" 2> /dev/null
+
+errLog="${build_dest:r}.log"
+if [[ $latex_exit_status -ne 0 ]]; then
+  echo "LaTeX exited with error code $latex_exit_status"
+  echo "LaTeX errors (see '$errLog' for more details):"
+  tail -n 100 $errLog
+  exit $latex_exit_status
+fi

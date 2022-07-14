@@ -32,10 +32,12 @@ if not path.exists(meta):
 data = safe_load(open(meta))
 
 print("\\title{" + data["title"] + "}")
-author = data["author"]
 
+author = data["author"]
 if not isinstance(author, list):
     author = [author]
-
+print("")
 for auth in author:
-    print("\\author{" + auth + "}")
+    print("\\author[1]{" + auth + "}")
+
+print("\\affil[1]{University of Wisconsin — Madison}")

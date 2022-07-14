@@ -54,7 +54,7 @@ cmd="paper-$1"
 shift
 
 found_command=0
-if [ -d $local_bin ]; then
+if [ -d "$local_bin" ]; then
   for f in $(ls "$local_bin" | grep paper-); do
     [ $f != $cmd ] && continue
     "$local_bin/$cmd" $@
