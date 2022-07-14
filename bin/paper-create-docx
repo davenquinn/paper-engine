@@ -23,7 +23,7 @@ if [ $1 = "--full" ]; then
 
   paper convert-includes $collect_dir $includes
 
-  paper localize-refs
+  paper compile-refs
 fi
 
 paper rev-text \
@@ -37,7 +37,7 @@ paper rev-text \
   --metadata includes-dir=$includes \
   --metadata includes-only="tbl" \
   --reference-doc="$pc/templates/reference.docx" \
-  --bibliography="$PAPER_DIR/text/references.bib" \
+  --bibliography="$PAPER_DIR/build/references.bib" \
   --csl="$pc/agu.csl" \
   --filter "$pc/bin/figure-ref-filter" \
   --filter "$pc/bin/inline-figure-filter" \

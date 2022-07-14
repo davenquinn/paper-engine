@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+# Produce a Latex title block from paper metadata
+# in the following format:
+# \title{The Zebra Nappe: a structurally displaced Ediacaran
+#        passive margin in the southern Naukluft Mountains, Namibia}
+# %running head: Crystal Knob xenoliths
+# \author[1]{Daven P. Quinn}
+# \author[1]{J.P. Grotzinger}
+# \author[1]{T.M. Present}
+
+# \affil[1]{Division of Geological and Planetary Sciences,
+#   California Institute of Technology,
+#   Pasadena, California, USA}
+
+import sys
+from os import environ, path
+from yaml import safe_load
+
+pc = environ.get("PAPER_DIR")
+if pc is None:
+    raise Exception("PAPER_DIR environment variable not set")
+
+bf = pc+"/text/title-block.tex"
+if path.exists(bf):
+    print(open(bf).read())
+    sys.exit(0)
+
+meta = pc + "/text/meta.yaml"
+if not path.exists(meta):
+    raise Exception("meta.yaml not found")
+
+data = safe_load(open(meta))
+
+print("\\title{" + data["title"] + "}")
+author = data["author"]
+
+if not isinstance(author, list):
+    author = [author]
+
+for auth in author:
+    print("\\author{" + auth + "}")
