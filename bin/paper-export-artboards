@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+
+source "$PAPER_DIR/paper-defs.zsh"
+
+if [ -z "$ILLUSTRATOR_FILES" ] || [ -z "$ILLUSTRATOR_EXPORT_DIR" ]; then
+  echo "ILLUSTRATOR_FILES and ILLUSTRATOR_EXPORT_DIR must be defined to export artboards"
+  exit 1
+fi
+
+ex=$PAPER_COMPONENTS/deps/export-artboards/bin/export-artboards
+
+if [ ! -f $ex ]; then
+  echo "export-artboards not found. You might need to run 'paper check-deps'"
+  exit 0
+fi
+
+mkdir -p "$ILLUSTRATOR_EXPORT_DIR"
+
+for file in $ILLUSTRATOR_FILES; do
+  echo "Exporting artboards from $file" >&2
+  "$ex" --format pdf --preset '[High Quality Print]' $file $ILLUSTRATOR_EXPORT_DIR
+done
