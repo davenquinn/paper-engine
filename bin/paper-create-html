@@ -1,11 +1,8 @@
 #!/usr/bin/env zsh
 # Uses new signature in which 'PAPER_DIR' environment variable must be defined
-cd "$PAPER_DIR"
-
 # Create a simple html version of the paper
 
-source paper-components/defs.zsh
-source "$PAPER_DIR/paper-defs.zsh"
+source "$PAPER_COMPONENTS/env.zsh"
 
 (
   paper get-text --abstract 2>/dev/null
