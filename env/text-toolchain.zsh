@@ -25,7 +25,8 @@ function text-pipeline {
     --from markdown \
     --to latex \
     --natbib \
-    --metadata=draft:true \
+    --metadata draft:true \
+    --metadata-file "$PAPER_COMPONENTS/defs/pandoc-crossref.yaml" \
     --filter pandoc-comments \
     --filter pandoc-crossref
 }
@@ -66,6 +67,7 @@ function text-pipeline-html {
       --metadata link-citations=true \
       --metadata linkReferences=true \
       --metadata-file meta.yaml \
+      --metadata-file "$PAPER_COMPONENTS/defs/pandoc-crossref.yaml" \
       --section-divs \
       --number-sections \
       --csl='paper-components/agu.csl' \

@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 source "$PAPER_DIR/paper-defs.zsh"
-source "$PAPER_COMPONENTS/defs.zsh"
+source "$PAPER_COMPONENTS/env/text-toolchain.zsh"
 
 # Build file locations
 build="build"

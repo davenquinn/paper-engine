@@ -26,11 +26,8 @@
 # collected-figures/  (this will be created)
 # output/             (also will be created)
 #
-cd "$PAPER_DIR"
 # Could do a recursive upwards search for where this is defined...
-source "$PAPER_DIR/paper-defs.zsh"
-source "$PAPER_COMPONENTS/defs.zsh"
-
+source "$PAPER_COMPONENTS/env.zsh"
 name="$name-draft"
 
 build='build'
@@ -44,7 +41,6 @@ abstract="$build/abstract.tex"
 build_dest="$build/$name.pdf"
 auxfile="${build_dest:r}.aux"
 outfile="output/$name.pdf"
-collect_dir="collected-figures"
 preamble="$build/preamble.tex"
 appendices="$build/appendices.tex"
 
@@ -55,15 +51,11 @@ paper check-deps
 
 echo "Creating paper '$name' in directory $(pwd)"
 
-mkdir -p $build $collect_dir output
+mkdir -p $build output
 
 rm -f $body $captions $abstract
 
-# Collect figures into centralized directory
-figurator collect \
-  $figureDefs \
-  ${FIGURE_COLLECT_DIR:-"build/figures"} \
-  ${FIGURE_SEARCH_DIRECTORIES}
+paper collect-includes
 
 ## Figure captions
 cat text/figure-captions.md \
@@ -86,7 +78,7 @@ paper get-text  \
   text/includes.yaml \
   --template-dir "$PAPER_COMPONENTS/includes" \
   --captions $captions \
-  --collect-dir $collect_dir \
+  --collect-dir "$FIGURE_COLLECT_DIR" \
 > $body
 
 # No idea what this does but it seems to cut down on ls errors
@@ -116,6 +108,8 @@ if [ -f $keyPoints ]; then
   cat $keyPoints \
   | text-pipeline \
   >> build/key-points.tex
+else
+  echo "" > build/key-points.tex
 fi
 
 ## Process appendices
@@ -146,6 +140,7 @@ cp "$PAPER_COMPONENTS/agu-template/agufull08.bst" "$build/agufull08.bst"
 
 paper compile-refs
 echo "Running latex"
+pwd
 run-latex $texfile $build_dest
 
 latex_exit_status=$?

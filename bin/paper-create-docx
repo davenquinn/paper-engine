@@ -1,9 +1,6 @@
 #!/usr/bin/env zsh
 # Uses new signature in which 'PAPER_DIR' environment variable must be defined
-cd "$PAPER_DIR"
-
-source "$PAPER_DIR/paper-defs.zsh"
-source "$PAPER_COMPONENTS/defs.zsh"
+source "$PAPER_COMPONENTS/env.zsh"
 
 includes="$PAPER_DIR/build/converted-includes"
 
@@ -13,15 +10,15 @@ if [ $1 = "--full" ]; then
   shift
   
   figure_defs="text/includes.yaml"
-  collect_dir="build/figures"
+  collect_dir=${FIGURE_COLLECT_DIR:-"build/figures"}
   mkdir -p $collect_dir
   # Collect figures into centralized directory
   figurator collect \
     $figure_defs \
-    $collect_dir \
+    $FIGURE_COLLECT_DIR \
     ${FIGURE_SEARCH_DIRECTORIES}
 
-  paper convert-includes $collect_dir $includes
+  paper convert-includes $FIGURE_COLLECT_DIR $includes
 
   paper compile-refs
 fi

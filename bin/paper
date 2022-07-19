@@ -13,6 +13,9 @@ if [ -z "$PAPER_DIR" ]; then
   >&2 echo "$(tput bold)Found paper directory$(tput sgr0): $dn"
 
   export PAPER_DIR="$dn"
+
+  # Everything should be relative to paper directory unless otherwise specified.
+  cd "$PAPER_DIR"
 fi
 
 if [ -z "$PAPER_COMPONENTS" ]; then
@@ -28,6 +31,11 @@ if [ -z "$PAPER_COMPONENTS" ]; then
   if [ -d $local_bin ]; then
     export PATH="$local_bin:$PATH"
   fi
+
+  # Setup global environment variables
+  # NOTE: this only provides environment variables;
+  # fancier zsh variables are not accessible.
+  source "$PAPER_COMPONENTS/env.zsh"
 fi
 
 bin="$PAPER_COMPONENTS/bin"
