@@ -1,0 +1,11 @@
+#!/usr/bin/env zsh
+
+if ! which git-annex > /dev/null; then
+  echo "git-annex must be installed to use these commands"
+  exit 1
+fi
+
+# https://git-annex.branchable.com/tips/largefiles/
+git config annex.largefiles 'largerthan=100kb and (include=*.pdf or include=*.png or include=*.jpg or include=*.jpeg or include=*.gif or include=*.svg)'
+git config annex.thin 'true'
+git annex $@
