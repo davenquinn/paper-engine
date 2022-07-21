@@ -53,7 +53,7 @@ fi
 if [ -d $dir/chapters ]; then
   paths=($(git ls-tree -r --full-name --name-only $rev chapters))
   for fn in $paths; do
-    text $fn
+    text "${fn#text/}"
   done
 else
   paths=($(git ls-tree -r --full-name --name-only $rev .))

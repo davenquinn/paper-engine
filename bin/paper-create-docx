@@ -6,7 +6,7 @@ includes="$PAPER_DIR/build/converted-includes"
 
 pc="$PAPER_COMPONENTS"
 
-if [ $1 = "--full" ]; then
+if [ "$1" = "--full" ]; then
   shift
   
   figure_defs="text/includes.yaml"
@@ -30,6 +30,7 @@ paper rev-text \
   --from markdown \
   --to docx+styles \
   --metadata-file=$PAPER_DIR/text/meta.yaml \
+  --metadata-file "$pc/defs/pandoc-crossref.yaml" \
   --metadata includes-spec=$PAPER_DIR/text/includes.yaml \
   --metadata includes-dir=$includes \
   --metadata includes-only="tbl" \
