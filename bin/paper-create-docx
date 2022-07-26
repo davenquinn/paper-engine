@@ -23,9 +23,19 @@ if [ "$1" = "--full" ]; then
   paper compile-refs
 fi
 
+text=build/text.md
+rm -f $text
 paper rev-text \
 | prepare-crossref \
 | sed "s/º/°/g" \
+> $text
+
+# Get rid of abstract otherwise it will be numbered
+sed -i "s/\# Abstract {-}//g" $text
+
+echo "# References {-}\n\n" >> $text
+
+cat $text \
 | pandoc \
   --from markdown \
   --to docx+styles \

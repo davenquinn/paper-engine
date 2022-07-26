@@ -13,11 +13,11 @@ else
 fi
 
 function unnumbered-head() {
-echo "# $@\n\n"
+echo "# $@ {-}\n\n"
 }
 
 function head() {
-echo "# $@ {-}\n\n"
+echo "# $@ \n\n"
 }
 
 function text() {

@@ -1,8 +1,12 @@
 #!/usr/bin/env zsh
 
 cd "$PAPER_DIR/text"
+
+source "$PAPER_COMPONENTS/env.zsh"
+
 repo=$(git rev-parse --show-toplevel)
 base=$(realpath --relative-to=$repo .)
+
 
 count=false
 
