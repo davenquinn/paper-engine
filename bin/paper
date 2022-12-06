@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 
 dn="$(pwd)"
+
 if [ -z "$PAPER_DIR" ]; then
   # Find directory
   while [ ! -e "$dn/paper-defs.zsh" ]; do
@@ -25,6 +26,7 @@ if [ -z "$PAPER_COMPONENTS" ]; then
 
   venv_path=$(cd "$PAPER_COMPONENTS" && poetry env info --path)
   export PATH="$venv_path/bin:$PATH"
+  export VIRTUAL_ENV="$venv_path"
 
 
   local_bin="$PAPER_DIR/bin"

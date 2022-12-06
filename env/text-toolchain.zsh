@@ -40,6 +40,7 @@ function text-pipeline-biblatex {
     --to latex \
     --biblatex \
     --metadata=draft:true \
+    --metadata-file "$PAPER_COMPONENTS/defs/pandoc-crossref.yaml" \
     --filter pandoc-comments \
     --filter pandoc-crossref
 }

@@ -49,7 +49,7 @@ export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
 
 paper check-deps
 
-echo "Creating paper '$name' in directory $(pwd)"
+>&2 echo "Creating paper '$name' in directory $(pwd)"
 
 mkdir -p $build output
 

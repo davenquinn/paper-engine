@@ -1,7 +1,8 @@
 #!/usr/bin/env zsh
 
-source "$PAPER_DIR/paper-defs.zsh"
-source "$PAPER_COMPONENTS/defs.zsh"
+source "$PAPER_COMPONENTS/env.zsh"
+
+>&2 echo "Creating NSF proposal '$name' in directory $(pwd)"
 
 # Text file locations
 figureDefs="text/includes.yaml"
@@ -70,12 +71,7 @@ cat "$defs/preamble"/*.tex > "$preamble"
 # References
 cp "$PAPER_COMPONENTS/agu-template/agufull08.bst" "$build/agufull08.bst"
 
-paper localize-refs
-cat text/references/*.bib > build/references.bib
-
-bib_aux="${auxfile:r}"
-echo "$bib_aux"
-biber "$bib_aux"
+paper compile-refs
 
 dest="$outdir/${build_dest:t}"
 run-latex $texfile $build_dest

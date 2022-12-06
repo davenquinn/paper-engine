@@ -31,7 +31,7 @@ get-markdown $v0 $rt
 git diff --no-index $rt $baseline > $patch
 
 # Convert the docx file to markdown
-get-markdown $1 $new
+get-markdown "$1" $new
 
 # From here we could substitute a new process if we were reintegrating the changes on a new branch
 patch $new $patch

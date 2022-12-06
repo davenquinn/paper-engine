@@ -2,6 +2,8 @@
 
 source "$PAPER_COMPONENTS/env.zsh"
 
+echo "Collecting includes for $PAPER_NAME"
+
 figureDefs="${1:-"text/includes.yaml"}"
 collect_dir="${2:-"$FIGURE_COLLECT_DIR"}"
 
