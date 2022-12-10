@@ -1,0 +1,56 @@
+\titleformat{\section}{\Times\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}[runin]{\Times\normalsize\bfseries}{\thesubsection}{3pt}{}[~~~~~]
+\titleformat{\subsubsection}[runin]{\Times\normalsize\bfseries\itshape}{\thesubsubsection.}{3pt}{}[ \mbox{ --- } ]
+\titleformat{\paragraph}[runin]{\Times\normalsize\itshape}{\theparagraph}{3pt}{\underline}[:~~]
+
+\setlength{\parskip}{0cm}
+\setlength{\parindent}{2em}
+
+\usepackage[compact]{titlesec}
+\titlespacing{\section}{0pt}{1ex}{0.5ex}
+\titlespacing{\subsection}{0pt}{0.5ex}{0ex}
+\titlespacing{\subsubsection}{0pt}{0.25ex}{0ex}
+\titlespacing{\paragraph}{0pt}{0.2ex}{0ex}
+
+
+\newenvironment{summary}{
+  \setcounter{secnumdepth}{0}
+  \titleformat{\section}{\Times\large\bfseries}{\thesection}{1em}{}
+  \titleformat{\subsection}{\Times\normalsize\bfseries}{\thesubsection}{3pt}{}
+  \titleformat{\subsubsection}[runin]{\Times\small\bfseries\textit}{\thesubsubsection}{3pt}{}
+}
+
+\setlength{\droptitle}{-40pt}
+\pretitle{\begin{flushleft}\Gotham\bfseries\Large}
+\posttitle{\par\end{flushleft}\vskip 0.5em}
+
+\preauthor{\begin{flushleft}\Gotham\normalsize}
+\postauthor{\par\end{flushleft}}
+
+\newenvironment{tasklist}
+  {
+    %\titleformat{\subsection}[runin]{\Times\normalsize\bfseries}{\thesubsection:}{3pt}{}[~~~~~]
+    \renewcommand{\thesubsection}{T\arabic{subsection}}
+    \renewcommand{\thesubsubsection}{T\arabic{subsection}\alph{subsubsection}}
+  }
+  {
+    \renewcommand{\thesubsection}{\arabic{section}.\arabic{subsection}}
+    \renewcommand{\thesubsubsection}{\arabic{section}.\arabic{subsection}.\arabic{subsubsection}} 
+  }
+
+\newenvironment{code}
+  {
+    \vspace{-0.4em}
+    \small
+    \verbatim
+  }
+  {
+    \endverbatim
+    \vspace{-0.4em}
+  }
+
+% Pandoc hack
+% https://github.com/jgm/pandoc/issues/3145
+\let\Begin\begin
+\let\End\end
+

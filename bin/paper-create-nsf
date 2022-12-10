@@ -50,13 +50,14 @@ figureArgs=( inline $figureDefs  \
 [ -d $collectDir ] && figureArgs+=(--collect-dir $collectDir)
 
 paper get-text \
+| sed 's/@task:\([a-zA-Z0-9_-]\+\)/\\ref{task:\1}/g' \
 | mark-inline-figures \
 | text-pipeline-biblatex \
 | figurator "${figureArgs[@]}" \
 > $body
 
 
-rm -f "$texfile"
+rm -f "$preamble" "$texfile"
 
 # Can override bibstyle with bib-style variable
 echo "" \
@@ -66,7 +67,16 @@ echo "" \
   --from latex --to latex \
 > "$texfile"
 
+# Copy preamble
 cat "$defs/preamble"/*.tex > "$preamble"
+# PROCESS EXTRA PREAMBLE
+if [[ $preamble_includes && ${#preamble_includes} ]]; then
+  for f in ${preamble_includes[@]}; do
+    if [[ -f $f ]]; then
+      cat "$f" >> "$preamble"
+    fi
+  done
+fi
 
 # References
 cp "$PAPER_COMPONENTS/agu-template/agufull08.bst" "$build/agufull08.bst"
@@ -88,3 +98,38 @@ mv "$build_dest" "$dest"
 tag --set paper-draft $outfile
 
 
+### Create DOCX version
+
+text=build/text.md
+rm -f $text
+paper get-text \
+| sed 's/{#task:\([a-zA-Z0-9_-]\+\)}/{#sec:task:\1}/g' \
+| sed 's/@task:\([a-zA-Z0-9_-]\+\)/Task -@sec:task:\1/g' \
+| prepare-crossref \
+| sed "s/º/°/g" \
+> $text
+
+# Get rid of abstract otherwise it will be numbered
+sed -i "s/\# Abstract {-}//g" $text
+
+echo "# References {-}\n\n" >> $text
+
+cat $text \
+| pandoc \
+  --from markdown \
+  --to docx+styles \
+  --metadata-file=$PAPER_DIR/text/meta.yaml \
+  --metadata-file "$pc/defs/pandoc-crossref.yaml" \
+  --metadata includes-spec="$PAPER_DIR/text/includes.yaml" \
+  --metadata includes-dir=$includes \
+  --metadata includes-only="tbl" \
+  --reference-doc="$pc/templates/reference.docx" \
+  --bibliography="$PAPER_DIR/build/references.bib" \
+  --csl="$pc/agu.csl" \
+  --filter "$pc/bin/figure-ref-filter" \
+  --filter "$pc/bin/inline-figure-filter" \
+  --filter pandoc-comments \
+  --filter pandoc-crossref \
+  --citeproc \
+  -o "$PAPER_DIR/output/$name.docx" \
+  $@

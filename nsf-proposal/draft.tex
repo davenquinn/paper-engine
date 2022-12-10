@@ -1,27 +1,4 @@
 \documentclass[letterpaper, 11pt]{article}
-\input{build/preamble.tex}
-
-\addbibresource{build/references.bib}
-
-
-\titleformat{\section}{\Times\large\bfseries}{\thesection}{1em}{}
-\titleformat{\subsection}{\Times\normalsize\bfseries}{\thesubsection}{3pt}{}
-\titleformat{\subsubsection}[runin]{\Times\small\bfseries}{\thesubsubsection}{3pt}{}
-
-\newenvironment{summary}{
-\titleformat{\section}{\Times\large\bfseries}{\thesection}{1em}{}
-\titleformat{\subsection}{\Times\normalsize\bfseries}{\thesubsection}{3pt}{}
-\titleformat{\subsubsection}[runin]{\Times\small\bfseries\textit}{\thesubsubsection}{3pt}{}
-}
-
-\setlength{\droptitle}{-40pt}
-\pretitle{\begin{flushleft}\Gotham\bfseries\Large}
-\posttitle{\par\end{flushleft}\vskip 0.5em}
-
-\preauthor{\begin{flushleft}\Gotham\normalsize}
-\postauthor{\par\end{flushleft}}
-
-\setcounter{secnumdepth}{3}
 
 %\usepackage{fancyhdr}
 
@@ -30,6 +7,14 @@
 %\fancyhead[L]{Project Description}
 %\fancyhead[R]{Quinn -- NSF EAR PF}
 %\cfoot{\thepage}
+
+\setcounter{secnumdepth}{3}
+
+
+\input{build/preamble.tex}
+
+
+\addbibresource{build/references.bib}
 
 \begin{document}
 \begin{NoHyper}
@@ -40,10 +25,10 @@
 \vspace{-1em}
 
 {
-\setcounter{secnumdepth}{0}
-\titleformat{\section}[runin]{\bfseries}{\thesection}{2pt}{}{~~~~}
-\titleformat{\subsection}[runin]{\small\bfseries}{\thesubsubsection}{2pt}{}[~~~~]%
-\input{build/project-summary.tex}
+  \setcounter{secnumdepth}{0}
+  \titleformat{\section}[runin]{\bfseries}{\thesection}{2pt}{}{~~~~}
+  \titleformat{\subsection}[runin]{\small\bfseries}{\thesubsubsection}{2pt}{}[~~~~]%
+  \input{build/project-summary.tex}
 }
 
 \clearpage

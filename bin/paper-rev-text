@@ -36,7 +36,7 @@ if [ -f $dir/project-summary.md ]; then
 fi
 if [ -f $dir/project-description.md ]; then
   head "Project Description"
-  text $dir/chapters/project-description.md
+  text $dir/project-description.md
 fi
 ## File
 
