@@ -1,8 +1,7 @@
 #!/usr/bin/env zsh
 
 cd $PAPER_DIR
-source "$PAPER_DIR/paper-defs.zsh"
-source $PAPER_DIR/paper-components/defs.zsh
+source "$PAPER_COMPONENTS/env.zsh"
 
 rev1=$1
 rev2=$2

@@ -1,0 +1,21 @@
+#!/usr/bin/env zsh
+
+source "$PAPER_COMPONENTS/env.zsh"
+
+echo "Collecting includes for $PAPER_NAME"
+
+figureDefs="${1:-"text/includes.yaml"}"
+collect_dir="${2:-"$FIGURE_COLLECT_DIR"}"
+
+if [ -z "$FIGURE_SEARCH_DIRECTORIES" ]; then
+  echo "Not collecting includes because FIGURE_SEARCH_DIRECTORIES is not defined" >&2
+  exit 0
+fi
+
+mkdir -p "$collect_dir"
+
+# Collect figures into centralized directory
+figurator collect \
+  "$figureDefs" \
+  "$collect_dir" \
+  ${FIGURE_SEARCH_DIRECTORIES}

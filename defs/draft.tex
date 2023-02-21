@@ -4,10 +4,7 @@
 \titleformat{\section}{\Gotham\large\bfseries}{\thesection}{1em}{}
 \titleformat{\subsection}{\Gotham\normalsize\bfseries}{\thesubsection}{3pt}{}
 \titleformat{\subsubsection}[runin]{\Gotham\small\bfseries}{\thesubsubsection}{3pt}{}[~~~~]
-
-% Name for "Appendices Header
-\let\appendixpagenameorig\appendixpagename
-\renewcommand{\appendixpagename}{\Gotham\Large\appendixpagenameorig}
+%\renewcommand{\maketitlehooka}{\Gotham\Large\bfseries}
 
 \renewcommand{\Authfont}{\Gotham\large}
 \renewcommand{\Affilfont}{\Gotham\footnotesize}
@@ -41,7 +38,6 @@
 \input{build/abstract.tex}
 
 \vspace{20pt}
-\subsubsection*{Key Points}
 {\small
 \input{build/key-points.tex}
 }
@@ -65,9 +61,9 @@
 \end{spacing}
 
 \pagebreak
-\bibliographystyle{paper-components/agu-template/agufull08.bst}
+\bibliographystyle{build/agufull08.bst}
 
-{\small\bibliography{text/references}}
+{\small\bibliography{build/references}}
 
 \end{document}
 

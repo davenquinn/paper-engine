@@ -1,0 +1,66 @@
+\documentclass[letterpaper, 11pt]{article}
+
+%\usepackage{fancyhdr}
+
+%\pagestyle{fancy}
+%\fancyhf{}
+%\fancyhead[L]{Project Description}
+%\fancyhead[R]{Quinn -- NSF EAR PF}
+%\cfoot{\thepage}
+
+\setcounter{secnumdepth}{3}
+
+
+\input{build/preamble.tex}
+
+
+\addbibresource{build/references.bib}
+
+\begin{document}
+%\begin{NoHyper}
+
+\begin{center}
+\noindent{{\textbf{Project Summary}: $title$}}
+\end{center}
+
+\clearpage
+
+
+{
+  \setcounter{secnumdepth}{0}
+  \titleformat{\section}{\Times\Large\bfseries}{\thesection}{1em}{}
+  \titleformat{\subsection}{\Times\normalsize\bfseries}{\thesubsection}{3pt}{}
+  \input{build/project-summary.tex}
+}
+
+\clearpage
+
+\tableofcontents
+%\listoftables
+%\listoffigures
+
+\clearpage
+\pagenumbering{arabic}
+\renewcommand{\thepage} {D--\arabic{page}}
+
+\begin{center}
+\noindent{{\textbf{Project Description}: $title$}}
+\end{center}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+\input{build/body.tex}
+
+\pagebreak
+{
+  \setstretch{1.1} % NSF gives us a warning with the refs for too tight a line spacing
+\pagenumbering{arabic}
+\renewcommand{\thepage} {E--\arabic{page}}
+
+\printbibliography
+
+}
+%\end{NoHyper}
+\end{document}
+

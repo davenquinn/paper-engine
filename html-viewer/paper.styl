@@ -1,0 +1,139 @@
+//@require "./fonts.styl"
+
+@require "./typography.styl"
+
+p, ul, li, figcaption, caption
+  font-family $body
+  hyphens: auto;
+  line-height: 1.25
+  a
+    color var(--foreground-dim)
+    text-decoration none
+
+
+h1,h2,h3,h4,h5,h6
+  font-family $header
+  font-weight 500
+
+img
+  max-width 35em
+  max-height 35em
+
+header
+  margin-bottom 2em
+  width 50rem
+
+#document-main
+  font-size 18px
+  p, figcaption
+    text-align justify
+  ul, li, p, h1, h2, h3
+    padding 0 auto
+    width 45rem
+  figure, table
+    min-width 10em
+    display table
+    float: right
+    clear: both
+    margin 1em 2em
+    width: min-content
+    p
+      width inherit
+      padding 0
+      margin-bottom 0
+  figcaption, caption
+    font-size 0.9em
+    display table-caption
+    caption-side: bottom
+
+nav#TOC
+  font-size 0.9em
+  padding 2em 20px
+  *
+    color var(--foreground-dim)
+  ul
+    list-style-type: none
+    margin 0.2em 0 1em
+    padding-left 0
+    ul
+      padding-left 1em
+
+    ul ul
+      list-style-type: disc
+      margin: 0.1em 0 0.3em
+  li
+    font-weight: 600
+    .toc-section-number
+      font-weight 400
+    li
+      font-weight: 400
+      .toc-section-number
+        font-weight 200
+      li
+        font-weight: 200
+        margin-bottom: 0
+        .toc-section-number
+          display none
+
+  ul, li, a
+    font-family: $body
+  a
+    text-decoration none
+
+h1
+  font-size 1.5em
+
+h1.title p
+  font-family: $header
+  font-weight 600
+  margin-bottom 0
+
+p.author
+  display inline
+  font-family: $header
+
+h1
+  font-weight: 600
+
+h2
+  font-size 1.2em
+
+h3
+  font-size 1em
+  margin-bottom 0.5em
+
+p
+  margin-top 0.4em
+  margin-bottom 0.8em
+
+h4
+  font-weight 600
+  margin 0
+  padding 0
+  margin-right 1em
+  float: left
+  width: auto;
+  font-family $body
+  .header-section-number
+    display none
+
+header#title-block-header
+  ::after {
+    content: "";
+    clear: both;
+    display: table;
+    }
+
+table tbody p
+  margin 0
+
+#refs
+  font-size 0.9em
+
+@media(prefers-color-scheme: dark)
+  table tbody img
+    -webkit-filter: invert(100%);
+    filter: invert(100%);
+  figure
+    img
+      mix-blend-mode lighten

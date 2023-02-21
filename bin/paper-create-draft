@@ -26,14 +26,12 @@
 # collected-figures/  (this will be created)
 # output/             (also will be created)
 #
-cd "$PAPER_DIR"
 # Could do a recursive upwards search for where this is defined...
-source "$PAPER_DIR/paper-defs.zsh"
-
+source "$PAPER_COMPONENTS/env.zsh"
 name="$name-draft"
 
 build='build'
-defs="paper-components/defs"
+defs="$PAPER_COMPONENTS/defs"
 body="$build/body.tex"
 bibfile="text/references.bib"
 texfile="$build/draft.tex"
@@ -43,34 +41,21 @@ abstract="$build/abstract.tex"
 build_dest="$build/$name.pdf"
 auxfile="${build_dest:r}.aux"
 outfile="output/$name.pdf"
-collect_dir="collected-figures"
 preamble="$build/preamble.tex"
 appendices="$build/appendices.tex"
 
-source paper-components/defs.zsh
+# Temporary fix to make sure we are using GNU sed
+export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
 
-# Make sure we have the latest python modules
-#(cd paper-components; git submodule update --init)
-pip install -e paper-components/modules/* > /dev/null
+paper check-deps
 
-# Check for required executables
-vv=(pandoc pandoc-crossref figurator bib-filter)
-for c in $vv; do
-  command -v $c >/dev/null 2>&1 \
-  || { echo >&2 "$c required but not installed"; exit 1 }
-done
+>&2 echo "Creating paper '$name' in directory $(pwd)"
 
-echo "Creating paper '$name' in directory $(pwd)"
-
-mkdir -p $build $collect_dir output
+mkdir -p $build output
 
 rm -f $body $captions $abstract
 
-# Collect figures into centralized directory
-figurator collect \
-  $figureDefs \
-  $collect_dir \
-  ${FIGURE_SEARCH_DIRECTORIES}
+paper collect-includes
 
 ## Figure captions
 cat text/figure-captions.md \
@@ -82,20 +67,26 @@ cat text/abstract.md \
 | text-pipeline \
 > $abstract
 
+echo "Processing body text"
 # Process body text
-aggregate-text text/chapters/*.md  \
+# We can't use 'rev-text' because it doesn't support getting only the body text right now
+paper get-text  \
 | sed -r 's/^\\section\{(Introduction)\}/\\invisiblesection\{\1\}/g' \
 | mark-inline-figures \
 | text-pipeline \
 | figurator inline \
   text/includes.yaml \
-  --template-dir paper-components/includes \
+  --template-dir "$PAPER_COMPONENTS/includes" \
   --captions $captions \
-  --collect-dir $collect_dir \
+  --collect-dir "$FIGURE_COLLECT_DIR" \
 > $body
 
+# No idea what this does but it seems to cut down on ls errors
+echo "" >&2
+
 ## Title block
-cp text/title-block.tex build/title-block.tex
+rm -f build/title-block.tex 
+paper build-latex-title-block > build/title-block.tex
 
 
 cp $defs/draft.tex $texfile
@@ -111,9 +102,15 @@ if [[ $preamble_includes && ${#preamble_includes} ]]; then
   done
 fi
 
-cat text/key-points.md \
-| text-pipeline \
-> build/key-points.tex
+keyPoints=text/key-points.md
+if [ -f $keyPoints ]; then
+  echo "\subsubsection*{Key Points}" >> build/key-points.tex
+  cat $keyPoints \
+  | text-pipeline \
+  >> build/key-points.tex
+else
+  echo "" > build/key-points.tex
+fi
 
 ## Process appendices
 app_=text/appendices
@@ -126,7 +123,7 @@ if [[ -d $app_ && ${#a} ]]; then
   | text-pipeline \
   | figurator inline \
     text/includes.yaml \
-    --template-dir paper-components/includes \
+    --template-dir "$PAPER_COMPONENTS"/includes \
     --captions $captions \
     --collect-dir $collect_dir \
   > $appendices
@@ -139,12 +136,26 @@ if [[ -d $app_ && ${#a} ]]; then
 
 fi
 
+cp "$PAPER_COMPONENTS/agu-template/agufull08.bst" "$build/agufull08.bst"
 
-paper localize-refs
+paper compile-refs
 echo "Running latex"
+pwd
 run-latex $texfile $build_dest
+
+latex_exit_status=$?
+
 cp $build_dest $outfile
+
 
 tag --set paper-draft $outfile
 
 scale-images $outfile "${outfile:r}-sm.pdf" "printer" 2> /dev/null
+
+errLog="${build_dest:r}.log"
+if [[ $latex_exit_status -ne 0 ]]; then
+  echo "LaTeX exited with error code $latex_exit_status"
+  echo "LaTeX errors (see '$errLog' for more details):"
+  tail -n 100 $errLog
+  exit $latex_exit_status
+fi

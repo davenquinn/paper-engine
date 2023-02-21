@@ -1,0 +1,139 @@
+\usepackage[paper=letterpaper, margin=1in, nohead, pdftex]{geometry}
+\usepackage{fontspec}
+\usepackage{rotating}
+\usepackage{textcomp}
+\usepackage{ifthen}
+\usepackage[small,compact]{titlesec}
+\usepackage{titling}
+\usepackage{graphicx}			% Nice graphics, optional
+\usepackage{siunitx}
+% \usepackage[version=4]{mhchem}
+\usepackage{fancyhdr}
+\usepackage{amsmath,xfrac,nicefrac}
+\usepackage{ifthen}
+\usepackage{mwe}
+\usepackage{float, floatrow}
+\usepackage[norule,bottom]{footmisc}
+\usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{array,booktabs,tabularx}
+\usepackage{setspace}
+\usepackage[style=numeric-comp,sorting=none,giveninits,maxnames=500]{biblatex}
+%\usepackage[numbers,sort&compress]{natbib}
+\usepackage{textcomp}
+\usepackage{tablefootnote}
+\usepackage{lineno}
+%\usepackage[affil-it]{authblk}
+\usepackage[flushleft]{threeparttable}
+\usepackage[justification=justified,singlelinecheck=false,skip=4pt,font=footnotesize,labelfont=bf]{caption}
+\usepackage[toc,page]{appendix}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage[nottoc,notlof,notlot]{tocbibind}
+%\usepackage{subfig}
+\usepackage[hidelinks,linktocpage=true,breaklinks]{hyperref}
+%\usepackage{pdflscape}
+\usepackage{afterpage}
+\usepackage{makecell}
+\usepackage{wrapfig}
+\setlist[itemize]{leftmargin=*}
+\setlist{nolistsep}
+\usepackage{tocloft}
+\setlength{\bibsep}{2pt}
+\def\bibfont{\small}
+
+%%% Figure list stuff
+%\usepackage{adjustbox}
+%\usepackage{xcolor}
+%\usepackage{tcolorbox}
+
+%\newcommand\invisiblesection[1]{%
+  %\refstepcounter{section}%
+  %\addcontentsline{toc}{section}{\protect\numberline{\thesection}#1}%
+  %\sectionmark{#1}}
+
+%% List figure IDs
+%\definecolor{light-gray}{gray}{0.5}
+%\definecolor{lighter-gray}{gray}{0.6}
+%\newtcolorbox{figinfo}{colback=red!3!white,colframe=red!50!white}
+
+\newfloat{plate}{htpb}{plt} % second argument should be {htbp} in your actual document
+\floatname{plate}{Plate}
+
+% Don't do quotes for articles
+%\DeclareFieldFormat[article, inbook]{title}{\textit{#1}} 
+\renewcommand*{\newunitpunct}{\addcomma\space}
+\AtEveryBibitem{%
+  \clearlist{language}%
+  \clearlist{publisher}%
+  \clearfield{pagetotal}%
+}
+\renewbibmacro{in:}{}
+
+\DeclareFieldFormat
+  [article,inbook,incollection,inproceedings,patent,thesis,unpublished]
+  {title}{#1}
+\DeclareFieldFormat{pages}{#1}
+
+\titleformat{\section}{\Times\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}[runin]{\Times\normalsize\bfseries}{\thesubsection}{3pt}{}[~~~~~]
+\titleformat{\subsubsection}[runin]{\Times\normalsize\bfseries\itshape}{\thesubsubsection.}{3pt}{}[ \mbox{ --- } ]
+\titleformat{\paragraph}[runin]{\Times\normalsize\itshape}{\theparagraph}{3pt}{\underline}[:~~]
+
+\setlength{\parskip}{0cm}
+\setlength{\parindent}{2em}
+
+\usepackage[compact]{titlesec}
+\titlespacing{\section}{0pt}{1ex}{0.5ex}
+\titlespacing{\subsection}{0pt}{0.5ex}{0ex}
+\titlespacing{\subsubsection}{0pt}{0.25ex}{0ex}
+\titlespacing{\paragraph}{0pt}{0.2ex}{0ex}
+
+
+\newenvironment{summary}{
+  \titleformat{\section}{\Times\large\bfseries}{\thesection}{1em}{}
+  \titleformat{\subsection}{\Times\normalsize\bfseries}{\thesubsection}{3pt}{}
+  \titleformat{\subsubsection}[runin]{\Times\small\bfseries\textit}{\thesubsubsection}{3pt}{}
+}
+
+\setlength{\droptitle}{-40pt}
+\pretitle{\begin{flushleft}\Gotham\bfseries\Large}
+\posttitle{\par\end{flushleft}\vskip 0.5em}
+
+\preauthor{\begin{flushleft}\Gotham\normalsize}
+\postauthor{\par\end{flushleft}}
+
+
+
+
+\newenvironment{tasklist}
+  {
+    %\titleformat{\subsection}[runin]{\Times\normalsize\bfseries}{\thesubsection:}{3pt}{}[~~~~~]
+    \renewcommand{\thesubsection}{T\arabic{subsection}}
+    \renewcommand{\thesubsubsection}{T\arabic{subsection}\alph{subsubsection}}
+  }
+  {
+    \renewcommand{\thesubsection}{\arabic{section}.\arabic{subsection}}
+    \renewcommand{\thesubsubsection}{\arabic{section}.\arabic{subsection}.\arabic{subsubsection}} 
+  }
+
+\newenvironment{code}
+  {
+    \vspace{-0.4em}
+    \small
+    \verbatim
+  }
+  {
+    \endverbatim
+    \vspace{-0.4em}
+  }
+
+
+% Pandoc hack
+% https://github.com/jgm/pandoc/issues/3145
+\let\Begin\begin
+\let\End\end
+

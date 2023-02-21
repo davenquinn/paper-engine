@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 
+
 pushd "$PAPER_DIR/text"
 dir="."
 # If we don't have a revision, use current text
@@ -11,8 +12,12 @@ else
   rev=$1
 fi
 
-function head() {
+function unnumbered-head() {
 echo "# $@ {-}\n\n"
+}
+
+function head() {
+echo "# $@ \n\n"
 }
 
 function text() {
@@ -24,16 +29,47 @@ function text() {
   echo "\n\n"
 }
 
-head "Key Points"
-text $dir/key-points.md
-head "Abstract"
-text $dir/abstract.md
+## These two NSF-grant specific functions need to be removed
+if [ -f $dir/project-summary.md ]; then
+  head "Project summary"
+  text $dir/project-summary.md
+fi
+if [ -f $dir/project-description.md ]; then
+  head "Project Description"
+  text $dir/project-description.md
+fi
+## File
+
+if [ -f $dir/key-points.md ]; then
+  unnumbered-head "Key Points"
+  text $dir/key-points.md
+fi
+if [ -f $dir/abstract.md ]; then
+  unnumbered-head "Abstract"
+  text $dir/abstract.md
+fi
 
 # Body text
-paths=($(git ls-tree -r --full-name --name-only $rev chapters))
-for fn in $paths; do
-  text $fn
-done
+if [ -d $dir/chapters ]; then
+  paths=($(git ls-tree -r --full-name --name-only $rev chapters))
+  for fn in $paths; do
+    text "${fn#text/}"
+  done
+else
+  paths=($(git ls-tree -r --full-name --name-only $rev .))
+  for fn in $paths; do
+    fn=${fn:t} 
+    [ "${fn:e}" != "md" ] && continue
+    [ "$fn" = "README.md" ] && continue
+    [ "$fn" = "key-points.md" ] && continue
+    [ "$fn" = "project-summary.md" ] && continue
+    [ "$fn" = "project-description.md" ] && continue
+    [ "$fn" = "figure-captions.md" ] && continue
+    [ "$fn" = "abstract.md" ] && continue
+    text $fn
+  done  
+fi
+
 
 # Appendices
 paths=($(git ls-tree -r --full-name --name-only $rev appendices))
@@ -45,6 +81,8 @@ if [[ ${#a} ]]; then
   done
 fi
 
-text $dir/figure-captions.md
-head "References"
+if [ -f $dir/figure-captions.md ]; then
+  text $dir/figure-captions.md
+fi
+#head "References"
 popd

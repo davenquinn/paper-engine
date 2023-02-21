@@ -1,0 +1,41 @@
+#!/usr/bin/env zsh
+# Description: convert a docx file to a text file that mostly matches original content
+cd $PAPER_DIR
+
+build="build/_diff"
+
+baseline="$build/baseline.md"
+v0="$build/test.docx"
+rt="$build/round-tripped.md"
+
+new="$build/new.md"
+patch="$build/test.diff"
+patch1="$build/test1.diff"
+
+rm -rf $build
+mkdir -p $build
+
+paper rev-text > $baseline
+
+function get-markdown() {
+  pandoc -f docx -t markdown --lua-filter "$PAPER_COMPONENTS/filters/remove-figures-tables.lua" -o $2 $1
+  npx prettier --write $2
+}
+
+# Round-trip a test file...
+paper create-docx -o $v0
+get-markdown $v0 $rt
+
+# Get a patch we can apply
+# --word-diff=porcelain would be nice but it seems hard to apply
+git diff --no-index $rt $baseline > $patch
+
+# Convert the docx file to markdown
+get-markdown "$1" $new
+
+# From here we could substitute a new process if we were reintegrating the changes on a new branch
+patch $new $patch
+
+# Print a word diff
+git diff -U10000 --word-diff --no-index --color-words --color-moved=zebra $baseline $new
+

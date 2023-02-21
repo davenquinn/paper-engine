@@ -1,0 +1,10 @@
+\begin{wrapfigure}{<< position or "r" >>}{<<width>>}
+  \vspace{-1em}
+  \centering\includegraphics[<< size >>]{<< file >>}
+  <# if caption -#>
+  \captionof{figure}[<<title>>]{<< caption >>}
+  <#- else -#>
+  \captionlistentry[figure]{<< title >>}
+  <#- endif #>\label{fig:<< id >>}
+  \vspace{-1em}
+\end{wrapfigure}

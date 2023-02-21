@@ -29,8 +29,6 @@
 # output/             (also will be created)
 #
 
-source "$PAPER_DIR/paper-defs.zsh"
-
 name="$name-journal-format"
 
 build='build'
@@ -48,7 +46,7 @@ collect_dir="collected-figures"
 preamble="$build/preamble.tex"
 appendices="$build/appendices.tex"
 
-source paper-components/defs.zsh
+source "$PAPER_COMPONENTS/env.zsh"
 
 # Make sure we have the latest python modules
 #(cd paper-components; git submodule update --init)

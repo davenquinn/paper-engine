@@ -2,15 +2,23 @@
 
 source "$PAPER_DIR/paper-defs.zsh"
 
+echo "paper localize-refs is deprecated. Use paper compile-refs instead." >&2
+
 build="$PAPER_DIR/build"
 auxfile="$build/$name.aux"
-bibfile="$PAPER_DIR/text/references.bib"
+bibfile="${bibfile:-"$PAPER_DIR/text/references.compiled.bib"}"
 
 echo "Filtering bibliography"
 refs="$build/references.txt"
-paper rev-text \
+paper get-text --captions \
 | paper extract-refs \
 > $refs
+
+if [ ! -f $BIBTEX_LIBRARY ]; then
+  echo "$BIBTEX_LIBRARY not found, so filtering cannot proceed."
+  exit 0
+fi
+
 bib-filter --clean \
   --keys $refs $BIBTEX_LIBRARY $bibfile
 

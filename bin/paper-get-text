@@ -4,22 +4,53 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   -a|--abstract) abstract=1;;
   -A|--appendices) appendices=1;;
   -c|--captions) captions=1;;
+  --absolute) absolute=1;;
   --dry-run) dry_run=1;;
   *) echo "Unknown parameter passed: $1"; exit 1;;
 esac; shift; done
 
-cd $PAPER_DIR
+# need to make this override-able...
+source paper-defs.zsh
+
+## Assemble a list of files
 files=()
 [ $abstract ] && files+=(text/abstract.md)
-files+=(text/chapters/*.md)
+
+if [ ! -z ${main_text+x} ]; then
+  # If we have a 'main_text' variable, use that as a single file
+  if [ -d $main_text ]; then
+    # If main_text is a directory, then use that
+    files+=($main_text/*.md)
+  else
+    # If main text is a file, add that single file
+    files+=($main_text)
+  fi
+elif [ -d "text/chapters" ]; then
+  # By default we look for main text in the 'chapters' folder
+  files+=(text/chapters/*.md)
+else
+  # If that doesn't exist we just grab all the files in the 'text' folder
+  # that aren't figure captions and abstracts
+  # Use variables by default if set
+  for f in text/*.md; do
+    if [ $f != "text/figure-captions.md" ] && [ $f != "text/abstract.md" ]; then
+      files+=($f)
+    fi
+  done
+fi
+
+
 [ $appendices ] && files+=(text/appendices/*.md(N))
 [ $captions ] && files+=(text/figure-captions.md)
+
+prefix=""
+[ $absolute ] && prefix="$(pwd)/"
+
 for fn in ${files[@]}; do
 if [ $dry_run ]; then
-    echo $fn
+    echo "$prefix$fn"
 else
     cat $fn
     echo "\n\n"
 fi
 done
-

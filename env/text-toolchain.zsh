@@ -25,9 +25,26 @@ function text-pipeline {
     --from markdown \
     --to latex \
     --natbib \
-    --metadata=draft:true \
+    --metadata draft:true \
+    --metadata-file "$PAPER_COMPONENTS/defs/pandoc-crossref.yaml" \
     --filter pandoc-comments \
     --filter pandoc-crossref
+}
+
+function text-pipeline-biblatex {
+  crossref_file="${PAPER_COMPONENTS_CROSSREF_CONFIG:-"$PAPER_COMPONENTS/defs/pandoc-crossref.yaml"}"
+
+  prepare-crossref \
+  | wrap-si-units \
+  | sed "s/º/°/g" \
+  | pandoc \
+      --from markdown \
+      --to latex \
+      --biblatex \
+      --metadata=draft:true \
+      --metadata-file "$crossref_file" \
+      --filter pandoc-comments \
+      --filter pandoc-crossref
 }
 
 function mark-inline-figures {
@@ -48,17 +65,25 @@ function text-pipeline-html {
    | pandoc \
       --from markdown+pipe_tables \
       --to html \
+      --toc \
+      --standalone \
+      --metadata link-citations=true \
+      --metadata linkReferences=true \
+      --metadata-file meta.yaml \
+      --metadata-file "$PAPER_COMPONENTS/defs/pandoc-crossref.yaml" \
       --section-divs \
       --number-sections \
       --csl='paper-components/agu.csl' \
       --bibliography=text/references.bib \
+      --filter "$pc/bin/inline-figure-filter" \
+      --filter "$pc/bin/figure-ref-filter" \
       --filter pandoc-comments \
       --filter pandoc-crossref \
       --filter pandoc-citeproc \
       $@
 }
 
-pc=$PAPER_DIR/paper-components
+pc="$PAPER_COMPONENTS"
 
 function text-pipeline-docx {
    prepare-crossref \
@@ -67,12 +92,12 @@ function text-pipeline-docx {
       --from markdown \
       --to docx+styles \
       --reference-doc="$pc/templates/reference.docx" \
-      --bibliography="$PAPER_DIR/text/references.bib" \
+      --bibliography="$PAPER_DIR/build/references.bib" \
       --csl="$pc/agu.csl" \
       --filter "$pc/bin/figure-ref-filter" \
       --filter pandoc-comments \
       --filter pandoc-crossref \
-      --filter pandoc-citeproc \
+      --citeproc \
       $@
 }
 

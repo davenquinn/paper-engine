@@ -1,0 +1,56 @@
+\documentclass[svgnames, 12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{times}
+\usepackage{tabularx}
+\usepackage{multicol}
+\usepackage{calc}
+\usepackage{titlesec}
+\usepackage{lastpage}
+\newcommand\dummy[1]{#1}
+%\newcommand{\pageoflastpage}{Page {\thepage} of \pageref*{LastPage}}
+%\newcommand{\pageoflastpage}{{\thepage} of \pageref*{LastPage}}
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% Use fancy for non-title pages
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{$short_title$}
+\fancyhead[R]{$running_head$}
+\cfoot{\thepage}
+
+\usepackage{xspace}
+\usepackage[shortlabels]{enumitem}
+\usepackage{graphicx}
+\usepackage{varioref}
+\setcounter{secnumdepth}{-1}
+
+\titleformat{\section}{\Times\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\Times\normalsize\bfseries}{\thesubsection}{3pt}{}
+\titleformat{\subsubsection}[runin]{\Times\small\bfseries}{\thesubsubsection}{3pt}{}[~~~~]
+
+\title{%
+  \vspace{-2\baselineskip}
+  \normalsize
+  \textbf{$title$}, for the proposal:\\
+  $proposal$}
+  \vspace{0.5\baselineskip}
+}
+\date{}
+\author{}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{fancy}
+\vspace{-4\baselineskip}
+
+
+$body$
+
+\end{document}

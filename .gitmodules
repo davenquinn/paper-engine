@@ -10,3 +10,6 @@
 [submodule "modules/Pandoc-Comment-Filter"]
 	path = modules/Pandoc-Comment-Filter
 	url = git://github.com/davenquinn/Pandoc-Comment-Filter.git
+[submodule "deps/export-artboards"]
+	path = deps/export-artboards
+	url = https://github.com/davenquinn/export-artboards.git

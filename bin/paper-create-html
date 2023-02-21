@@ -1,0 +1,31 @@
+#!/usr/bin/env zsh
+# Uses new signature in which 'PAPER_DIR' environment variable must be defined
+# Create a simple html version of the paper
+
+source "$PAPER_COMPONENTS/env.zsh"
+
+(
+  paper get-text --abstract 2>/dev/null
+  echo "\n# References\n\n"
+) \
+| prepare-crossref \
+| pandoc \
+   --from markdown+pipe_tables \
+   --to html \
+   --toc \
+   --standalone \
+   --metadata link-citations=true \
+   --metadata linkReferences=true \
+   --metadata figure-captions=text/figure-captions.md \
+   --metadata includes-spec=text/includes.yaml \
+   --metadata includes-dir=output/converted-includes \
+   --metadata-file text/meta.yaml \
+   --section-divs \
+   --number-sections \
+   --csl='paper-components/agu.csl' \
+   --bibliography=text/references.bib \
+   --filter "$pc/bin/inline-figure-filter" \
+   --filter pandoc-comments \
+   --filter pandoc-crossref \
+   --filter pandoc-citeproc \
+   $@

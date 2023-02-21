@@ -1,0 +1,137 @@
+#!/usr/bin/env zsh
+
+source "$PAPER_COMPONENTS/env.zsh"
+
+>&2 echo "Creating NSF proposal '$name' in directory $(pwd)"
+
+# Text file locations
+figureDefs="text/includes.yaml"
+bibfile="text/references.bib"
+
+# Build file locations
+build="build"
+body="$build/body.tex"
+texfile="$build/draft.tex"
+preamble="$build/preamble.tex"
+build_dest="$build/$name.pdf"
+auxfile="${build_dest:r}.aux"
+defs="$PAPER_COMPONENTS/nsf-proposal"
+captions="$build/figure-captions.tex"
+
+
+# Output locations
+collectDir="collected-figures"
+outdir="output"
+
+if [ "$1" = "--init" ]; then
+  # Check dependencies
+  paper check-deps
+
+  # Remove previously linked figures (NOTE: we should really
+  # do this in the figurator module)
+  mkdir -p $build $collectDir
+
+  paper collect-includes "$figureDefs" "$collectDir"
+fi
+
+export PAPER_COMPONENTS_CROSSREF_CONFIG="$PAPER_COMPONENTS/nsf-proposal/pandoc-crossref.yaml"
+
+# Build project summary
+cat text/project-summary.md \
+| text-pipeline-biblatex \
+> "$build/project-summary.tex"
+
+cat text/figure-captions.md \
+| text-pipeline-biblatex \
+> $captions
+
+figureArgs=( inline $figureDefs  \
+              --template-dir $defs/includes \
+              --captions $captions )
+
+[ -d $collectDir ] && figureArgs+=(--collect-dir $collectDir)
+
+paper get-text \
+| sed 's/@task:\([a-zA-Z0-9_-]\+\)/\\ref{task:\1}/g' \
+| mark-inline-figures \
+| text-pipeline-biblatex \
+| figurator "${figureArgs[@]}" \
+> $body
+
+
+rm -f "$preamble" "$texfile"
+
+# Can override bibstyle with bib-style variable
+echo "" \
+| pandoc \
+  --template $defs/draft.tex \
+  --metadata-file text/meta.yaml \
+  --from latex --to latex \
+> "$texfile"
+
+# Copy preamble
+cat "$defs/preamble"/*.tex > "$preamble"
+# PROCESS EXTRA PREAMBLE
+if [[ $preamble_includes && ${#preamble_includes} ]]; then
+  for f in ${preamble_includes[@]}; do
+    if [[ -f $f ]]; then
+      cat "$f" >> "$preamble"
+    fi
+  done
+fi
+
+# References
+cp "$PAPER_COMPONENTS/agu-template/agufull08.bst" "$build/agufull08.bst"
+
+paper compile-refs
+
+dest="$outdir/${build_dest:t}"
+run-latex $texfile $build_dest
+mkdir -p "$outdir"
+mv "$build_dest" "$dest"
+
+#gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=1 \
+  #-dLastPage=1 -sOutputFile="$outdir/project-summary.pdf" "$dest"
+#gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=2 \
+  #-dLastPage=10 -sOutputFile="$outdir/project-description.pdf" "$dest"
+#gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=11 \
+  #-dLastPage=13 -sOutputFile="$outdir/bibliography.pdf" "$dest"
+
+tag --set paper-draft $outfile
+
+
+### Create DOCX version
+
+text=build/text.md
+rm -f $text
+paper get-text \
+| sed 's/{#task:\([a-zA-Z0-9_-]\+\)}/{#sec:task:\1}/g' \
+| sed 's/@task:\([a-zA-Z0-9_-]\+\)/Task -@sec:task:\1/g' \
+| prepare-crossref \
+| sed "s/º/°/g" \
+> $text
+
+# Get rid of abstract otherwise it will be numbered
+sed -i "s/\# Abstract {-}//g" $text
+
+echo "# References {-}\n\n" >> $text
+
+cat $text \
+| pandoc \
+  --from markdown \
+  --to docx+styles \
+  --metadata-file=$PAPER_DIR/text/meta.yaml \
+  --metadata-file "$pc/defs/pandoc-crossref.yaml" \
+  --metadata includes-spec="$PAPER_DIR/text/includes.yaml" \
+  --metadata includes-dir=$includes \
+  --metadata includes-only="tbl" \
+  --reference-doc="$pc/templates/reference.docx" \
+  --bibliography="$PAPER_DIR/build/references.bib" \
+  --csl="$pc/agu.csl" \
+  --filter "$pc/bin/figure-ref-filter" \
+  --filter "$pc/bin/inline-figure-filter" \
+  --filter pandoc-comments \
+  --filter pandoc-crossref \
+  --citeproc \
+  -o "$PAPER_DIR/output/$name.docx" \
+  $@

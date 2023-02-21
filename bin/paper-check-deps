@@ -1,0 +1,15 @@
+#!/usr/bin/env zsh
+
+# Make sure we have the latest python modules
+#(cd paper-components; git submodule update --init)
+# Now we do this by running poetry to install the project
+# for f in $PAPER_COMPONENTS/modules/* ; do
+#   pip3 install -e $f
+# done
+
+# Check for required executables
+vv=(pandoc pandoc-crossref figurator bib-filter)
+for c in $vv; do
+  command -v $c >/dev/null 2>&1 \
+  || { echo >&2 "$c required but not installed"; exit 1 }
+done

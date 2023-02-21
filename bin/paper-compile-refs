@@ -1,0 +1,25 @@
+#!/usr/bin/env zsh
+
+source "$PAPER_DIR/paper-defs.zsh"
+
+build="$PAPER_DIR/build"
+auxfile="$build/$name.aux"
+bibfile="${bibfile:-"$PAPER_DIR/text/references/autocompiled-references.bib"}"
+
+mkdir -p "$build" "${bibfile:h}"
+
+echo "Filtering bibliography"
+refs="$build/references.txt"
+paper get-text --captions \
+| paper extract-refs \
+> $refs
+
+if [ ! -f $BIBTEX_LIBRARY ]; then
+  echo "$BIBTEX_LIBRARY not found, so reference compilation cannot proceed."
+  exit 0
+fi
+
+bib-filter --clean \
+  --keys $refs $BIBTEX_LIBRARY $bibfile
+
+cat text/references/*.bib > "$build/references.bib"

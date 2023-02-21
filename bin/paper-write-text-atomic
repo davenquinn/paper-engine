@@ -1,0 +1,4 @@
+paper create-html --template viewer/template.html \
+> viewer/build/text-new.html 
+
+mv -f viewer/build/text-new.html viewer/build/text.html
