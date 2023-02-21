@@ -32,17 +32,19 @@ function text-pipeline {
 }
 
 function text-pipeline-biblatex {
- prepare-crossref \
- | wrap-si-units \
- | sed "s/º/°/g" \
- | pandoc \
-    --from markdown \
-    --to latex \
-    --biblatex \
-    --metadata=draft:true \
-    --metadata-file "$PAPER_COMPONENTS/defs/pandoc-crossref.yaml" \
-    --filter pandoc-comments \
-    --filter pandoc-crossref
+  crossref_file="${PAPER_COMPONENTS_CROSSREF_CONFIG:-"$PAPER_COMPONENTS/defs/pandoc-crossref.yaml"}"
+
+  prepare-crossref \
+  | wrap-si-units \
+  | sed "s/º/°/g" \
+  | pandoc \
+      --from markdown \
+      --to latex \
+      --biblatex \
+      --metadata=draft:true \
+      --metadata-file "$crossref_file" \
+      --filter pandoc-comments \
+      --filter pandoc-crossref
 }
 
 function mark-inline-figures {

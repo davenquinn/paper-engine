@@ -54,6 +54,7 @@ done
 function rev-text {
   # If we don't have a revision, use current text
   paths=($dir/abstract.md \
+    $dir/project-description.md \
     $(git ls-tree -r --full-name --name-only $1 chapters) \
     $dir/figure-captions.md)
 

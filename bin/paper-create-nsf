@@ -34,6 +34,8 @@ if [ "$1" = "--init" ]; then
   paper collect-includes "$figureDefs" "$collectDir"
 fi
 
+export PAPER_COMPONENTS_CROSSREF_CONFIG="$PAPER_COMPONENTS/nsf-proposal/pandoc-crossref.yaml"
+
 # Build project summary
 cat text/project-summary.md \
 | text-pipeline-biblatex \

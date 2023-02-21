@@ -17,17 +17,19 @@
 \addbibresource{build/references.bib}
 
 \begin{document}
-\begin{NoHyper}
+%\begin{NoHyper}
 
 \begin{center}
 \noindent{{\textbf{Project Summary}: $title$}}
 \end{center}
-\vspace{-1em}
+
+\clearpage
+
 
 {
   \setcounter{secnumdepth}{0}
-  \titleformat{\section}[runin]{\bfseries}{\thesection}{2pt}{}{~~~~}
-  \titleformat{\subsection}[runin]{\small\bfseries}{\thesubsubsection}{2pt}{}[~~~~]%
+  \titleformat{\section}{\Times\Large\bfseries}{\thesection}{1em}{}
+  \titleformat{\subsection}{\Times\normalsize\bfseries}{\thesubsection}{3pt}{}
   \input{build/project-summary.tex}
 }
 
@@ -51,11 +53,14 @@
 \input{build/body.tex}
 
 \pagebreak
+{
+  \setstretch{1.1} % NSF gives us a warning with the refs for too tight a line spacing
 \pagenumbering{arabic}
 \renewcommand{\thepage} {E--\arabic{page}}
 
 \printbibliography
 
-\end{NoHyper}
+}
+%\end{NoHyper}
 \end{document}
 
