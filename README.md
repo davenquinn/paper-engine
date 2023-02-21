@@ -14,6 +14,13 @@ a range of individual commands for extracting references, versioning text,
 and creating preprints, journal-formatted papers (only AGU currently supported),
 and review responses.
 
+## Similar projects
+
+[**Manubot**](https://github.com/manubot/manubot) is similar in design and has much broader
+support and documentation. This project is a bit different in that it focuses a bit more heavily on compilation
+into restrictive formats, e.g. grant proposal documents etc. Thus it is a bit more concerned with the
+placement of figures, etc. Still, eventual compatibility with Manubot is a goal of this project.
+
 ## Rationale
 
 LaTeX code can involve a lot of boilerplate, and the production process is confusing.
