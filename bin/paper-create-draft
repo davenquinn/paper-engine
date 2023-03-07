@@ -70,7 +70,7 @@ cat text/abstract.md \
 echo "Processing body text"
 # Process body text
 # We can't use 'rev-text' because it doesn't support getting only the body text right now
-paper get-text  \
+paper rev-text  \
 | sed -r 's/^\\section\{(Introduction)\}/\\invisiblesection\{\1\}/g' \
 | mark-inline-figures \
 | text-pipeline \

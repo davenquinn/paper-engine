@@ -1,8 +1,17 @@
 #!/usr/bin/env zsh
 
+while [[ "$#" -gt 0 ]]; do case $1 in
+  -a|--abstract) abstract=1;;
+  -A|--appendices) appendices=1;;
+  -c|--captions) captions=1;;
+  --absolute) absolute=1;;
+  --dry-run) dry_run=1;;
+  *) echo "Unknown parameter passed: $1"; exit 1;;
+esac; shift; done
 
-pushd "$PAPER_DIR/text"
-dir="."
+source "$PAPER_DIR/paper-defs.zsh"
+
+dir="$PAPER_DIR/text"
 # If we don't have a revision, use current text
 if [ -z "$1" ]; then
   now=1
@@ -30,35 +39,40 @@ function text() {
 }
 
 ## These two NSF-grant specific functions need to be removed
-if [ -f $dir/project-summary.md ]; then
-  head "Project summary"
-  text $dir/project-summary.md
-fi
-if [ -f $dir/project-description.md ]; then
-  head "Project Description"
-  text $dir/project-description.md
-fi
+# if [ -f $dir/project-summary.md ]; then
+#   unnumbered-head "Project summary"
+#   text $dir/project-summary.md
+# fi
+# if [ -f $dir/project-description.md ]; then
+#   unnumbered-head "Project Description"
+#   text $dir/project-description.md
+# fi
 ## File
 
 if [ -f $dir/key-points.md ]; then
   unnumbered-head "Key Points"
   text $dir/key-points.md
 fi
-if [ -f $dir/abstract.md ]; then
+if [ $abstract ] && [ -f $dir/abstract.md ]; then
   unnumbered-head "Abstract"
   text $dir/abstract.md
 fi
 
+main_text=${main_text:-text/chapters}
+
 # Body text
-if [ -d $dir/chapters ]; then
-  paths=($(git ls-tree -r --full-name --name-only $rev chapters))
+if [ -d $main_text ]; then
+  echo "Using main text from $main_text" >&2
+  paths=($(git ls-tree -r --full-name --name-only $rev $main_text))
   for fn in $paths; do
-    text "${fn#text/}"
+    echo "  ${fn:t}" >&2
+    text "$fn"
   done
 else
   paths=($(git ls-tree -r --full-name --name-only $rev .))
-  for fn in $paths; do
-    fn=${fn:t} 
+  echo "Synthesizing main text:" >&2
+  for fnf in $paths; do
+    fn=${fnf:t} 
     [ "${fn:e}" != "md" ] && continue
     [ "$fn" = "README.md" ] && continue
     [ "$fn" = "key-points.md" ] && continue
@@ -66,14 +80,15 @@ else
     [ "$fn" = "project-description.md" ] && continue
     [ "$fn" = "figure-captions.md" ] && continue
     [ "$fn" = "abstract.md" ] && continue
-    text $fn
+    echo "  ${fn}" >&2
+    text $fnf
   done  
 fi
 
 
 # Appendices
 paths=($(git ls-tree -r --full-name --name-only $rev appendices))
-if [[ ${#a} ]]; then
+if [ $appendices ] && [ -n "$paths" ]; then
   head "Appendices"
   for fn in $paths; do
     # Convert to submodules
@@ -81,8 +96,7 @@ if [[ ${#a} ]]; then
   done
 fi
 
-if [ -f $dir/figure-captions.md ]; then
+if [ $captions ] && [ -f $dir/figure-captions.md ]; then
   text $dir/figure-captions.md
 fi
 #head "References"
-popd

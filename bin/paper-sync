@@ -1,0 +1,3 @@
+#!/bin/bash
+# Sync the content of annex
+git annex sync --content

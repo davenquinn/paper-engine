@@ -4,9 +4,11 @@ source "$PAPER_COMPONENTS/env.zsh"
 
 >&2 echo "Creating NSF proposal '$name' in directory $(pwd)"
 
+content_dir="${PAPER_CONTENT_DIR:-text}"
+
 # Text file locations
-figureDefs="text/includes.yaml"
-bibfile="text/references.bib"
+figureDefs="$content_dir/includes.yaml"
+bibfile="$content_dir/references.bib"
 
 # Build file locations
 build="build"
@@ -17,6 +19,7 @@ build_dest="$build/$name.pdf"
 auxfile="${build_dest:r}.aux"
 defs="$PAPER_COMPONENTS/nsf-proposal"
 captions="$build/figure-captions.tex"
+includes="$PAPER_DIR/build/converted-includes"
 
 
 # Output locations
@@ -37,11 +40,11 @@ fi
 export PAPER_COMPONENTS_CROSSREF_CONFIG="$PAPER_COMPONENTS/nsf-proposal/pandoc-crossref.yaml"
 
 # Build project summary
-cat text/project-summary.md \
+cat $content_dir/project-summary.md \
 | text-pipeline-biblatex \
 > "$build/project-summary.tex"
 
-cat text/figure-captions.md \
+cat $content_dir/figure-captions.md \
 | text-pipeline-biblatex \
 > $captions
 
@@ -51,7 +54,7 @@ figureArgs=( inline $figureDefs  \
 
 [ -d $collectDir ] && figureArgs+=(--collect-dir $collectDir)
 
-paper get-text \
+paper rev-text \
 | sed 's/@task:\([a-zA-Z0-9_-]\+\)/\\ref{task:\1}/g' \
 | mark-inline-figures \
 | text-pipeline-biblatex \
@@ -104,7 +107,7 @@ tag --set paper-draft $outfile
 
 text=build/text.md
 rm -f $text
-paper get-text \
+paper rev-text --captions \
 | sed 's/{#task:\([a-zA-Z0-9_-]\+\)}/{#sec:task:\1}/g' \
 | sed 's/@task:\([a-zA-Z0-9_-]\+\)/Task -@sec:task:\1/g' \
 | prepare-crossref \

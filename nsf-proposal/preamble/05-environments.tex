@@ -1,7 +1,7 @@
-\titleformat{\section}{\Times\large\bfseries}{\thesection}{1em}{}
-\titleformat{\subsection}[runin]{\Times\normalsize\bfseries}{\thesubsection}{3pt}{}[~~~]
-\titleformat{\subsubsection}[runin]{\Times\normalsize\itshape}{\thesubsubsection}{3pt}{\underline}[~~~]
-\titleformat{\paragraph}[runin]{\Times\normalsize\itshape}{\theparagraph}{3pt}{}[~~~]
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}[runin]{\normalsize\bfseries}{\thesubsection}{3pt}{}[~~~]
+\titleformat{\subsubsection}[runin]{\normalsize\itshape}{\thesubsubsection}{3pt}{\underline}[~~~]
+\titleformat{\paragraph}[runin]{\normalsize\itshape}{\theparagraph}{3pt}{}[~~~]
 
 
 \setlength{\parskip}{0cm}
@@ -16,9 +16,9 @@
 
 \newenvironment{summary}{
   \setcounter{secnumdepth}{0}
-  \titleformat{\section}{\Times\large\bfseries}{\thesection}{1em}{}
-  \titleformat{\subsection}{\Times\normalsize\bfseries}{\thesubsection}{3pt}{}
-  \titleformat{\subsubsection}[runin]{\Times\small\bfseries\textit}{\thesubsubsection}{3pt}{}
+  \titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+  \titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{3pt}{}
+  \titleformat{\subsubsection}[runin]{\small\bfseries\textit}{\thesubsubsection}{3pt}{}
 }
 
 \setlength{\droptitle}{-40pt}
@@ -30,7 +30,7 @@
 
 \newenvironment{tasklist}
   {
-    %\titleformat{\subsection}[runin]{\Times\normalsize\bfseries}{\thesubsection:}{3pt}{}[~~~~~]
+    %\titleformat{\subsection}[runin]{\normalsize\bfseries}{\thesubsection:}{3pt}{}[~~~~~]
     \renewcommand{\thesubsection}{Task \arabic{subsection}}
     \renewcommand{\thesubsubsection}{Task \arabic{subsection}\alph{subsubsection}}
   }

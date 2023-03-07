@@ -14,6 +14,7 @@ panflute = "^2.1.5"
 pypandoc = "^1.8.1"
 python = "^3.9"
 wrap-si-units = {path = "./modules/wrap-si-units", develop = true}
+gdoc-down = "^0.0.10"
 
 [tool.poetry.dev-dependencies]
 
