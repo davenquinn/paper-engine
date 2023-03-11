@@ -3,4 +3,8 @@
 bucket=${PAPER_S3_BUCKET:-paper-assets}
 prefix=${PAPER_S3_PREFIX:-$PAPER_NAME/}
 
-paper annex initremote asset-store type=S3 public=yes encryption=none bucket="$bucket" fileprefix="$prefix"
+remote_name=${1:-"asset-store"}
+
+# Create an asset store for the paper
+paper annex init
+paper annex initremote $remote_name type=S3 public=yes encryption=none bucket="$bucket" fileprefix="$prefix" 

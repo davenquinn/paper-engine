@@ -23,15 +23,21 @@
 \noindent{{\textbf{Project Summary}: $title$}}
 \end{center}
 
-\clearpage
-
 
 {
   \setcounter{secnumdepth}{0}
-  \titleformat{\section}{\Times\Large\bfseries}{\thesection}{1em}{}
-  \titleformat{\subsection}{\Times\normalsize\bfseries}{\thesubsection}{3pt}{}
+  \setcounter{tocdepth}{0}
+  \renewcommand\addcontentsline[3]{}
+  %\setcounter{secnumdepth}{0}
+  %\setcounter{tocdepth}{0}
+  % disable table of contents
+  \titleformat{\section}{\normalsize\bfseries}{\thesection}{3pt}{}
+  \titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{3pt}{}
   \input{build/project-summary.tex}
 }
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
 
 \clearpage
 
@@ -47,14 +53,13 @@
 \noindent{{\textbf{Project Description}: $title$}}
 \end{center}
 
-\setcounter{secnumdepth}{3}
-\setcounter{tocdepth}{3}
+
 
 \input{build/body.tex}
 
 \pagebreak
 {
-  \setstretch{1.1} % NSF gives us a warning with the refs for too tight a line spacing
+\setstretch{1.1} % NSF gives us a warning with the refs for too tight a line spacing
 \pagenumbering{arabic}
 \renewcommand{\thepage} {E--\arabic{page}}
 

@@ -78,10 +78,10 @@
   {title}{#1}
 \DeclareFieldFormat{pages}{#1}
 
-\titleformat{\section}{\Times\large\bfseries}{\thesection}{1em}{}
-\titleformat{\subsection}[runin]{\Times\normalsize\bfseries}{\thesubsection}{3pt}{}[~~~~~]
-\titleformat{\subsubsection}[runin]{\Times\normalsize\bfseries\itshape}{\thesubsubsection.}{3pt}{}[ \mbox{ --- } ]
-\titleformat{\paragraph}[runin]{\Times\normalsize\itshape}{\theparagraph}{3pt}{\underline}[:~~]
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}[runin]{\normalsize\bfseries}{\thesubsection}{3pt}{}[~~~~~]
+\titleformat{\subsubsection}[runin]{\normalsize\bfseries\itshape}{\thesubsubsection.}{3pt}{}[ \mbox{ --- } ]
+\titleformat{\paragraph}[runin]{\normalsize\itshape}{\theparagraph}{3pt}{\underline}[:~~]
 
 \setlength{\parskip}{0cm}
 \setlength{\parindent}{2em}
@@ -94,9 +94,9 @@
 
 
 \newenvironment{summary}{
-  \titleformat{\section}{\Times\large\bfseries}{\thesection}{1em}{}
-  \titleformat{\subsection}{\Times\normalsize\bfseries}{\thesubsection}{3pt}{}
-  \titleformat{\subsubsection}[runin]{\Times\small\bfseries\textit}{\thesubsubsection}{3pt}{}
+  \titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+  \titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{3pt}{}
+  \titleformat{\subsubsection}[runin]{\small\bfseries\textit}{\thesubsubsection}{3pt}{}
 }
 
 \setlength{\droptitle}{-40pt}
@@ -111,7 +111,7 @@
 
 \newenvironment{tasklist}
   {
-    %\titleformat{\subsection}[runin]{\Times\normalsize\bfseries}{\thesubsection:}{3pt}{}[~~~~~]
+    %\titleformat{\subsection}[runin]{\normalsize\bfseries}{\thesubsection:}{3pt}{}[~~~~~]
     \renewcommand{\thesubsection}{T\arabic{subsection}}
     \renewcommand{\thesubsubsection}{T\arabic{subsection}\alph{subsubsection}}
   }
