@@ -1,15 +1,15 @@
 [submodule "modules/figurator"]
 	path = modules/figurator
-	url = git://github.com/davenquinn/figurator.git
+	url = https://github.com/davenquinn/figurator.git
 [submodule "modules/bib-filter"]
 	path = modules/bib-filter
-	url = git://github.com/davenquinn/bib-filter.git
+	url = https://github.com/davenquinn/bib-filter.git
 [submodule "modules/wrap-si-units"]
 	path = modules/wrap-si-units
-	url = git://github.com/davenquinn/wrap-si-units.git
+	url = https://github.com/davenquinn/wrap-si-units.git
 [submodule "modules/Pandoc-Comment-Filter"]
 	path = modules/Pandoc-Comment-Filter
-	url = git://github.com/davenquinn/Pandoc-Comment-Filter.git
+	url = https://github.com/davenquinn/Pandoc-Comment-Filter.git
 [submodule "deps/export-artboards"]
 	path = deps/export-artboards
 	url = https://github.com/davenquinn/export-artboards.git
