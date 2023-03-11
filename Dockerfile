@@ -5,7 +5,7 @@ WORKDIR /build
 
 
 RUN apt-get update \
-  && apt-get install -y curl git git-annex xz-utils
+  && apt-get install -y curl git git-annex xz-utils zsh
 
 RUN apt-get update && apt-get install -y python3 python3-pip python3-venv
 
@@ -24,16 +24,16 @@ RUN python3 -m venv /python-env
 ENV PATH="/python-env/bin:$PATH"
 RUN pip3 install "poetry>=1.3.0"
 
-COPY . /paper-components
 WORKDIR /paper-components
-RUN poetry config virtualenvs.create false
 
-RUN python3 -m venv .venv
+COPY poetry.lock pyproject.toml ./
+COPY modules/ ./modules
 
-# Activate the virtual environment
-ENV PATH="/paper-components/.venv/bin:$PATH"
+RUN poetry install --no-dev --no-root
 
-RUN apt-get install -y zsh
+COPY . /paper-components
+
+RUN poetry install
 
 # Install the paper executable
 RUN make install
