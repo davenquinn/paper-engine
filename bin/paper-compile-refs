@@ -14,16 +14,12 @@ paper get-text --captions \
 | paper extract-refs \
 > $refs
 
-if [ ! -f $BIBTEX_LIBRARY ]; then
-  echo "$BIBTEX_LIBRARY not found, so reference compilation cannot proceed."
-  exit 0
+if [ -f $BIBTEX_LIBRARY ]; then
+  echo "Compiling bibliography from $BIBTEX_LIBRARY" >&2
+  rm -f "$bibfile"
+  bib-filter --clean --keys $refs $BIBTEX_LIBRARY $bibfile
+else
+  echo "$BIBTEX_LIBRARY not found, so only currently-compiled references will be used."
 fi
-
-echo "Compiling bibliography from $BIBTEX_LIBRARY" >&2
-
-rm -f "$bibfile"
-
-bib-filter --clean \
-  --keys $refs $BIBTEX_LIBRARY $bibfile
 
 cat text/references/*.bib > "$build/references.bib"
