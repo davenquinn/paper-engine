@@ -1,25 +1,27 @@
 #!/usr/bin/env zsh
 
 while [[ "$#" -gt 0 ]]; do case $1 in
+  -k|--key-points) key_points=1;;
   -a|--abstract) abstract=1;;
   -A|--appendices) appendices=1;;
   -c|--captions) captions=1;;
   --absolute) absolute=1;;
   --dry-run) dry_run=1;;
-  *) echo "Unknown parameter passed: $1"; exit 1;;
+  *) [ -z $rev ] && rev=$1;;
 esac; shift; done
 
 source "$PAPER_DIR/paper-defs.zsh"
 
 dir="$PAPER_DIR/text"
 # If we don't have a revision, use current text
-if [ -z "$1" ]; then
+if [ -z "$rev" ]; then
   now=1
   rev=HEAD
 else
   now=0
-  rev=$1
 fi
+
+echo "Using revision $rev" >&2
 
 function unnumbered-head() {
 echo "# $@ {-}\n\n"
@@ -49,10 +51,11 @@ function text() {
 # fi
 ## File
 
-if [ -f $dir/key-points.md ]; then
+if [  $key_points ] && [ -f $dir/key-points.md ]; then
   unnumbered-head "Key Points"
   text $dir/key-points.md
 fi
+
 if [ $abstract ] && [ -f $dir/abstract.md ]; then
   unnumbered-head "Abstract"
   text $dir/abstract.md

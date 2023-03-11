@@ -19,6 +19,10 @@ if [ ! -f $BIBTEX_LIBRARY ]; then
   exit 0
 fi
 
+echo "Compiling bibliography from $BIBTEX_LIBRARY" >&2
+
+rm -f "$bibfile"
+
 bib-filter --clean \
   --keys $refs $BIBTEX_LIBRARY $bibfile
 

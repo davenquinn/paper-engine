@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-cd "$PAPER_DIR/text"
+cd "$PAPER_DIR"
 
 source "$PAPER_COMPONENTS/env.zsh"
 
@@ -50,29 +50,21 @@ for rev in $revs; do
   fi
 done
 
-
-function rev-text {
-  # If we don't have a revision, use current text
-  paths=($dir/abstract.md \
-    $dir/project-description.md \
-    $(git ls-tree -r --full-name --name-only $1 chapters) \
-    $dir/figure-captions.md)
-
-  [ -z "$1" ] && cat $paths && exit 0
-
-  for fn in $paths; do
-    git show $1:$fn
-  done
-}
+echo "Comparing $r1 to $r2" >&2
 
 if ( $count ); then
   echo "             Lines  Words Chars"
-  echo "Master:   $(wc <(rev-text $r1))"
-  echo "Current:  $(wc <(rev-text $r2))"
+  echo "Master:   $(wc <(paper rev-text $r1))"
+  echo "Current:  $(wc <(paper rev-text $r2))"
   exit 0
 fi
 
-git text-diff --no-index --color-moved=zebra \
-  =(rev-text $r1) \
-  =(rev-text $r2)
+function text-diff {
+  git diff \
+    --color-words='[^][<>()\{},.;:?/|\\=+*&^%$#!~`"'\''[:space:]]+|[][<>(){},.;:?/|\\=+*&^%$#@!~`"'\'']' $@
+}
+
+text-diff --no-index --unified=10000 --color-moved=zebra \
+  =(paper rev-text $r1) \
+  =(paper rev-text $r2)
 
