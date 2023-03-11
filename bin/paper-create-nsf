@@ -100,7 +100,8 @@ mv "$build_dest" "$dest"
 #gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=11 \
   #-dLastPage=13 -sOutputFile="$outdir/bibliography.pdf" "$dest"
 
-tag --set paper-draft $outfile
+# Check if we have the tag command
+tag --set paper-draft $outfile > /dev/null 2>&1
 
 
 ### Create DOCX version
