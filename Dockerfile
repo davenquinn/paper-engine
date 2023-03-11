@@ -40,4 +40,7 @@ RUN make install
 
 WORKDIR /paper
 
+# Make sure that we can run git commands in the paper directory
+RUN git config --global --add safe.directory /paper
+
 ENTRYPOINT [ "paper" ]
