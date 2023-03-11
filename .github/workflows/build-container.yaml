@@ -33,6 +33,8 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: ghcr.io/davenquinn/paper-engine
+          flavor: |
+            latest=auto
           tags: |
             type=match,pattern=v(.*),group=1
             type=pep440,pattern={{version}}
@@ -45,5 +47,5 @@ jobs:
           push: true
           tags: ${{ steps.backend_meta.outputs.tags }}
           labels: ${{ steps.backend_meta.outputs.labels }}
-          cache-from: type=registry,ref=ghcr.io/davenquinn/paper-engine:latest
+          cache-from: type=registry,ref=ghcr.io/davenquinn/paper-engine:master
           cache-to: type=inline
