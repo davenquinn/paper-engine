@@ -43,4 +43,8 @@ WORKDIR /paper
 # Make sure that we can run git commands in the paper directory
 RUN git config --global --add safe.directory /paper
 
+# Set a default git user
+RUN git config --global user.email "anonymous@paper" \
+  && git config --global user.name "Anonymous"
+
 ENTRYPOINT [ "paper" ]
