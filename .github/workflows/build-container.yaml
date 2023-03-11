@@ -4,10 +4,13 @@ on:
     branches:
       - master
 jobs:
-  build_test:
+  build-and-push-image:
     # Note: for deployment, we move to an older version of Ubuntu
     # https://pyinstaller.readthedocs.io/en/stable/usage.html
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
