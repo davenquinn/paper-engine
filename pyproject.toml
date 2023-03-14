@@ -8,10 +8,12 @@ version = "0.1.0"
 Pandoc-Comment-Filter = {path = "./modules/Pandoc-Comment-Filter", develop = true}
 bib-filter = {path = "./modules/bib-filter", develop = true}
 figurator = {path = "./modules/figurator", develop = true}
+manubot = "^0.5.6"
 panflute = "^2.1.5"
 pypandoc = "^1.8.1"
-python = "^3.9"
+python = "^3.10"
 wrap-si-units = {path = "./modules/wrap-si-units", develop = true}
+manubot-ai-editor = "^0.4.0"
 
 [tool.poetry.dev-dependencies]
 
