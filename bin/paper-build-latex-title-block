@@ -15,12 +15,23 @@
 import sys
 from os import environ, path
 from yaml import safe_load
+from re import findall
+from pydantic import BaseModel
+from typing import Optional
+
+
+class Author(BaseModel):
+    name: str
+    affiliation: str = "1"
+    corresponding: bool = False
+    email: str = None
+
 
 pc = environ.get("PAPER_DIR")
 if pc is None:
     raise Exception("PAPER_DIR environment variable not set")
 
-bf = pc+"/text/title-block.tex"
+bf = pc + "/text/title-block.tex"
 if path.exists(bf):
     print(open(bf).read())
     sys.exit(0)
@@ -31,13 +42,36 @@ if not path.exists(meta):
 
 data = safe_load(open(meta))
 
-print("\\title{" + data["title"] + "}")
+title = data["title"]
+print(f"\\title{{{title}}}")
 
 author = data["author"]
+
+corresponding = None
+
 if not isinstance(author, list):
     author = [author]
 print("")
 for auth in author:
-    print("\\author[1]{" + auth + "}")
+    if isinstance(auth, str):
+        auth = Author(name=auth, affiliation="1")
+    else:
+        auth = Author(**auth)
 
-print("\\affil[1]{University of Wisconsin — Madison}")
+    affil = auth.affiliation
+    if auth.corresponding and auth.email is not None:
+        corresponding = auth.email
+        affil += "*"
+
+    print(f"\\author[{affil}]{{{auth.name}}}")
+
+affil = data["affiliation"]
+if not isinstance(affil, list):
+    affil = [affil]
+print("")
+for i, aff in enumerate(affil):
+    print(f"\\affil[{i+1}]{{{aff}}}")
+
+if corresponding is not None:
+    print("")
+    print("\\affil[*]{Corresponding author (\\textit{" + corresponding + "})}")

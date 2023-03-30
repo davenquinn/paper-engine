@@ -25,7 +25,7 @@ fi
 
 text=build/text.md
 rm -f $text
-paper rev-text \
+paper rev-text --captions \
 | prepare-crossref \
 | sed "s/º/°/g" \
 > $text
@@ -40,8 +40,8 @@ cat $text \
   --from markdown \
   --to docx+styles \
   --metadata-file=$PAPER_DIR/text/meta.yaml \
-  --metadata-file "$pc/defs/pandoc-crossref.yaml" \
-  --metadata includes-spec=$PAPER_DIR/text/includes.yaml \
+  --metadata-file="$pc/defs/pandoc-crossref.yaml" \
+  --metadata includes-spec="$PAPER_DIR/text/includes.yaml" \
   --metadata includes-dir=$includes \
   --metadata includes-only="tbl" \
   --reference-doc="$pc/templates/reference.docx" \
@@ -54,4 +54,3 @@ cat $text \
   --citeproc \
   -o "$PAPER_DIR/output/$name.docx" \
   $@
-

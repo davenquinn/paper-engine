@@ -9,6 +9,9 @@ fi
 
 ex=$PAPER_COMPONENTS/deps/export-artboards/bin/export-artboards
 
+export_preset="[Press Quality]"
+#export_preset="[High Quality Print]"
+
 if [ ! -f $ex ]; then
   echo "export-artboards not found. You might need to run 'paper check-deps'"
   exit 0
@@ -18,5 +21,5 @@ mkdir -p "$ILLUSTRATOR_EXPORT_DIR"
 
 for file in $ILLUSTRATOR_FILES; do
   echo "Exporting artboards from $file" >&2
-  "$ex" --format pdf --preset '[High Quality Print]' $file $ILLUSTRATOR_EXPORT_DIR
+  "$ex" --format pdf --preset "$export_preset" $file $ILLUSTRATOR_EXPORT_DIR
 done
