@@ -17,7 +17,19 @@ texfile="$build/draft.tex"
 preamble="$build/preamble.tex"
 build_dest="$build/$name.pdf"
 auxfile="${build_dest:r}.aux"
-defs="$PAPER_COMPONENTS/nsf-proposal"
+
+# Paper template
+if [ -z $PAPER_TEMPLATE ]; then
+  PAPER_TEMPLATE="$PAPER_COMPONENTS/nsf-proposal"
+fi
+#
+if [ ! -d "$PAPER_TEMPLATE" ]; then
+  PAPER_TEMPLATE="$PAPER_COMPONENTS/$PAPER_TEMPLATE"
+fi
+
+echo "Using template $PAPER_TEMPLATE" >&2
+
+defs="$PAPER_TEMPLATE"
 captions="$build/figure-captions.tex"
 includes="$PAPER_DIR/build/converted-includes"
 
