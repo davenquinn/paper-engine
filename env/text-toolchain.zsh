@@ -18,6 +18,7 @@ function implicit-introduction {
 }
 
 function text-pipeline {
+  crossref_file="${PAPER_COMPONENTS_CROSSREF_CONFIG:-"$PAPER_COMPONENTS/defs/pandoc-crossref.yaml"}"
  prepare-crossref \
  | wrap-si-units \
  | sed "s/º/°/g" \
@@ -26,7 +27,7 @@ function text-pipeline {
     --to latex \
     --natbib \
     --metadata draft:true \
-    --metadata-file "$PAPER_COMPONENTS/defs/pandoc-crossref.yaml" \
+    --metadata-file "$PAPER_COMPONENTS_CROSSREF_CONFIG" \
     --filter pandoc-comments \
     --filter pandoc-crossref
 }
@@ -70,7 +71,7 @@ function text-pipeline-html {
       --metadata link-citations=true \
       --metadata linkReferences=true \
       --metadata-file meta.yaml \
-      --metadata-file "$PAPER_COMPONENTS/defs/pandoc-crossref.yaml" \
+      --metadata-file "$PAPER_COMPONENTS_CROSSREF_CONFIG" \
       --section-divs \
       --number-sections \
       --csl='paper-components/agu.csl' \
