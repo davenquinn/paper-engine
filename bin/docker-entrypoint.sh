@@ -9,6 +9,12 @@ echo "Starting paper compilation with UID : $USER_ID"
 useradd --shell /bin/bash -u $USER_ID -o -c "" -m paper-user
 export HOME=/home/paper-user
 
-cd ${PAPER_DIR:-/paper}
+dir=${PAPER_DIR:-/paper}
+if [ -d "$dir" ]; then
+  cd "$dir"
+else
+  echo "Paper directory $dir does not exist, perhaps you need to mount a volume?" >&2
+fi
 
-exec /usr/local/bin/gosu paper-user "$@"
+# Use gosu to drop privileges and run the command
+exec gosu paper-user "$@"
