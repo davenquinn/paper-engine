@@ -10,12 +10,16 @@ content_dir="${PAPER_CONTENT_DIR:-text}"
 figureDefs="$content_dir/includes.yaml"
 bibfile="$content_dir/references.bib"
 
+# find the git commit identifier
+commit_hash=$(git rev-parse --short HEAD)
+suffix="-$commit_hash"
+
 # Build file locations
 build="build"
 body="$build/body.tex"
 texfile="$build/draft.tex"
 preamble="$build/preamble.tex"
-build_dest="$build/$name.pdf"
+build_dest="$build/$name$suffix.pdf"
 auxfile="${build_dest:r}.aux"
 
 # Paper template
@@ -151,5 +155,5 @@ cat $text \
   --filter pandoc-comments \
   --filter pandoc-crossref \
   --citeproc \
-  -o "$PAPER_DIR/output/$name.docx" \
+  -o "$PAPER_DIR/output/$name$suffix.docx" \
   $@
