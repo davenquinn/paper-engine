@@ -5,9 +5,7 @@ WORKDIR /build
 
 
 RUN apt-get update \
-  && apt-get install -y curl git git-annex xz-utils zsh
-
-RUN apt-get update && apt-get install -y python3 python3-pip python3-venv
+  && apt-get install -y curl git git-annex xz-utils zsh python3 python3-pip python3-venv gosu
 
 RUN curl -LJOf https://github.com/jgm/pandoc/releases/download/2.18/pandoc-2.18-1-amd64.deb \
   && apt-get install -y ./pandoc-2.18-1-amd64.deb \
@@ -40,11 +38,10 @@ RUN make install
 
 WORKDIR /paper
 
-# Make sure that we can run git commands in the paper directory
 RUN git config --global --add safe.directory /paper
 
 # Set a default git user
 RUN git config --global user.email "anonymous@paper" \
   && git config --global user.name "Anonymous"
 
-ENTRYPOINT [ "paper" ]
+ENTRYPOINT [ "/paper-components/bin/docker-entrypoint.sh", "paper" ]
