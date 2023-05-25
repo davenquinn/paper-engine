@@ -13,6 +13,7 @@ pypandoc = "^1.8.1"
 python = "^3.9"
 wrap-si-units = {path = "./modules/wrap-si-units", develop = true}
 pydantic = "^1.10.7"
+docx2pdf = "^0.1.8"
 
 [tool.poetry.dev-dependencies]
 
