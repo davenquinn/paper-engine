@@ -1,0 +1,3 @@
+#!/usr/bin/env zsh
+# Description: interface to the docx2pdf script (Windows or Mac)
+docx2pdf $@
