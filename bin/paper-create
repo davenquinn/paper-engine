@@ -57,14 +57,15 @@ if [ -f $PAPER_TEMPLATE/"pandoc-crossref.yaml" ]; then
   export PAPER_COMPONENTS_CROSSREF_CONFIG="$PAPER_TEMPLATE/pandoc-crossref.yaml"
 fi
 
-# Build project summary
-cat $content_dir/project-summary.md \
-| text-pipeline-biblatex \
-> "$build/project-summary.tex"
+# Process general text files (e.g., project summary, figure captions)
+for f in $content_dir/*.md; do
+  out="$build/${f:t:r}.tex"
+  echo "Processing $f -> $out" >&2
+  cat $f \
+  | text-pipeline-biblatex \
+  > "$out"
+done
 
-cat $content_dir/figure-captions.md \
-| text-pipeline-biblatex \
-> $captions
 
 figureArgs=( inline $figureDefs  \
               --template-dir $defs/includes \

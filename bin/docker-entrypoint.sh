@@ -16,5 +16,9 @@ else
   echo "Paper directory $dir does not exist, perhaps you need to mount a volume?" >&2
 fi
 
+# Set a default git user
+gosu paper-user git config --global user.email "anonymous@paper"
+gosu paper-user git config --global user.name "Anonymous"
+
 # Use gosu to drop privileges and run the command
 exec gosu paper-user "$@"

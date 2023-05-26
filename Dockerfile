@@ -36,8 +36,4 @@ RUN poetry install
 # Install the paper executable
 RUN make install
 
-# Set a default git user
-RUN git config --global user.email "anonymous@paper" \
-  && git config --global user.name "Anonymous"
-
 ENTRYPOINT [ "/paper-components/bin/docker-entrypoint.sh", "paper" ]
