@@ -1,11 +1,27 @@
 FROM texlive/texlive:latest
 
+ENV DEBIAN_FRONTEND noninteractive
+
+# Install dependencies
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends curl git git-annex xz-utils zsh python3 python3-pip \
+  python3-venv gosu software-properties-common curl
+RUN apt-add-repository multiverse && apt-get update
+
+# ---------
+# MS CORE FONTS
+# ---------
+# from http://askubuntu.com/a/25614
+RUN echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections
+RUN apt-get install -y --no-install-recommends fontconfig ttf-mscorefonts-installer
+ADD localfonts.conf /etc/fonts/local.conf
+RUN fc-cache -f -v
+
 # Install pandoc
 WORKDIR /build
 
-
-RUN apt-get update \
-  && apt-get install -y curl git git-annex xz-utils zsh python3 python3-pip python3-venv gosu
+# Pandoc and pandoc crossref
 
 RUN curl -LJOf https://github.com/jgm/pandoc/releases/download/2.18/pandoc-2.18-1-amd64.deb \
   && apt-get install -y ./pandoc-2.18-1-amd64.deb \

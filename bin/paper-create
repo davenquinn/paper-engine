@@ -19,7 +19,7 @@ build="build"
 body="$build/body.tex"
 texfile="$build/draft.tex"
 preamble="$build/preamble.tex"
-build_dest="$build/$name$suffix.pdf"
+build_dest="$build/$name.pdf"
 auxfile="${build_dest:r}.aux"
 
 # Paper template
@@ -156,5 +156,5 @@ cat $text \
   --filter pandoc-comments \
   --filter pandoc-crossref \
   --citeproc \
-  -o "$PAPER_DIR/output/$name$suffix.docx" \
+  -o "$PAPER_DIR/output/$name.docx" \
   $@
