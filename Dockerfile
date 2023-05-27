@@ -4,18 +4,19 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Install dependencies
 
+RUN apt-add-repository multiverse
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends curl git git-annex xz-utils zsh python3 python3-pip \
-  python3-venv gosu software-properties-common curl
-RUN apt-add-repository multiverse && apt-get update
+  && apt-get install -y --no-install-recommends \
+  curl git git-annex xz-utils zsh python3 python3-pip \
+  python3-venv gosu software-properties-common
 
 # ---------
-# MS CORE FONTS
+# Install MS CORE FONTS
 # ---------
 # from http://askubuntu.com/a/25614
 RUN echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections
 RUN apt-get install -y --no-install-recommends fontconfig ttf-mscorefonts-installer
-ADD localfonts.conf /etc/fonts/local.conf
+ADD ./docker-assets/localfonts.conf /etc/fonts/local.conf
 RUN fc-cache -f -v
 
 # Install pandoc
