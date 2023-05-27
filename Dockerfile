@@ -4,11 +4,11 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Install dependencies
 
-RUN apt-add-repository multiverse
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
   curl git git-annex xz-utils zsh python3 python3-pip \
   python3-venv gosu software-properties-common
+RUN apt-add-repository multiverse
 
 # ---------
 # Install MS CORE FONTS
