@@ -2,12 +2,11 @@
 import re
 import sys
 
-cite_re = re.compile(r'@[\w-]+')
-keys = set(['@fig','@sec','@eq','@tbl'])
+cite_re = re.compile(r"@[\w:-]+")
+keys = set(["@fig", "@sec", "@eq", "@tbl", "@task"])
 for line in sys.stdin:
     citekeys = re.findall(cite_re, line)
     for key in citekeys:
         if key not in keys:
-          print(key[1:])
-          keys.add(key)
-
+            print(key[1:])
+            keys.add(key)

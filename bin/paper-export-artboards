@@ -22,4 +22,5 @@ mkdir -p "$ILLUSTRATOR_EXPORT_DIR"
 for file in $ILLUSTRATOR_FILES; do
   echo "Exporting artboards from $file" >&2
   "$ex" --format pdf --preset "$export_preset" $file $ILLUSTRATOR_EXPORT_DIR
+  #"$ex" --format png --dpi 600 $file $ILLUSTRATOR_EXPORT_DIR
 done

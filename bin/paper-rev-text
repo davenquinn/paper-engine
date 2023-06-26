@@ -12,7 +12,7 @@ esac; shift; done
 
 source "$PAPER_DIR/paper-defs.zsh"
 
-dir="$PAPER_DIR/text"
+dir=${PAPER_CONTENT_DIR:-"$PAPER_DIR/text"}
 # If we don't have a revision, use current text
 if [ -z "$rev" ]; then
   now=1
@@ -66,13 +66,13 @@ main_text=${main_text:-text/chapters}
 # Body text
 if [ -d $main_text ]; then
   echo "Using main text from $main_text" >&2
-  paths=($(git ls-tree -r --full-name --name-only $rev $main_text))
+  paths=($(git ls-tree -r --name-only $rev $main_text))
   for fn in $paths; do
     echo "  ${fn:t}" >&2
     text "$fn"
   done
 else
-  paths=($(git ls-tree -r --full-name --name-only $rev .))
+  paths=($(git ls-tree -r --name-only $rev .))
   echo "Synthesizing main text:" >&2
   for fnf in $paths; do
     fn=${fnf:t} 
@@ -90,7 +90,7 @@ fi
 
 
 # Appendices
-paths=($(git ls-tree -r --full-name --name-only $rev appendices))
+paths=($(git ls-tree -r --name-only $rev appendices))
 if [ $appendices ] && [ -n "$paths" ]; then
   head "Appendices"
   for fn in $paths; do
