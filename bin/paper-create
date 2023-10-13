@@ -53,6 +53,11 @@ if [ "$1" = "--init" ]; then
   paper collect-includes "$figureDefs" "$collectDir"
 fi
 
+## Title block
+# We should make this conditional
+rm -f $build/title-block.tex 
+paper build-latex-title-block > $build/title-block.tex
+
 if [ -f $PAPER_TEMPLATE/"pandoc-crossref.yaml" ]; then
   export PAPER_COMPONENTS_CROSSREF_CONFIG="$PAPER_TEMPLATE/pandoc-crossref.yaml"
 fi

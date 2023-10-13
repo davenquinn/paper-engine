@@ -27,7 +27,7 @@ function text-pipeline {
     --to latex \
     --natbib \
     --metadata draft:true \
-    --metadata-file "$PAPER_COMPONENTS_CROSSREF_CONFIG" \
+    --metadata-file "$crossref_file" \
     --filter pandoc-comments \
     --filter pandoc-crossref
 }

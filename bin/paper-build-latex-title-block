@@ -43,6 +43,10 @@ if not path.exists(meta):
 data = safe_load(open(meta))
 
 title = data["title"]
+
+if subtitle := data.get("subtitle"):
+    title += f" \\\\\n\\large\GothamLight {subtitle}"
+
 print(f"\\title{{{title}}}")
 
 author = data["author"]
