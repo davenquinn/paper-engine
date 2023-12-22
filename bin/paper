@@ -72,7 +72,6 @@ if [ -d "$local_bin" ]; then
   done
 fi
 
-
 for f in $(ls "$bin" | grep paper-); do
   [ $f != $cmd ] && continue
   "$bin/$cmd" $@

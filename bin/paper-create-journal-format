@@ -80,7 +80,7 @@ aggregate-text text/chapters/*.md  \
 | text-pipeline \
 > $body
 
-templates="paper-components/includes/journal"
+templates="paper-components/defs/includes/journal"
 ## Text stuff
 figure_list="$build/figure-list.tex"
 figurator list \

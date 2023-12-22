@@ -1,0 +1,20 @@
+#!/usr/bin/env zsh
+
+# Prepares Pandoc markdown for crossref filter by opportunistically
+# wrapping references in escaped brackets to mimic citation style
+# so that [@fig:stuff] prints as [Figure 1].
+# Also escapes pipes for subfigures with non-printing characters,
+# enabling the @fig:stuff|b signature.
+echo "Preparing crossref" >&2
+# Check if GNU sed is available
+gsed="sed"
+if [ -x "$(command -v gsed)" ]; then
+  gsed="gsed"
+else
+  echo "GNU sed (gsed) not found. Using default sed, which might produce errors (especially on MacOS)." >&2
+fi
+
+inmatch="\S+"
+
+$gsed -r "s/\[((@(fig|eq|sec|tbl):$inmatch;? ?)*)\]/\\\[\1\\\]/g" \
+| $gsed -r "s/(@(fig|tbl):$inmatch)\|/\1‌/g"

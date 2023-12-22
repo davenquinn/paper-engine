@@ -20,7 +20,7 @@ echo "Made temp dir $TDIR"
   echo "\\\inlinefigure{$1}" \
   | figurator inline \
     text/includes.yaml \
-    --template-dir paper-components/includes/standalone \
+    --template-dir $pipe_tables/defs/includes/standalone \
     --captions text/figure-captions.md \
     --collect-dir collected-figures
   echo "\\\end{document}"
