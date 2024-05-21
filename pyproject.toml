@@ -3,6 +3,7 @@ authors = ["Daven Quinn <dev@davenquinn.com>"]
 description = ""
 name = "paper-components"
 version = "0.1.0"
+package-mode = false
 
 [tool.poetry.dependencies]
 Pandoc-Comment-Filter = {path = "./modules/Pandoc-Comment-Filter", develop = true}

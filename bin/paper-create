@@ -24,7 +24,7 @@ auxfile="${build_dest:r}.aux"
 
 # Paper template
 if [ -z $PAPER_TEMPLATE ]; then
-  PAPER_TEMPLATE="$PAPER_COMPONENTS/nsf-proposal"
+  PAPER_TEMPLATE="$PAPER_COMPONENTS/templates/default"
 fi
 #
 if [ ! -d "$PAPER_TEMPLATE" ]; then
@@ -140,7 +140,7 @@ paper rev-text --captions \
 > $text
 
 # Get rid of abstract otherwise it will be numbered
-sed -i "s/\# Abstract {-}//g" $text
+sed -i '' "s/\# Abstract {-}//g" $text
 
 echo "# References {-}\n\n" >> $text
 

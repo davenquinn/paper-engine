@@ -76,7 +76,7 @@ paper rev-text  \
 | text-pipeline \
 | figurator inline \
   text/includes.yaml \
-  --template-dir "$PAPER_COMPONENTS/includes" \
+  --template-dir "$PAPER_COMPONENTS/defs/includes" \
   --captions $captions \
   --collect-dir "$FIGURE_COLLECT_DIR" \
 > $body
@@ -123,7 +123,7 @@ if [[ -d $app_ && ${#a} ]]; then
   | text-pipeline \
   | figurator inline \
     text/includes.yaml \
-    --template-dir "$PAPER_COMPONENTS"/includes \
+    --template-dir "$PAPER_COMPONENTS"/defs/includes \
     --captions $captions \
     --collect-dir $collect_dir \
   > $appendices
@@ -147,8 +147,10 @@ latex_exit_status=$?
 
 cp $build_dest $outfile
 
-
-tag --set paper-draft $outfile
+# Check if tag command exists
+if [[ $(which tag) ]]; then
+  tag --set paper-draft $outfile
+fi
 
 scale-images $outfile "${outfile:r}-sm.pdf" "printer" 2> /dev/null
 

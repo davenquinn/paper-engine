@@ -14,7 +14,8 @@ paper get-text --captions \
 | paper extract-refs \
 > $refs
 
-if [ -f $BIBTEX_LIBRARY ]; then
+# Check if the bibliography exists
+if [ ! -z $BIBTEX_LIBRARY ] || [ -f $BIBTEX_LIBRARY ]; then
   echo "Compiling bibliography from $BIBTEX_LIBRARY" >&2
   rm -f "$bibfile"
   bib-filter --clean --keys $refs $BIBTEX_LIBRARY $bibfile

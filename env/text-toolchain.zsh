@@ -3,14 +3,7 @@ function aggregate-text {
 }
 
 function prepare-crossref {
-  # Prepares Pandoc markdown for crossref filter by opportunistically
-  # wrapping references in escaped brackets to mimic citation style
-  # so that [@fig:stuff] prints as [Figure 1].
-  # Also escapes pipes for subfigures with non-printing characters,
-  # enabling the @fig:stuff|b signature.
-  inmatch="\S+"
-  sed -r "s/\[((@(fig|eq|sec|tbl):$inmatch;? ?)*)\]/\\\[\1\\\]/g" \
-  | sed -r "s/(@(fig|tbl):$inmatch)\|/\1‌/g"
+  paper prepare-crossref 
 }
 
 function implicit-introduction {
@@ -124,7 +117,7 @@ function run-latex-draft {
 }
 
 function run-latex {
-  latexmk -f -bibtex -quiet -interaction=nonstopmode -xelatex \
+  latexmk -f -bibtex -interaction=nonstopmode -xelatex -quiet -file-line-error -synctex=1 --interaction=nonstopmode \
     --jobname=${2:t:r} -output-directory="${2:h}" $1
 }
 
