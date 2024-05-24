@@ -23,6 +23,11 @@ if [ "$1" = "--full" ]; then
   paper compile-refs
 fi
 
+outfile="${1:-$PAPER_DIR/output/$name-gsa.docx}"
+if [ $# -gt 0 ]; then
+  shift
+fi
+
 text=build/text.md
 rm -f $text
 
@@ -58,5 +63,5 @@ cat $text \
   --filter pandoc-crossref \
   --filter "$pc/bin/remove-figures-and-tables-filter" \
   --citeproc \
-  -o "$PAPER_DIR/output/$name-gsa.docx" \
+  -o $outfile \
   $@

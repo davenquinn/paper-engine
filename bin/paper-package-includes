@@ -1,0 +1,46 @@
+#!/usr/bin/env python
+
+from sys import argv, stderr
+from pathlib import Path
+from os import environ
+from yaml import safe_load
+
+
+collect_dir = Path(argv[1])
+
+# Make sure the directory exists
+collect_dir.mkdir(parents=True, exist_ok=True)
+
+print("Exporting figures to", collect_dir, file=stderr)
+
+paper_dir = Path(environ["PAPER_DIR"])
+
+prefix = environ.get("PAPER_NAME", None)
+if prefix is not None:
+    prefix += "-"
+else:
+    prefix = ""
+
+includes_spec = paper_dir / "text" / "includes.yaml"
+with includes_spec.open() as f:
+    includes = safe_load(f)
+
+src_dir = paper_dir / "collected-figures"
+
+fig_counter = 0
+for include in includes:
+    type = include.get("type", "figure")
+    if type != "figure":
+        continue
+    id = include["id"]
+    fig_counter += 1
+    orig_file = src_dir / include["file"]
+    ext = orig_file.suffix
+    collected_file = src_dir / (id + ext)
+    new_name = f"{prefix}Figure{fig_counter:02d}-{id}{ext}"
+    new_file = collect_dir / new_name
+
+    print(f"Copying {collected_file} to {new_file}", file=stderr)
+
+    # Copy the file
+    new_file.write_bytes(collected_file.read_bytes())
