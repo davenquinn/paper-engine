@@ -1,0 +1,181 @@
+#!/usr/bin/env python
+import re
+from os import getcwd
+from os.path import join
+from pathlib import Path
+from subprocess import run
+from sys import stderr
+
+from figurator.captions import load_captions
+from panflute import (
+    Block,
+    Caption,
+    Div,
+    Figure,
+    Image,
+    Para,
+    Plain,
+    RawBlock,
+    Space,
+    Span,
+    Str,
+    Table,
+    TableBody,
+    TableCell,
+    TableRow,
+    convert_text,
+    toJSONFilter,
+)
+from yaml import safe_load
+
+"""
+Pandoc filter to substitute includes from a file
+with optional externally-loaded figure captions.
+"""
+
+err = lambda x: print(x, file=stderr)
+
+paper_components = Path(__file__).parent.parent
+
+captions = None
+
+
+def find_includes(doc):
+    includes_spec = doc.get_metadata("includes-spec")
+    global captions
+    if includes_spec is None:
+        return
+    with open(includes_spec) as f:
+        includes = safe_load(f)
+
+    #         captions = {c["id"]: c.get("caption", "") for c in safe_load(f)}
+
+    captions = {}
+    capt_file = doc.get_metadata("figure-captions")
+    if capt_file is not None:
+        captions = load_captions(capt_file).items()
+        # Remove leading `# ` from keys
+        captions = {k.replace("# ", ""): v for k, v in captions}
+
+    includes = list(merge_captions(includes, captions))
+
+    return includes
+
+
+def merge_captions(includes, captions):
+    for item in includes:
+        k = item["id"]
+        if k in captions:
+            item["caption"] = captions[k]
+        yield item
+
+
+shim_table = """
+a   b   c
+--- --- ---
+1   2   3
+4   5   6
+"""
+
+prepare_crossref_exe = join(paper_components, "bin", "paper-prepare-crossref")
+
+
+def prepare_crossref(text):
+    # Prepares Pandoc markdown for crossref filter by opportunistically
+    # wrapping references in escaped brackets to mimic citation style
+    # so that [@fig:stuff] prints as [Figure 1].
+    # Also escapes pipes for subfigures with non-printing characters,
+    # enabling the @fig:stuff|b signature.
+    if text is None:
+        return [Para()]
+    res = run(
+        [prepare_crossref_exe],
+        input=text,
+        capture_output=True,
+        text=True,
+    )
+    text = res.stdout
+    if text is None:
+        return [Para()]
+    return convert_text(text)
+
+
+def process_includes(includes):
+    """
+    Create shimmed figures and tables for each included item.
+    """
+    fig_counter = 0
+    tbl_counter = 0
+    res = []
+    for item in includes:
+        type = item.get("type", "figure")
+        prefix = "Figure"
+        caption = item.get("caption", "")
+        num = ""
+        id = item.get("id", None)
+        if type == "figure":
+            fig_counter += 1
+            id = "fig:" + id
+            num = str(fig_counter)
+            # Shim figure for pandoc-crossref
+            res += [
+                Figure(
+                    Plain(Str(f"Figure {fig_counter}")),
+                    identifier=id,
+                    caption=Caption(
+                        Para(),
+                    ),
+                ),
+            ]
+        elif type == "table":
+            tbl_counter += 1
+            wrapped_id = "{#tbl:" + id + "}"
+            prefix = "Table"
+            num = str(tbl_counter)
+            res += [
+                # Shim table for pandoc-crossref
+                Table(
+                    TableBody(TableRow(TableCell(Para()))),
+                    caption=Caption(Plain(Str(""), Space(), Str(wrapped_id))),
+                ),
+            ]
+        capt = prepare_crossref(caption)
+        capt[0].content = [
+            Span(
+                Str(prefix),
+                Space(),
+                Str(num),
+                Str(":"),
+                attributes={"custom-style": "Figure List Prefix"},
+            ),
+            Space(),
+        ] + list(capt[0].content)
+        # capt[0].attributes = {"custom-style": "Figure List Caption"}
+        res += capt
+
+    return res
+
+
+def comment(el, doc):
+    if el != doc:
+        return
+    print("Done processing document", file=stderr)
+
+    includes = find_includes(doc)
+
+    el.content += [
+        Div(
+            Plain(
+                Str("Figure captions"),
+            ),
+            attributes={"custom-style": "UnnumberedSection"},
+        ),
+    ]
+
+    el.content += process_includes(includes)
+
+    return el
+
+
+if __name__ == "__main__":
+    toJSONFilter(comment)

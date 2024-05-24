@@ -1,0 +1,78 @@
+#!/usr/bin/env python
+from panflute import toJSONFilter, Cite, Str, stringify, Span, convert_text
+from sys import stderr
+from pathlib import Path
+from subprocess import run
+
+paper_components = Path(__file__).parent.parent
+
+
+prepare_crossref_exe = paper_components / "bin" / "paper-prepare-crossref"
+
+
+def prepare_crossref(text):
+    # Prepares Pandoc markdown for crossref filter by opportunistically
+    # wrapping references in escaped brackets to mimic citation style
+    # so that [@fig:stuff] prints as [Figure 1].
+    # Also escapes pipes for subfigures with non-printing characters,
+    # enabling the @fig:stuff|b signature.
+    res = run(
+        [prepare_crossref_exe],
+        input=text,
+        capture_output=True,
+        text=True,
+    )
+    return res.stdout
+
+
+def contains_citation(element):
+    if hasattr(element, "content"):
+        return any(isinstance(child, Cite) for child in element.content)
+    return False
+
+
+def citations_with_suffixes(element):
+    if not hasattr(element, "content"):
+        return None
+    cite_suffix_indices = [
+        i + 1 for i, child in enumerate(element.content) if isinstance(child, Cite)
+    ]
+    if len(cite_suffix_indices) == 0:
+        return None
+
+    elements = []
+    for i, child in enumerate(element.content):
+        new_element = None
+        if isinstance(child, Str) and i in cite_suffix_indices:
+            if child.text.startswith("|"):
+                new_element = Str("\u200B" + child.text.lstrip("|"))
+        if new_element is None:
+            new_element = child
+        elements.append(new_element)
+    element.content = elements
+    return [element]
+
+
+def action(elem, doc):
+    if isinstance(elem, Cite):
+        text = stringify(elem)
+        is_crossref = "@fig:" in text or "@tbl:" in text or "@sec:" in text
+        if not is_crossref:
+            # No change needed
+            return None
+        # Replace pipe with non-printing character
+
+        text1 = prepare_crossref(text)
+        elem1 = convert_text(text1)
+        return list(elem1[0].content)
+        # out = convert_text(text)
+        # elem = out[0].content[0]
+        # assert isinstance(elem, Cite)
+        # new = [Span(Str("(")), elem, Span(Str(")"))]
+        # print(new, file=stderr)
+        # return new
+    return citations_with_suffixes(elem)
+
+
+if __name__ == "__main__":
+    toJSONFilter(action)

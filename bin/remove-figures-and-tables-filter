@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+"""
+Pandoc filter to substitute includes from a file
+with optional externally-loaded figure captions.
+"""
+from panflute import Figure, Image, Table, toJSONFilter
+
+
+def _filter(el, doc):
+    if isinstance(el, (Figure, Table, Image)):
+        return []
+    return None
+
+
+if __name__ == "__main__":
+    toJSONFilter(_filter)

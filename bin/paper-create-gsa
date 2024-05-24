@@ -1,0 +1,61 @@
+#!/usr/bin/env zsh
+# Uses new signature in which 'PAPER_DIR' environment variable must be defined
+source "$PAPER_COMPONENTS/env.zsh"
+
+includes="$PAPER_DIR/build/converted-includes"
+
+pc="$PAPER_COMPONENTS"
+
+if [ "$1" = "--full" ]; then
+  shift
+  
+  figure_defs="text/includes.yaml"
+  collect_dir=${FIGURE_COLLECT_DIR:-"build/figures"}
+  mkdir -p $collect_dir
+  # Collect figures into centralized directory
+  figurator collect \
+    $figure_defs \
+    $FIGURE_COLLECT_DIR \
+    ${FIGURE_SEARCH_DIRECTORIES}
+
+  paper convert-includes $FIGURE_COLLECT_DIR $includes
+
+  paper compile-refs
+fi
+
+text=build/text.md
+rm -f $text
+
+# Add the abstract
+echo "<div custom-style="UnnumberedSection">Abstract</div>\n" > $text
+cat $PAPER_DIR/text/abstract.md >> $text
+echo "\n" >> $text
+
+paper rev-text \
+| sed "s/º/°/g" \
+>> $text
+
+
+echo "<div custom-style="UnnumberedSection">References cited</div>\n" >> $text
+echo "<div id=\"refs\"></div>\n" >> $text
+
+cat $text \
+| pandoc \
+  --from markdown \
+  --to docx+styles \
+  --metadata-file=$PAPER_DIR/text/meta.yaml \
+  --metadata-file="$pc/formats/gsa/pandoc-crossref.yaml" \
+  --metadata includes-spec="$PAPER_DIR/text/includes.yaml" \
+  --metadata figure-captions="$PAPER_DIR/text/figure-captions.md" \
+  --reference-doc="$pc/formats/gsa/reference.docx" \
+  --bibliography="$PAPER_DIR/build/references.bib" \
+  --filter "$pc/bin/includes-list-filter" \
+  --filter "$pc/bin/word-author-block-filter" \
+  --csl="$pc/formats/gsa/gsa.csl" \
+  --filter "$pc/filters/remove-section-references" \
+  --filter pandoc-comments \
+  --filter pandoc-crossref \
+  --filter "$pc/bin/remove-figures-and-tables-filter" \
+  --citeproc \
+  -o "$PAPER_DIR/output/$name-gsa.docx" \
+  $@

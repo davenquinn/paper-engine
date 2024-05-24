@@ -1,0 +1,36 @@
+#!/usr/bin/env python
+import re
+from os import getcwd
+from os.path import join
+from pathlib import Path
+from sys import stderr
+
+from panflute import (
+    Block,
+    Div,
+    Image,
+    Para,
+    Plain,
+    RawBlock,
+    Str,
+    Table,
+    TableBody,
+    TableCell,
+    TableRow,
+    convert_text,
+    toJSONFilter,
+)
+from yaml import safe_load
+
+"""
+Pandoc filter to create an author-affiliation block
+from a YAML file for inclusion in a word document
+"""
+
+
+def author_block(el, doc):
+    pass
+
+
+if __name__ == "__main__":
+    toJSONFilter(author_block)
