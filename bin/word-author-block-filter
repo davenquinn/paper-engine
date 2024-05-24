@@ -19,6 +19,7 @@ from panflute import (
     TableRow,
     convert_text,
     toJSONFilter,
+    Superscript,
 )
 from yaml import safe_load
 
@@ -29,7 +30,70 @@ from a YAML file for inclusion in a word document
 
 
 def author_block(el, doc):
-    pass
+    # Get metadata
+    if el != doc:
+        return
+
+    authors = doc.get_metadata("author")
+    if authors is None:
+        return
+    if not isinstance(authors, list):
+        authors = [authors]
+
+    author_text = [create_author(a) for a in authors]
+    authors = [a for a in author_text if a is not None]
+    author_elements = []
+    for i, elements in enumerate(authors):
+        author_elements += elements
+        if i < len(authors) - 1 and len(authors) > 2:
+            author_elements.append(Str(", "))
+        if i == len(authors) - 2:
+            author_elements.append(Str("and "))
+
+    # Create author block
+    author_block = Div(
+        Div(
+            Para(*author_elements),
+            attributes={"custom-style": "author"},
+        ),
+        *affiliation_block(doc),
+        attributes={"custom-style": "author-affiliation"},
+    )
+
+    el.content = [author_block] + list(el.content)
+    return el
+
+
+def affiliation_block(doc):
+    affiliations = doc.get_metadata("affiliation")
+    if not affiliations:
+        return []
+    if not isinstance(affiliations, list):
+        affiliations = [affiliations]
+    affil_elements = []
+    for i, affil in enumerate(affiliations):
+        affil_elements.append(
+            Div(
+                Para(Superscript(Str(str(i + 1))), Str(str(affil))),
+                attributes={"custom-style": "affiliation"},
+            )
+        )
+    return affil_elements
+
+
+def create_author(author):
+    affil = None
+    if isinstance(author, str):
+        name = author
+    if isinstance(author, dict):
+        name = author.get("name", None)
+        affil = author.get("affiliation", None)
+    if name is None:
+        return None
+    elements = [Str(name)]
+    if affil is not None:
+        elements.append(Superscript(Str(str(affil))))
+    return elements
 
 
 if __name__ == "__main__":
