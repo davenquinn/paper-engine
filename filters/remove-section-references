@@ -1,11 +1,44 @@
 #!/usr/bin/env python
-from panflute import toJSONFilter, Cite
+from panflute import toJSONFilter, Cite, Str, Space, SoftBreak
 from sys import stderr
 
-def action(elem, doc):
-    if isinstance(elem, Cite):
-        print(elem, file=stderr)
-    return None
 
-if __name__ == '__main__':
+def is_section_ref(elem):
+    if not isinstance(elem, Cite):
+        return False
+    if len(elem.content) != 1:
+        return False
+    content = elem.content[0]
+    if not isinstance(content, Str):
+        return False
+    text = content.text
+    if "@sec:" in text:
+        return True
+    return False
+
+
+def action(elem, doc):
+    content = getattr(elem, "content", None)
+    if content is None:
+        return
+    indices = [i for i, cite in enumerate(content) if is_section_ref(cite)]
+    if len(indices) == 0:
+        return
+
+    prefix_indices = [i - 1 for i in indices]
+    # print(indices, file=stderr)
+    new_elements = []
+    for i, element in enumerate(content):
+        if i in indices:
+            continue
+        if i in prefix_indices:
+            prefix = content[i]
+            if isinstance(prefix, (Space, SoftBreak)):
+                continue
+        new_elements.append(element)
+    elem.content = new_elements
+    return [elem]
+
+
+if __name__ == "__main__":
     toJSONFilter(action)

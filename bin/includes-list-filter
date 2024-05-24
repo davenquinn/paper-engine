@@ -88,15 +88,15 @@ def prepare_crossref(text):
     # enabling the @fig:stuff|b signature.
     if text is None:
         return [Para()]
-    res = run(
-        [prepare_crossref_exe],
-        input=text,
-        capture_output=True,
-        text=True,
-    )
-    text = res.stdout
-    if text is None:
-        return [Para()]
+    # res = run(
+    #     [prepare_crossref_exe],
+    #     input=text,
+    #     capture_output=True,
+    #     text=True,
+    # )
+    # text = res.stdout
+    # if text is None:
+    #     return [Para()]
     return convert_text(text)
 
 
@@ -140,18 +140,21 @@ def process_includes(includes):
                 ),
             ]
         capt = prepare_crossref(caption)
-        capt[0].content = [
-            Span(
-                Str(prefix),
+        capt = Div(
+            Para(
+                Span(
+                    Str(prefix),
+                    Space(),
+                    Str(num),
+                    Str(":"),
+                    attributes={"custom-style": "Figure List Prefix"},
+                ),
                 Space(),
-                Str(num),
-                Str(":"),
-                attributes={"custom-style": "Figure List Prefix"},
+                *list(capt[0].content),
             ),
-            Space(),
-        ] + list(capt[0].content)
-        # capt[0].attributes = {"custom-style": "Figure List Caption"}
-        res += capt
+            attributes={"custom-style": "Figure List Caption"},
+        )
+        res += [capt]
 
     return res
 

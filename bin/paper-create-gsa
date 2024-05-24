@@ -53,6 +53,7 @@ cat $text \
   --filter "$pc/bin/word-author-block-filter" \
   --csl="$pc/formats/gsa/gsa.csl" \
   --filter "$pc/filters/remove-section-references" \
+  --filter "$pc/filters/prepare-crossref" \
   --filter pandoc-comments \
   --filter pandoc-crossref \
   --filter "$pc/bin/remove-figures-and-tables-filter" \

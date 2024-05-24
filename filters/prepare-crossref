@@ -3,6 +3,7 @@ from panflute import toJSONFilter, Cite, Str, stringify, Span, convert_text
 from sys import stderr
 from pathlib import Path
 from subprocess import run
+import re
 
 paper_components = Path(__file__).parent.parent
 
@@ -53,6 +54,9 @@ def citations_with_suffixes(element):
     return [element]
 
 
+regx = r"(-?@(fig|tbl|sec):[\w-]+)"
+
+
 def action(elem, doc):
     if isinstance(elem, Cite):
         text = stringify(elem)
@@ -60,9 +64,12 @@ def action(elem, doc):
         if not is_crossref:
             # No change needed
             return None
+        text1 = re.sub(regx, r"[\1]", text)
+        # Wrap with the appropriate brackets given the pandoc-crossref config
+
         # Replace pipe with non-printing character
 
-        text1 = prepare_crossref(text)
+        # text1 = prepare_crossref(text)
         elem1 = convert_text(text1)
         return list(elem1[0].content)
         # out = convert_text(text)
