@@ -56,7 +56,7 @@ cat $text \
   --bibliography="$PAPER_DIR/build/references.bib" \
   --filter "$pc/bin/includes-list-filter" \
   --filter "$pc/bin/word-author-block-filter" \
-  --csl="$pc/formats/gsa/gsa.csl" \
+  --csl="$pc/formats/gsa/the-geological-society-of-america.csl" \
   --filter "$pc/filters/remove-section-references" \
   --filter "$pc/filters/prepare-crossref" \
   --filter pandoc-comments \
