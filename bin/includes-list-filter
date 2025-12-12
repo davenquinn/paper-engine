@@ -97,7 +97,10 @@ def prepare_crossref(text):
     # text = res.stdout
     # if text is None:
     #     return [Para()]
-    return convert_text(text)
+    res = convert_text(text)
+    if len(res) == 0:
+        return [Para()]
+    return res
 
 
 def process_includes(includes):
@@ -139,6 +142,8 @@ def process_includes(includes):
                     caption=Caption(Plain(Str(""), Space(), Str(wrapped_id))),
                 ),
             ]
+        else:
+            continue
         capt = prepare_crossref(caption)
         capt = Div(
             Para(

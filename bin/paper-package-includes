@@ -4,6 +4,7 @@ from sys import argv, stderr
 from pathlib import Path
 from os import environ
 from yaml import safe_load
+from shutil import copyfile
 
 
 collect_dir = Path(argv[1])
@@ -49,10 +50,19 @@ for include in includes:
         new_name = f"{prefix}Table{tbl_counter:02d}-{id}{ext}"
         new_file = collect_dir / new_name
 
+    # Move supplements to their own directory
+    if type == "supplement":
+        supplement_dir = collect_dir / "Supplemental Files"
+        supplement_dir.mkdir(parents=True, exist_ok=True)
+        id = include["id"]
+        orig_file = src_dir / include["file"]
+        ext = orig_file.suffix
+        collected_file = src_dir / (id + ext)
+        new_file = supplement_dir / f"{id}{ext}"
+
     if new_file is None:
         continue
 
     print(f"Copying {collected_file} to {new_file}", file=stderr)
 
-    # Copy the file
-    new_file.write_bytes(collected_file.read_bytes())
+    copyfile(collected_file, new_file, follow_symlinks=True)
