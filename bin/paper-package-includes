@@ -4,7 +4,7 @@ from sys import argv, stderr
 from pathlib import Path
 from os import environ
 from yaml import safe_load
-from shutil import copyfile
+from shutil import copyfile, copytree
 
 
 collect_dir = Path(argv[1])
@@ -52,13 +52,16 @@ for include in includes:
 
     # Move supplements to their own directory
     if type == "supplement":
-        supplement_dir = collect_dir / "Supplemental Files"
-        supplement_dir.mkdir(parents=True, exist_ok=True)
         id = include["id"]
         orig_file = src_dir / include["file"]
         ext = orig_file.suffix
         collected_file = src_dir / (id + ext)
-        new_file = supplement_dir / f"{id}{ext}"
+        # If we override the output file name, use that instead
+        new_file_name = (id + ext)
+        if outfile := include.get("output-file", None):
+            new_file_name = outfile
+
+        new_file = collect_dir / (prefix + "Supplement-" + new_file_name)
 
     if new_file is None:
         continue
