@@ -15,7 +15,12 @@ for dir in text/revision*; do
 done
 [ -z $1 ] && echo "No revision specified, so falling back to latest"
 
+# Get outfile name from second argument, if provided
+outfile=${2:-""}
+[ -z "$outfile" ] && outfile="output/$name-responses.docx"
+
 echo -e "Creating \033[1m$name\033[0m"
+echo -e "  output file: \033[1m$outfile\033[0m"
 
 pc="$PAPER_COMPONENTS"
 
@@ -23,13 +28,13 @@ infile="$revision_dir/review-responses.md"
 
 template="$pc/templates/review-responses-template.html"
 
-pandoc -s -t html "$infile" \
-  -M title=$name \
-  --template="$template" \
-> output/$name-responses.html
+#pandoc -s -t html "$infile" \
+#  -M title=$name \
+#  --template="$template" \
+#> output/$name-responses.html
 
 pandoc \
  --filter="$pc/bin/custom-style-filter" -t docx+styles \
  --reference-doc="$pc/templates/review-responses-template.docx" \
- -o "output/$name-responses.docx" \
+ -o "$outfile" \
  "$infile"
