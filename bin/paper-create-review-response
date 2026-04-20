@@ -24,9 +24,10 @@ echo -e "  output file: \033[1m$outfile\033[0m"
 
 pc="$PAPER_COMPONENTS"
 
-infile="$revision_dir/review-responses.md"
+# NOTE: can extract refs if needed.
 
-template="$pc/templates/review-responses-template.html"
+infile="$revision_dir/review-responses.md"
+bibfile="$PAPER_DIR/build/references.bib"
 
 #pandoc -s -t html "$infile" \
 #  -M title=$name \
@@ -36,5 +37,8 @@ template="$pc/templates/review-responses-template.html"
 pandoc \
  --filter="$pc/bin/custom-style-filter" -t docx+styles \
  --reference-doc="$pc/templates/review-responses-template.docx" \
+ --bibliography=$bibfile \
+ --csl="$pc/agu.csl" \
+ --citeproc \
  -o "$outfile" \
  "$infile"

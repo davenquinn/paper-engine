@@ -14,6 +14,11 @@ paper get-text --captions \
 | paper extract-refs \
 > $refs
 
+# Also get refs from revision responses, in case there are any
+cat $PAPER_DIR/text/revision-*/review-responses.md \
+| paper extract-refs \
+>> $refs
+
 # Check if the bibliography exists
 if [ ! -z $BIBTEX_LIBRARY ] || [ -f $BIBTEX_LIBRARY ]; then
   echo "Compiling bibliography from $BIBTEX_LIBRARY" >&2
