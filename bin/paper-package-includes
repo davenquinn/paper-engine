@@ -1,0 +1,71 @@
+#!/usr/bin/env python
+
+from sys import argv, stderr
+from pathlib import Path
+from os import environ
+from yaml import safe_load
+from shutil import copyfile, copytree
+
+
+collect_dir = Path(argv[1])
+
+# Make sure the directory exists
+collect_dir.mkdir(parents=True, exist_ok=True)
+
+print("Exporting figures to", collect_dir, file=stderr)
+
+paper_dir = Path(environ["PAPER_DIR"])
+
+prefix = environ.get("PAPER_NAME", None)
+if prefix is not None:
+    prefix += "-"
+else:
+    prefix = ""
+
+includes_spec = paper_dir / "text" / "includes.yaml"
+with includes_spec.open() as f:
+    includes = safe_load(f)
+
+src_dir = paper_dir / "collected-figures"
+
+fig_counter = 0
+tbl_counter = 0
+for include in includes:
+    type = include.get("type", "figure")
+    new_file = None
+    if type == "figure":
+        id = include["id"]
+        fig_counter += 1
+        orig_file = src_dir / include["file"]
+        ext = orig_file.suffix
+        collected_file = src_dir / (id + ext)
+        new_name = f"{prefix}Figure{fig_counter:02d}-{id}{ext}"
+        new_file = collect_dir / new_name
+    if type == "table":
+        id = include["id"]
+        tbl_counter += 1
+        orig_file = src_dir / include["file"]
+        ext = orig_file.suffix
+        collected_file = src_dir / (id + ext)
+        new_name = f"{prefix}Table{tbl_counter:02d}-{id}{ext}"
+        new_file = collect_dir / new_name
+
+    # Move supplements to their own directory
+    if type == "supplement":
+        id = include["id"]
+        orig_file = src_dir / include["file"]
+        ext = orig_file.suffix
+        collected_file = src_dir / (id + ext)
+        # If we override the output file name, use that instead
+        new_file_name = (id + ext)
+        if outfile := include.get("output-file", None):
+            new_file_name = outfile
+
+        new_file = collect_dir / (prefix + "Supplement-" + new_file_name)
+
+    if new_file is None:
+        continue
+
+    print(f"Copying {collected_file} to {new_file}", file=stderr)
+
+    copyfile(collected_file, new_file, follow_symlinks=True)

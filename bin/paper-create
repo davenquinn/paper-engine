@@ -55,7 +55,7 @@ fi
 
 ## Title block
 # We should make this conditional
-rm -f $build/title-block.tex 
+rm -f $build/title-block.tex
 paper build-latex-title-block > $build/title-block.tex
 
 if [ -f $PAPER_TEMPLATE/"pandoc-crossref.yaml" ]; then
@@ -79,7 +79,7 @@ figureArgs=( inline $figureDefs  \
 [ -d $collectDir ] && figureArgs+=(--collect-dir $collectDir)
 
 paper rev-text \
-| sed 's/@task:\([a-zA-Z0-9_-]\+\)/\\ref{task:\1}/g' \
+| gsed 's/@task:\([a-zA-Z0-9_-]\+\)/\\ref{task:\1}/g' \
 | mark-inline-figures \
 | text-pipeline-biblatex \
 | figurator "${figureArgs[@]}" \

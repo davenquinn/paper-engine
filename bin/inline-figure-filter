@@ -1,26 +1,27 @@
 #!/usr/bin/env python
+import re
+from os import getcwd
+from os.path import join
+from pathlib import Path
+from sys import stderr
+
+from figurator.captions import load_captions
 from panflute import (
-    RawBlock,
-    toJSONFilter,
-    Div,
-    Plain,
-    Image,
-    convert_text,
-    Str,
     Block,
+    Div,
+    Image,
     Para,
+    Plain,
+    RawBlock,
+    Str,
     Table,
     TableBody,
-    TableRow,
     TableCell,
+    TableRow,
+    convert_text,
+    toJSONFilter,
 )
-import re
-from sys import stderr
-from figurator.captions import load_captions
-from os.path import join
-from os import getcwd
 from yaml import safe_load
-from pathlib import Path
 
 """
 Pandoc filter to substitute includes from a file

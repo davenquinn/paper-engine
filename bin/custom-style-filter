@@ -5,9 +5,28 @@ from sys import stderr
 
 
 def action(elem, doc):
-    if hasattr(elem,'classes'):
-        if len(elem.classes) >= 1:
-            elem.attributes['custom-style'] = elem.classes[0]
+    if not isinstance(elem, pf.Inline):
+        return
+
+    current_elem = elem
+    in_response_block = False
+    while current_elem is not None:
+        if hasattr(current_elem,'classes') and 'response' in current_elem.classes:
+            in_response_block = True
+            current_elem = None
+        if hasattr(current_elem, 'parent'):
+            current_elem = current_elem.parent
+        else:
+            current_elem = None
+
+    if isinstance(elem, pf.Str) and elem.text.strip() == "☒":
+        # We are working with a filled checkbox, so we should make this not dimmed
+        # since it is a review response. Also, we can replace it with a check mark symbol.
+        return pf.Span(pf.Str("✓ fixed"), attributes={"custom-style": "response-text"})
+
+    style = "response-text" if in_response_block else "dim-text"
+
+    return pf.Span(elem, attributes={"custom-style": style})
 
 if __name__ == '__main__':
     pf.run_filter(action)

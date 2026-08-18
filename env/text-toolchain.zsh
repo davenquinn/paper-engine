@@ -12,8 +12,7 @@ function implicit-introduction {
 
 function text-pipeline {
   crossref_file="${PAPER_COMPONENTS_CROSSREF_CONFIG:-"$PAPER_COMPONENTS/defs/pandoc-crossref.yaml"}"
- prepare-crossref \
- | wrap-si-units \
+ wrap-si-units \
  | sed "s/º/°/g" \
  | pandoc \
     --from markdown \
@@ -21,6 +20,7 @@ function text-pipeline {
     --natbib \
     --metadata draft:true \
     --metadata-file "$crossref_file" \
+    --filter "$PAPER_COMPONENTS/filters/prepare-crossref" \
     --filter pandoc-comments \
     --filter pandoc-crossref
 }
