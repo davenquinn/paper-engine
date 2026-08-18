@@ -26,6 +26,8 @@ includes="$PAPER_DIR/build/converted-includes"
   --number-sections \
   --csl="$pc/agu.csl" \
   --bibliography="$PAPER_DIR/build/references.bib" \
+  --lua-filter "$pc/filters/task-labels.lua" \
+  --lua-filter "$pc/filters/page-breaks.lua" \
   --filter "$pc/bin/inline-figure-filter" \
   --filter pandoc-comments \
   --filter pandoc-crossref \

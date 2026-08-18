@@ -6,6 +6,16 @@ includes="$PAPER_DIR/build/converted-includes"
 
 pc="$PAPER_COMPONENTS"
 
+rev_args=(--captions)
+
+while [[ "$1" == --* ]]; do
+  case $1 in
+    --summary) rev_args+=(--summary); shift;;
+    --full) break;;
+    *) break;;
+  esac
+done
+
 if [ "$1" = "--full" ]; then
   shift
   
@@ -25,13 +35,13 @@ fi
 
 text=build/text.md
 rm -f $text
-paper rev-text --captions \
+paper rev-text "${rev_args[@]}" \
 | prepare-crossref \
 | sed "s/º/°/g" \
 > $text
 
 # Get rid of abstract otherwise it will be numbered
-sed -i "s/\# Abstract {-}//g" $text
+sed -i '' "s/\# Abstract {-}//g" $text
 
 echo "# References {-}\n\n" >> $text
 
@@ -47,6 +57,8 @@ cat $text \
   --reference-doc="$pc/templates/reference.docx" \
   --bibliography="$PAPER_DIR/build/references.bib" \
   --csl="$pc/agu.csl" \
+  --lua-filter "$pc/filters/task-labels.lua" \
+  --lua-filter "$pc/filters/page-breaks.lua" \
   --filter "$pc/bin/figure-ref-filter" \
   --filter "$pc/bin/inline-figure-filter" \
   --filter pandoc-comments \

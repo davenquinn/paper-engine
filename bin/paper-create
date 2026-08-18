@@ -133,8 +133,6 @@ tag --set paper-draft $outfile > /dev/null 2>&1
 text=build/text.md
 rm -f $text
 paper rev-text --captions \
-| sed 's/{#task:\([a-zA-Z0-9_-]\+\)}/{#sec:task:\1}/g' \
-| sed 's/@task:\([a-zA-Z0-9_-]\+\)/Task -@sec:task:\1/g' \
 | prepare-crossref \
 | sed "s/º/°/g" \
 > $text
@@ -156,6 +154,7 @@ cat $text \
   --reference-doc="$pc/templates/reference.docx" \
   --bibliography="$PAPER_DIR/build/references.bib" \
   --csl="$pc/agu.csl" \
+  --lua-filter "$pc/filters/task-labels.lua" \
   --filter "$pc/bin/figure-ref-filter" \
   --filter "$pc/bin/inline-figure-filter" \
   --filter pandoc-comments \

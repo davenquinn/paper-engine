@@ -3,6 +3,7 @@
 while [[ "$#" -gt 0 ]]; do case $1 in
   -k|--key-points) key_points=1;;
   -a|--abstract) abstract=1;;
+  -s|--summary) summary=1;;
   -A|--appendices) appendices=1;;
   -c|--captions) captions=1;;
   --absolute) absolute=1;;
@@ -40,16 +41,15 @@ function text() {
   echo "\n\n"
 }
 
-## These two NSF-grant specific functions need to be removed
-# if [ -f $dir/project-summary.md ]; then
-#   unnumbered-head "Project summary"
-#   text $dir/project-summary.md
-# fi
-# if [ -f $dir/project-description.md ]; then
-#   unnumbered-head "Project Description"
-#   text $dir/project-description.md
-# fi
-## File
+# NSF-style front matter: the project summary is a separate document from
+# the narrative, so it gets its own page.
+if [ $summary ] && [ -f $dir/project-summary.md ]; then
+  unnumbered-head "Project Summary"
+  # Demote the summary's own headings so they nest under the wrapper.
+  text $dir/project-summary.md | sed -E 's/^(#{1,5} )/#\1/'
+  printf '\\newpage\n\n'
+  unnumbered-head "Project Description"
+fi
 
 if [  $key_points ] && [ -f $dir/key-points.md ]; then
   unnumbered-head "Key Points"
