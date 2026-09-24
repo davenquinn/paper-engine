@@ -7,28 +7,29 @@ includes="$PAPER_DIR/build/converted-includes"
 pc="$PAPER_COMPONENTS"
 
 rev_args=(--captions)
+full=0
 
-while [[ "$1" == --* ]]; do
+while [[ "$#" -gt 0 && "$1" == --* ]]; do
   case $1 in
     --summary) rev_args+=(--summary); shift;;
-    --full) break;;
+    --full) full=1; shift;;
     *) break;;
   esac
 done
 
-if [ "$1" = "--full" ]; then
-  shift
-  
-  figure_defs="text/includes.yaml"
-  collect_dir=${FIGURE_COLLECT_DIR:-"build/figures"}
-  mkdir -p $collect_dir
-  # Collect figures into centralized directory
+if [ $full = 1 ]; then
+  figure_defs="${PAPER_CONTENT_DIR:-text}/includes.yaml"
+  collect_dir="${FIGURE_COLLECT_DIR:-build/figures}"
+  mkdir -p "$collect_dir"
+
+  # Collect figures into a centralized directory, then rasterize them.
+  # '.' first: includes.yaml paths are written relative to the paper dir.
   figurator collect \
     $figure_defs \
-    $FIGURE_COLLECT_DIR \
-    ${FIGURE_SEARCH_DIRECTORIES}
+    $collect_dir \
+    . ${FIGURE_SEARCH_DIRECTORIES}
 
-  paper convert-includes $FIGURE_COLLECT_DIR $includes
+  paper convert-includes "$collect_dir" "$includes"
 
   paper compile-refs
 fi
@@ -66,3 +67,5 @@ cat $text \
   --citeproc \
   -o "$PAPER_DIR/output/$name.docx" \
   $@
+
+paper docx-unnumber-tasks "$PAPER_DIR/output/$name.docx"

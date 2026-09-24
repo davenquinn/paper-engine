@@ -62,7 +62,7 @@ def comment(el, doc):
     is_relevant = type(el) == RawBlock
     if not is_relevant:
         return
-    match = re.search("<!--\[\[\[((fig|tbl):([\w-]+))\]\]\]-->", el.text)
+    match = re.search(r'<!--\[\[\[((fig|tbl):([\w-]+))\]\]\]-->', el.text)
     if not match:
         return
     id = match.group(1)

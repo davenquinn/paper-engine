@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+"""Strip Word's automatic section numbering from task headings.
+
+The reference document numbers headings through the `Heading N` styles
+themselves (`<w:numPr><w:numId w:val="14"/>`), so Word renumbers them no
+matter what the writer does -- a task heading comes out as "5.3 T3." with
+Word's number in front of ours.
+
+Pandoc offers no hook for this: `unnumbered` and `custom-style` are both
+ignored on headings by the docx writer, so the override has to be applied
+to the emitted XML. Task headings are identified by their T-label, which
+the task-labels filter has already prepended.
+"""
+
+import re
+import shutil
+import sys
+import zipfile
+
+DOC = "word/document.xml"
+
+PARAGRAPH = re.compile(r"<w:p(?:\s[^>]*)?>.*?</w:p>", re.S)
+STYLE = re.compile(r'<w:pStyle w:val="(Heading\d)"\s*/>')
+TEXT = re.compile(r"<w:t[^>]*>(.*?)</w:t>", re.S)
+LABEL = re.compile(r"^T\d+[a-z]*\.")
+
+# An empty numId detaches the paragraph from the style's numbering.
+SUPPRESS = '<w:numPr><w:ilvl w:val="0" /><w:numId w:val="0" /></w:numPr>'
+
+
+def unnumber(paragraph):
+    style = STYLE.search(paragraph)
+    if not style:
+        return paragraph, False
+    text = "".join(TEXT.findall(paragraph)).strip()
+    if not LABEL.match(text):
+        return paragraph, False
+    if "<w:numPr>" in paragraph:
+        return paragraph, False
+    # numPr must follow pStyle in a pPr, per the CT_PPr sequence.
+    return paragraph.replace(style.group(0), style.group(0) + SUPPRESS, 1), True
+
+
+def main(path):
+    with zipfile.ZipFile(path) as src:
+        names = src.namelist()
+        contents = {n: src.read(n) for n in names}
+
+    document = contents[DOC].decode("utf-8")
+    count = 0
+
+    def replace(match):
+        nonlocal count
+        out, changed = unnumber(match.group(0))
+        count += changed
+        return out
+
+    contents[DOC] = PARAGRAPH.sub(replace, document).encode("utf-8")
+
+    tmp = path + ".tmp"
+    with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as dst:
+        for name in names:
+            dst.writestr(name, contents[name])
+    shutil.move(tmp, path)
+
+    print(f"unnumbered {count} task heading(s)", file=sys.stderr)
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        sys.exit("usage: paper-docx-unnumber-tasks <file.docx>")
+    main(sys.argv[1])

@@ -116,6 +116,9 @@ def process_includes(includes):
         caption = item.get("caption", "")
         num = ""
         id = item.get("id", None)
+
+        print(f"Processing include: {type} {id}", file=stderr)
+
         if type == "figure":
             fig_counter += 1
             id = "fig:" + id
@@ -135,12 +138,17 @@ def process_includes(includes):
             wrapped_id = "{#tbl:" + id + "}"
             prefix = "Table"
             num = str(tbl_counter)
+
+            tbl_element = Table(
+                TableBody(TableRow(TableCell(Para()))),
+                caption=Caption(Plain(Str(""), Space(), Str(wrapped_id))),
+            )
+
+            tbl_element.identifier = "tbl:" + id
+
             res += [
                 # Shim table for pandoc-crossref
-                Table(
-                    TableBody(TableRow(TableCell(Para()))),
-                    caption=Caption(Plain(Str(""), Space(), Str(wrapped_id))),
-                ),
+                tbl_element
             ]
         else:
             continue

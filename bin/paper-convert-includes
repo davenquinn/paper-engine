@@ -1,32 +1,67 @@
 #!/usr/bin/env zsh
+# Rasterize collected figures to PNGs suitable for docx/HTML output.
+#
+# Tunable from paper-defs.zsh:
+#   FIGURE_RASTER_DPI      resolution to rasterize PDFs at   (default 150)
+#   FIGURE_MAX_WIDTH_PX    downsample anything wider         (default 1600)
 
 cd "$PAPER_DIR"
 
 collect_dir="${1:-"collected-figures"}"
 includes="${2:-"output/converted-includes"}"
 
+dpi="${FIGURE_RASTER_DPI:-150}"
+max_width="${FIGURE_MAX_WIDTH_PX:-1600}"
+
 mkdir -p "$includes"
 
-for f in $collect_dir/* ; do
-  out="$includes/${f:t:r}.png"
-  echo $f
-  ext=${f:t:e}
-  if [ $ext = "png" ]; then
-    cp $f $out
-    echo "...copying"
-  elif [ $ext = "jpg" ]; then
-    cp $f $out
-    echo "...copying"
-  elif [ $ext = "pdf" ]; then
-    gs \
-      -sDEVICE=pngalpha \
-      -dFirstPage=1 \
-      -dLastPage=1 \
-      -dNOPAUSE \
-      -dBATCH \
-      -sOutputFile="$out" -r192 "$f" > /dev/null
-    [ $? -eq 0 ] && echo "...success!" || echo "..failure!"
-  else
-    echo ""
+# Downsampling is a nicety, not a requirement.
+have_magick=0
+command -v magick >/dev/null 2>&1 && have_magick=1
+
+function shrink() {
+  local f="$1"
+  [ $have_magick = 1 ] || return 0
+  [ -n "$max_width" ] || return 0
+  local w=$(magick identify -format '%w' "$f" 2>/dev/null)
+  [ -n "$w" ] || return 0
+  if [ "$w" -gt "$max_width" ]; then
+    magick "$f" -resize "${max_width}x" "$f" && echo "   ...downsampled ${w}px -> ${max_width}px"
   fi
+}
+
+# (-.N): follow symlinks, since figurator collects by symlinking.
+for f in $collect_dir/*(-.N) ; do
+  out="$includes/${f:t:r}.png"
+  ext=${(L)f:t:e}
+  echo "$f"
+  case $ext in
+    png|jpg|jpeg)
+      cp "$f" "$out"
+      echo "   ...copied"
+      shrink "$out"
+      ;;
+    pdf)
+      # png16m rather than pngalpha: no alpha channel is roughly a third the
+      # size, and every consumer of these composites onto white anyway.
+      gs \
+        -sDEVICE=png16m \
+        -dFirstPage=1 \
+        -dLastPage=1 \
+        -dNOPAUSE \
+        -dBATCH \
+        -dTextAlphaBits=4 \
+        -dGraphicsAlphaBits=4 \
+        -sOutputFile="$out" -r$dpi "$f" > /dev/null
+      if [ $? -eq 0 ]; then
+        echo "   ...rasterized at ${dpi}dpi"
+        shrink "$out"
+      else
+        echo "   ...FAILED" >&2
+      fi
+      ;;
+    *)
+      echo "   ...skipped (unhandled type '$ext')"
+      ;;
+  esac
 done
